@@ -379,7 +379,6 @@ function handleBooking() {
   const modal = document.getElementById('confirmModal');
   if (modal) {
     modal.classList.add('open');
-    document.body.style.overflow = 'hidden';
   }
   updateStepIndicator(3);
 }
@@ -388,7 +387,6 @@ function closeModal() {
   const modal = document.getElementById('confirmModal');
   if (modal) {
     modal.classList.remove('open');
-    document.body.style.overflow = '';
   }
   if (selectedSlot) updateStepIndicator(2);
 }
@@ -426,7 +424,6 @@ function confirmBooking() {
 
     // Close modal, reset
     document.getElementById('confirmModal').classList.remove('open');
-    document.body.style.overflow = '';
     if (btn) { btn.textContent = 'Confirm Booking'; btn.disabled = false; }
 
     showToast('Booking Confirmed!', `${selectedSlot.time} – ${selectedDuration} hour${selectedDuration>1?'s':''} reserved.`);
