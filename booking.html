@@ -1,90 +1,480 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Book a Slot | Elite Turf Arena</title>
-  <meta name="description" content="Book your football slot at Elite Turf Arena. Choose from morning, afternoon, and evening slots. Instant confirmation." />
+  <title>Book a Slot | Penalty Box Turf</title>
+  <meta name="description"
+    content="Book your cricket turf slot at Penalty Box Turf. ₹500/hour. Instant confirmation. No hidden fees." />
   <link rel="stylesheet" href="styles.css" />
   <style>
+    /* ---- Booking Page Extras ---- */
+    .booking-layout {
+      display: grid;
+      grid-template-columns: 1fr 380px;
+      gap: 2.5rem;
+      align-items: start;
+    }
+
+    /* DATE TABS */
     .date-tabs {
       display: flex;
-      gap: 0.75rem;
+      gap: 0.6rem;
       flex-wrap: wrap;
-      margin-bottom: 2.5rem;
+      margin-bottom: 2rem;
     }
+
     .date-tab {
-      padding: 0.65rem 1.25rem;
+      padding: 0.55rem 1.1rem;
       border: 1.5px solid var(--gray-200);
       border-radius: var(--radius-full);
-      font-size: 0.88rem;
+      font-size: 0.84rem;
       font-weight: 600;
       color: var(--gray-500);
       cursor: pointer;
       transition: var(--transition);
       background: white;
+      white-space: nowrap;
     }
+
     .date-tab:hover {
       border-color: var(--accent);
-      color: var(--gray-800);
+      color: var(--gray-700);
     }
+
     .date-tab.active {
       border-color: var(--accent);
       background: var(--green-50);
       color: var(--green-800);
     }
-    .booking-layout {
-      display: grid;
-      grid-template-columns: 1fr 360px;
-      gap: 2.5rem;
-      align-items: start;
-    }
+
+    /* TIME GROUP */
     .time-group-label {
-      font-size: 0.78rem;
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      font-size: 0.75rem;
       font-weight: 700;
       letter-spacing: 0.1em;
       text-transform: uppercase;
       color: var(--gray-400);
-      margin-bottom: 1rem;
-      margin-top: 2rem;
-      display: flex;
-      align-items: center;
-      gap: 0.6rem;
+      margin: 1.75rem 0 0.85rem;
     }
+
+    .time-group-label svg {
+      color: var(--accent);
+      flex-shrink: 0;
+    }
+
     .time-group-label::after {
       content: '';
       flex: 1;
       height: 1px;
       background: var(--gray-200);
     }
-    .size-pills {
+
+    /* SLOTS GRID — horizontal cards */
+    .slots-list {
       display: flex;
-      gap: 0.5rem;
-      flex-wrap: wrap;
-      margin-bottom: 2rem;
+      flex-direction: column;
+      gap: 0.75rem;
+      margin-bottom: 0.5rem;
     }
-    .size-pill {
-      padding: 0.45rem 1rem;
+
+    .slot-list-card {
+      display: grid;
+      grid-template-columns: 1fr auto auto;
+      align-items: center;
+      gap: 1.25rem;
+      padding: 1.1rem 1.4rem;
+      border: 1.5px solid var(--gray-200);
+      border-radius: var(--radius-lg);
+      background: white;
+      transition: var(--transition-slow);
+      cursor: pointer;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .slot-list-card::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 0;
+      bottom: 0;
+      width: 3px;
+      background: var(--accent);
+      transform: scaleY(0);
+      transition: transform 0.3s ease;
+    }
+
+    .slot-list-card.available:hover {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(46, 204, 113, 0.08), var(--shadow-md);
+      transform: translateY(-2px);
+    }
+
+    .slot-list-card.available:hover::before {
+      transform: scaleY(1);
+    }
+
+    .slot-list-card.selected {
+      border-color: var(--accent);
+      background: var(--green-50);
+      box-shadow: 0 0 0 3px rgba(46, 204, 113, 0.12);
+    }
+
+    .slot-list-card.selected::before {
+      transform: scaleY(1);
+    }
+
+    .slot-list-card.booked {
+      opacity: 0.65;
+      cursor: not-allowed;
+      background: var(--gray-50);
+    }
+
+    .slot-list-card.user-booked {
+      border-color: var(--green-300);
+      background: var(--green-50);
+      cursor: default;
+    }
+
+    .slot-list-card.user-booked::before {
+      background: var(--green-500);
+      transform: scaleY(1);
+    }
+
+    .slot-info {}
+
+    .slot-list-time {
+      font-family: var(--font-primary);
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--gray-800);
+    }
+
+    .slot-list-sub {
+      font-size: 0.78rem;
+      color: var(--gray-400);
+      margin-top: 0.1rem;
+    }
+
+    .slot-list-price {
+      font-family: var(--font-primary);
+      font-size: 1.1rem;
+      font-weight: 800;
+      color: var(--accent-dark);
+      text-align: right;
+      white-space: nowrap;
+    }
+
+    .slot-list-price span {
+      font-size: 0.75rem;
+      font-weight: 500;
+      color: var(--gray-400);
+    }
+
+    .slot-list-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.3rem;
+      font-size: 0.7rem;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      padding: 0.25rem 0.65rem;
+      border-radius: var(--radius-full);
+      white-space: nowrap;
+    }
+
+    .badge-available {
+      background: var(--green-50);
+      color: var(--green-700);
+      border: 1px solid var(--green-200);
+    }
+
+    .badge-booked {
+      background: var(--gray-100);
+      color: var(--gray-400);
+      border: 1px solid var(--gray-200);
+    }
+
+    .badge-yours {
+      background: var(--green-100);
+      color: var(--green-800);
+      border: 1px solid var(--green-300);
+    }
+
+    .badge-dot {
+      width: 5px;
+      height: 5px;
+      border-radius: 50%;
+      background: currentColor;
+      flex-shrink: 0;
+    }
+
+    /* BOOKING PANEL */
+    .booking-panel {
+      background: white;
+      border: 1px solid var(--gray-200);
+      border-radius: var(--radius-xl);
+      overflow: hidden;
+      box-shadow: var(--shadow-xl);
+    }
+
+    .panel-header {
+      background: linear-gradient(135deg, #166534 0%, #14532d 100%);
+      padding: 1.5rem;
+      color: white;
+    }
+
+    .panel-header h3 {
+      font-family: var(--font-primary);
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: white;
+      margin-bottom: 0.2rem;
+    }
+
+    .panel-header p {
+      font-size: 0.82rem;
+      color: rgba(255, 255, 255, 0.6);
+    }
+
+    .panel-body {
+      padding: 1.5rem;
+    }
+
+    /* EMPTY STATE */
+    .panel-empty-state {
+      text-align: center;
+      padding: 2rem 1rem;
+    }
+
+    .panel-empty-icon {
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      background: var(--gray-100);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 0.75rem;
+      color: var(--gray-400);
+    }
+
+    .panel-empty-state h4 {
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: var(--gray-700);
+      margin-bottom: 0.25rem;
+    }
+
+    .panel-empty-state p {
+      font-size: 0.82rem;
+      color: var(--gray-400);
+    }
+
+    /* SELECTED SLOT SUMMARY */
+    .summary-card {
+      background: var(--green-50);
+      border: 1.5px solid var(--green-200);
+      border-radius: var(--radius-md);
+      padding: 1.1rem;
+      margin-bottom: 1.25rem;
+    }
+
+    .summary-label {
+      font-size: 0.72rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--green-700);
+      margin-bottom: 0.6rem;
+    }
+
+    .summary-time {
+      font-family: var(--font-primary);
+      font-size: 1.1rem;
+      font-weight: 800;
+      color: var(--gray-800);
+      margin-bottom: 0.2rem;
+    }
+
+    .summary-date {
+      font-size: 0.8rem;
+      color: var(--gray-400);
+    }
+
+    /* DURATION SELECTOR */
+    .duration-selector {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: var(--gray-50);
+      border: 1px solid var(--gray-200);
+      border-radius: var(--radius-md);
+      padding: 0.75rem 1rem;
+      margin-bottom: 1.25rem;
+    }
+
+    .dur-label {
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--gray-700);
+    }
+
+    .dur-controls {
+      display: flex;
+      align-items: center;
+      gap: 0;
       border: 1.5px solid var(--gray-200);
       border-radius: var(--radius-full);
-      font-size: 0.82rem;
-      font-weight: 600;
-      color: var(--gray-500);
-      cursor: pointer;
-      transition: var(--transition);
+      overflow: hidden;
       background: white;
     }
-    .size-pill.active {
+
+    .dur-btn {
+      width: 32px;
+      height: 32px;
+      border: none;
+      background: none;
+      cursor: pointer;
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--gray-600);
+      transition: var(--transition);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .dur-btn:hover {
+      background: var(--accent-glow);
+      color: var(--accent);
+    }
+
+    .dur-value {
+      min-width: 52px;
+      text-align: center;
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: var(--gray-800);
+      padding: 0 0.25rem;
+    }
+
+    /* PAYMENT */
+    .payment-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.6rem;
+      margin-bottom: 1.25rem;
+    }
+
+    .payment-option {
+      border: 1.5px solid var(--gray-200);
+      border-radius: var(--radius-md);
+      padding: 0.7rem 0.85rem;
+      cursor: pointer;
+      transition: var(--transition);
+      display: flex;
+      align-items: center;
+      gap: 0.55rem;
+      font-size: 0.82rem;
+      font-weight: 600;
+      color: var(--gray-600);
+    }
+
+    .payment-option svg {
+      flex-shrink: 0;
+    }
+
+    .payment-option:hover {
+      border-color: var(--accent);
+      color: var(--gray-800);
+    }
+
+    .payment-option.selected {
       border-color: var(--accent);
       background: var(--green-50);
       color: var(--green-800);
     }
+
+    /* PRICE BREAKDOWN */
+    .price-breakdown {
+      background: var(--gray-50);
+      border-radius: var(--radius-md);
+      padding: 0.9rem 1rem;
+      border: 1px solid var(--gray-200);
+      margin-bottom: 1.25rem;
+    }
+
+    .breakdown-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.84rem;
+      padding: 0.3rem 0;
+    }
+
+    .breakdown-row .lbl {
+      color: var(--gray-500);
+    }
+
+    .breakdown-row .val {
+      font-weight: 700;
+      color: var(--gray-800);
+    }
+
+    .breakdown-divider {
+      height: 1px;
+      background: var(--gray-200);
+      margin: 0.5rem 0;
+    }
+
+    .breakdown-total {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 0.25rem;
+    }
+
+    .breakdown-total .lbl {
+      font-weight: 700;
+      color: var(--gray-800);
+      font-size: 0.9rem;
+    }
+
+    .breakdown-total .val {
+      font-family: var(--font-primary);
+      font-size: 1.2rem;
+      font-weight: 900;
+      color: var(--green-700);
+    }
+
+    /* CONFIRM BTN — always visible */
+    .confirm-btn-wrap {
+      position: sticky;
+      bottom: 0;
+      background: white;
+      padding: 1rem 1.5rem;
+      border-top: 1px solid var(--gray-100);
+      margin: -1.5rem;
+      margin-top: 0;
+    }
+
+
+
+    /* STEP INDICATOR */
     .booking-steps {
       display: flex;
       align-items: center;
       gap: 0;
-      margin-bottom: 3rem;
+      margin-bottom: 2.5rem;
     }
+
     .booking-step {
       display: flex;
       flex-direction: column;
@@ -93,6 +483,7 @@
       flex: 1;
       position: relative;
     }
+
     .booking-step:not(:last-child)::after {
       content: '';
       position: absolute;
@@ -103,9 +494,12 @@
       background: var(--gray-200);
       z-index: 0;
     }
-    .booking-step.active:not(:last-child)::after {
+
+    .booking-step.active:not(:last-child)::after,
+    .booking-step.done:not(:last-child)::after {
       background: var(--accent);
     }
+
     .step-circle {
       width: 28px;
       height: 28px;
@@ -120,33 +514,81 @@
       position: relative;
       z-index: 1;
     }
+
     .booking-step.active .step-circle {
       background: var(--accent);
       color: white;
     }
+
     .booking-step.done .step-circle {
-      background: var(--green-100);
-      color: var(--green-700);
+      background: var(--green-500);
+      color: white;
     }
+
     .step-label {
-      font-size: 0.72rem;
+      font-size: 0.7rem;
       color: var(--gray-400);
       font-weight: 600;
       white-space: nowrap;
     }
-    .booking-step.active .step-label { color: var(--gray-700); }
-    @media (max-width: 900px) {
-      .booking-layout { grid-template-columns: 1fr; }
+
+    .booking-step.active .step-label {
+      color: var(--gray-700);
+    }
+
+    /* SIZE PILLS */
+    .size-pills {
+      display: flex;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+      margin-bottom: 1.75rem;
+    }
+
+    .size-pill {
+      padding: 0.4rem 1rem;
+      border: 1.5px solid var(--gray-200);
+      border-radius: var(--radius-full);
+      font-size: 0.82rem;
+      font-weight: 600;
+      color: var(--gray-500);
+      cursor: pointer;
+      transition: var(--transition);
+      background: white;
+    }
+
+    .size-pill.active {
+      border-color: var(--accent);
+      background: var(--green-50);
+      color: var(--green-800);
+    }
+
+    @media(max-width:900px) {
+      .booking-layout {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media(max-width:640px) {
+      .payment-grid {
+        grid-template-columns: 1fr;
+      }
     }
   </style>
 </head>
+
 <body class="page-wrapper">
 
+  <!-- NAVBAR -->
   <nav class="navbar scrolled" id="navbar">
     <div class="navbar-inner">
       <a href="index.html" class="navbar-logo">
-        <span class="logo-icon">⚽</span>
-        Elite<span>Turf</span>
+        <span class="logo-icon">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5"
+            stroke-linecap="round">
+            <path d="M3 17l4-8 4 4 4-6 4 10" />
+          </svg>
+        </span>
+        Penalty<span>Box</span>
       </a>
       <ul class="navbar-nav">
         <li><a href="index.html" class="nav-link">Home</a></li>
@@ -156,40 +598,48 @@
         <li><a href="reviews.html" class="nav-link">Reviews</a></li>
       </ul>
       <div class="navbar-cta">
-        <a href="booking.html" class="btn btn-primary btn-sm">Book Your Slot</a>
+        <a href="booking.html" class="btn btn-primary btn-sm">Book a Slot</a>
       </div>
       <div class="nav-toggle" id="navToggle"><span></span><span></span><span></span></div>
     </div>
   </nav>
 
+  <!-- MOBILE MENU -->
   <div class="mobile-menu" id="mobileMenu">
     <div class="mobile-menu-header">
       <a href="index.html" class="navbar-logo" style="color:#1f2937">
-        <span class="logo-icon">⚽</span>
-        Elite<span style="color:var(--accent)">Turf</span>
+        <span class="logo-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white"
+            stroke-width="2.5">
+            <path d="M3 17l4-8 4 4 4-6 4 10" />
+          </svg></span>
+        Penalty<span style="color:var(--accent)">Box</span>
       </a>
-      <button id="mobileMenuClose" style="background:none;border:none;font-size:1.5rem;cursor:pointer;color:#374151;">✕</button>
+      <button id="mobileMenuClose"
+        style="background:none;border:none;font-size:1.5rem;cursor:pointer;color:#374151;">✕</button>
     </div>
     <nav class="mobile-menu-links">
-      <a href="index.html">Home</a><a href="turf.html">Turf Details</a><a href="booking.html">Booking</a><a href="gallery.html">Gallery</a><a href="reviews.html">Reviews</a>
+      <a href="index.html">Home</a><a href="turf.html">Turf Details</a>
+      <a href="booking.html">Booking</a><a href="gallery.html">Gallery</a><a href="reviews.html">Reviews</a>
     </nav>
-    <a href="booking.html" class="btn btn-primary" style="margin-top:2rem;">Book Your Slot →</a>
+    <a href="booking.html" class="btn btn-primary" style="margin-top:2rem;">Book a Slot</a>
   </div>
 
+  <!-- PAGE HEADER -->
   <div class="page-header">
     <div class="container page-header-content">
       <div class="breadcrumb">
         <a href="index.html">Home</a><span>›</span><span>Booking</span>
       </div>
       <h1>Book Your Slot</h1>
-      <p>Real-time availability. Instant confirmation. No hidden fees.</p>
+      <p>Real-time availability · ₹500/hour · Instant confirmation</p>
     </div>
   </div>
 
+  <!-- MAIN SECTION -->
   <section class="section">
     <div class="container">
 
-      <!-- Booking Steps -->
+      <!-- Step Indicator -->
       <div class="booking-steps fade-in">
         <div class="booking-step active" id="step1indicator">
           <div class="step-circle">1</div>
@@ -206,194 +656,410 @@
       </div>
 
       <div class="booking-layout">
-        <!-- Left: Slots -->
+
+        <!-- LEFT: Slot list -->
         <div>
-          <!-- Date Tabs -->
+          <!-- Date picker -->
           <div class="fade-in">
-            <div style="margin-bottom:1rem;">
-              <h3 style="font-family:var(--font-primary);font-size:1.1rem;font-weight:700;margin-bottom:0.25rem;">Select Date</h3>
-              <p style="font-size:0.85rem;color:var(--gray-400);">Showing availability for the next 7 days</p>
+            <div style="margin-bottom:0.85rem;">
+              <h3 style="font-family:var(--font-primary);font-size:1.05rem;font-weight:700;margin-bottom:0.2rem;">Select
+                Date</h3>
+              <p style="font-size:0.82rem;color:var(--gray-400);">Availability shown for the next 7 days</p>
             </div>
-            <div class="date-tabs" id="dateTabs">
-              <!-- rendered by JS -->
-            </div>
+            <div class="date-tabs" id="dateTabs"></div>
           </div>
 
-          <!-- Format filters -->
+          <!-- Format filter -->
           <div class="fade-in">
-            <div style="margin-bottom:0.75rem;">
-              <h3 style="font-family:var(--font-primary);font-size:1rem;font-weight:700;">Game Format</h3>
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:0.75rem;">
+              <h3 style="font-family:var(--font-primary);font-size:0.95rem;font-weight:700;color:var(--gray-700);">Match
+                Format</h3>
             </div>
             <div class="size-pills">
-              <div class="size-pill active" onclick="setFormat(this,'11v11')">11 v 11</div>
-              <div class="size-pill" onclick="setFormat(this,'7v7')">7 v 7</div>
-              <div class="size-pill" onclick="setFormat(this,'5v5')">5 v 5</div>
+              <div class="size-pill active" onclick="setFormat(this,'Box Cricket 6s')">Box Cricket 6s</div>
+              <div class="size-pill" onclick="setFormat(this,'Box Cricket 11s')">Box Cricket 11s</div>
+              <div class="size-pill" onclick="setFormat(this,'Tape Ball')">Tape Ball</div>
+              <div class="size-pill" onclick="setFormat(this,'Practice Only')">Practice Only</div>
             </div>
           </div>
 
-          <!-- Slot Groups -->
-          <div id="slotGroups" class="fade-in">
-            <!-- Rendered by JS -->
-          </div>
+          <!-- Slot list -->
+          <div id="slotGroups" class="fade-in"></div>
         </div>
 
-        <!-- Right: Booking Summary Panel -->
+        <!-- RIGHT: Booking Panel -->
         <div>
           <div class="booking-panel fade-in-right">
-            <h3>Booking Summary</h3>
-            <p class="subtitle">Select a slot to get started</p>
-
-            <div class="selected-slot-display" id="selectedSlotDisplay">
-              <div style="font-size:0.75rem;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:var(--green-700);margin-bottom:0.75rem;">Selected Slot</div>
-              <div style="font-family:var(--font-primary);font-size:1.3rem;font-weight:800;color:var(--gray-800);" id="summaryTime">-</div>
-              <div style="font-size:0.82rem;color:var(--gray-400);margin-bottom:0.75rem;" id="summaryDate">-</div>
-              <div style="display:flex;justify-content:space-between;align-items:center;padding-top:0.75rem;border-top:1px solid var(--green-200);">
-                <span style="font-size:0.88rem;color:var(--gray-600);">Price</span>
-                <span style="font-family:var(--font-primary);font-size:1.2rem;font-weight:900;color:var(--accent-dark);" id="summaryPrice">-</span>
-              </div>
+            <div class="panel-header">
+              <h3>Booking Summary</h3>
+              <p>Review and confirm your slot</p>
             </div>
+            <div class="panel-body">
 
-            <div id="paymentSection" style="display:none;">
-              <div style="font-size:0.85rem;font-weight:700;color:var(--gray-700);margin-bottom:0.75rem;">Payment Method</div>
-              <div class="payment-options">
-                <div class="payment-option selected" onclick="selectPayment(this)" data-method="Credit Card">
-                  <span class="payment-icon">💳</span> Credit Card
-                </div>
-                <div class="payment-option" onclick="selectPayment(this)" data-method="UPI">
-                  <span class="payment-icon">📱</span> UPI
-                </div>
-                <div class="payment-option" onclick="selectPayment(this)" data-method="Net Banking">
-                  <span class="payment-icon">🏦</span> Net Banking
-                </div>
-                <div class="payment-option" onclick="selectPayment(this)" data-method="Pay at Venue">
-                  <span class="payment-icon">🤝</span> Pay at Venue
+              <!-- Empty state -->
+              <div id="panelEmpty">
+                <div class="panel-empty-state">
+                  <div class="panel-empty-icon">
+                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <rect x="3" y="4" width="18" height="18" rx="2" />
+                      <line x1="16" y1="2" x2="16" y2="6" />
+                      <line x1="8" y1="2" x2="8" y2="6" />
+                      <line x1="3" y1="10" x2="21" y2="10" />
+                    </svg>
+                  </div>
+                  <h4>No Slot Selected</h4>
+                  <p>Pick a time slot from the list to continue</p>
                 </div>
               </div>
-              <div style="background:var(--gray-50);border-radius:var(--radius-md);padding:1rem;margin-bottom:1.25rem;border:1px solid var(--gray-200);">
-                <div style="display:flex;justify-content:space-between;font-size:0.85rem;margin-bottom:0.4rem;"><span style="color:var(--gray-500)">Slot Rate</span><span id="priceBreakdown1" style="font-weight:600">-</span></div>
-                <div style="display:flex;justify-content:space-between;font-size:0.85rem;margin-bottom:0.4rem;"><span style="color:var(--gray-500)">Service Fee</span><span style="font-weight:600">$2.00</span></div>
-                <div style="height:1px;background:var(--gray-200);margin:0.6rem 0;"></div>
-                <div style="display:flex;justify-content:space-between;font-size:0.95rem;"><span style="font-weight:700;color:var(--gray-800)">Total</span><span id="priceBreakdownTotal" style="font-weight:800;color:var(--green-700);font-family:var(--font-primary);">-</span></div>
-              </div>
-            </div>
 
-            <button class="btn btn-primary" style="width:100%;font-size:1rem;padding:0.9rem;" id="bookBtn" disabled onclick="handleBooking()">
-              Select a Slot to Continue
-            </button>
-            <p style="font-size:0.75rem;color:var(--gray-400);text-align:center;margin-top:0.75rem;">
-              By clicking, you agree to our <a href="#" style="color:var(--accent)">Terms of Play</a> and <a href="#" style="color:var(--accent)">Refund Policy</a>.
-            </p>
+              <!-- Filled state -->
+              <div id="panelFilled" style="display:none;">
+
+                <!-- Slot summary -->
+                <div class="summary-card">
+                  <div class="summary-label">Selected Slot</div>
+                  <div class="summary-time" id="summaryTime">—</div>
+                  <div class="summary-date" id="summaryDate">—</div>
+                </div>
+
+                <!-- Duration -->
+                <div class="duration-selector">
+                  <div>
+                    <div class="dur-label">Duration</div>
+                    <div style="font-size:0.75rem;color:var(--gray-400);margin-top:0.1rem;">₹500 per additional hour
+                    </div>
+                  </div>
+                  <div style="display:flex;align-items:center;gap:0.75rem;">
+                    <span id="durDisplay"
+                      style="font-family:var(--font-primary);font-size:0.9rem;font-weight:700;color:var(--gray-800);">1
+                      hour</span>
+                    <div class="dur-controls">
+                      <button class="dur-btn" onclick="setDuration(-1)">
+                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                          stroke-width="3">
+                          <line x1="5" y1="12" x2="19" y2="12" />
+                        </svg>
+                      </button>
+                      <div class="dur-value" id="durValue">1h</div>
+                      <button class="dur-btn" onclick="setDuration(1)">
+                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                          stroke-width="3">
+                          <line x1="12" y1="5" x2="12" y2="19" />
+                          <line x1="5" y1="12" x2="19" y2="12" />
+                        </svg>
+                      </button>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Payment method -->
+                <div id="paymentSection">
+                  <div style="font-size:0.82rem;font-weight:700;color:var(--gray-600);margin-bottom:0.65rem;">Payment
+                    Method</div>
+                  <div class="payment-grid">
+                    <div class="payment-option" onclick="selectPayment(this)" data-method="UPI">
+                      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                        stroke-width="2">
+                        <rect x="5" y="2" width="14" height="20" rx="2" />
+                        <line x1="12" y1="18" x2="12" y2="18" />
+                      </svg>
+                      UPI
+                    </div>
+                    <div class="payment-option selected" onclick="selectPayment(this)" data-method="Credit Card">
+                      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                        stroke-width="2">
+                        <rect x="1" y="4" width="22" height="16" rx="2" />
+                        <line x1="1" y1="10" x2="23" y2="10" />
+                      </svg>
+                      Card
+                    </div>
+                    <div class="payment-option" onclick="selectPayment(this)" data-method="Net Banking">
+                      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                        stroke-width="2">
+                        <rect x="2" y="5" width="20" height="14" rx="1" />
+                        <polyline points="2 10 22 10" />
+                      </svg>
+                      Net Banking
+                    </div>
+                    <div class="payment-option" onclick="selectPayment(this)" data-method="Pay at Venue">
+                      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                        stroke-width="2">
+                        <path d="M17 9V7a5 5 0 0 0-10 0v2" />
+                        <rect x="3" y="9" width="18" height="13" rx="2" />
+                      </svg>
+                      Pay Later
+                    </div>
+                  </div>
+
+                  <!-- Price breakdown -->
+                  <div class="price-breakdown">
+                    <div class="breakdown-row">
+                      <span class="lbl">Slot Rate</span>
+                      <span class="val" id="priceBreakdown1">—</span>
+                    </div>
+                    <div class="breakdown-row">
+                      <span class="lbl">Platform Fee</span>
+                      <span class="val">₹0</span>
+                    </div>
+                    <div class="breakdown-divider"></div>
+                    <div class="breakdown-total">
+                      <span class="lbl">Total</span>
+                      <span class="val" id="priceBreakdownTotal">—</span>
+                    </div>
+                  </div>
+                </div>
+
+              </div><!-- /panelFilled -->
+
+              <!-- Confirm button — always visible -->
+              <div style="margin-top:0.5rem;">
+                <button class="btn btn-primary"
+                  style="width:100%;font-size:0.95rem;padding:0.9rem 1rem;justify-content:center;" id="bookBtn" disabled
+                  onclick="handleBooking()">
+                  Select a Slot First
+                </button>
+                <p
+                  style="font-size:0.72rem;color:var(--gray-400);text-align:center;margin-top:0.65rem;line-height:1.6;">
+                  By booking you agree to our <a href="#" style="color:var(--accent);">Terms</a> &amp; <a href="#"
+                    style="color:var(--accent);">Refund Policy</a>
+                </p>
+              </div>
+
+            </div><!-- /panel-body -->
           </div>
 
-          <!-- Why Book Here -->
-          <div style="background:var(--gray-50);border:1px solid var(--gray-200);border-radius:var(--radius-lg);padding:1.5rem;margin-top:1.5rem;" class="fade-in">
-            <div style="font-size:0.8rem;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:var(--gray-400);margin-bottom:1rem;">Why Elite Turf?</div>
-            <div style="display:flex;flex-direction:column;gap:0.7rem;">
-              <div style="display:flex;align-items:center;gap:0.6rem;font-size:0.85rem;color:var(--gray-600);">
-                <span style="color:var(--accent)">✓</span> Instant booking confirmation
-              </div>
-              <div style="display:flex;align-items:center;gap:0.6rem;font-size:0.85rem;color:var(--gray-600);">
-                <span style="color:var(--accent)">✓</span> Free cancellation up to 2 hours before
-              </div>
-              <div style="display:flex;align-items:center;gap:0.6rem;font-size:0.85rem;color:var(--gray-600);">
-                <span style="color:var(--accent)">✓</span> No hidden fees, ever
-              </div>
-              <div style="display:flex;align-items:center;gap:0.6rem;font-size:0.85rem;color:var(--gray-600);">
-                <span style="color:var(--accent)">✓</span> 4.9★ rated by 200+ teams
-              </div>
-            </div>
-          </div>
+
         </div>
       </div>
     </div>
   </section>
 
-  <!-- Pricing Section -->
+  <!-- MY BOOKINGS SECTION (Added) -->
+  <section class="section" id="myBookingsSection" style="display: none; padding-top: 0;">
+    <div class="container">
+      <div class="section-header fade-in">
+        <h2 class="section-title" style="font-size: 2rem;">My Bookings</h2>
+        <p class="section-subtitle">Manage and view your upcoming cricket matches.</p>
+      </div>
+      <div class="slots-grid" id="myBookingsList">
+        <!-- slots populated by JS -->
+      </div>
+    </div>
+  </section>
+
+  <!-- PRICING SECTION -->
   <section class="section bg-gray" id="pricing">
     <div class="container">
       <div class="section-header centered fade-in">
-        <div class="section-tag">💰 Transparent Pricing</div>
-        <h2 class="section-title">Simple, Fair Rates</h2>
-        <p class="section-subtitle">No membership required. Book any slot, any day.</p>
+        <div class="section-tag">Transparent Pricing</div>
+        <h2 class="section-title">Simple, Flat Rates</h2>
+        <p class="section-subtitle">₹500 per hour for any format, any time of day. No membership needed.</p>
       </div>
-      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:1.25rem;max-width:900px;margin:0 auto;" class="fade-in">
-        <div style="background:white;border:1px solid var(--gray-200);border-radius:var(--radius-lg);padding:1.75rem;text-align:center;">
-          <div style="font-size:1.5rem;margin-bottom:0.75rem;">🌅</div>
-          <div style="font-weight:700;font-size:0.9rem;margin-bottom:0.25rem;color:var(--gray-700);">Morning</div>
-          <div style="font-size:0.8rem;color:var(--gray-400);margin-bottom:1rem;">6 AM – 12 PM</div>
-          <div style="font-family:var(--font-primary);font-size:1.8rem;font-weight:900;color:var(--accent-dark);">$30<span style="font-size:0.9rem;font-weight:500;color:var(--gray-400)">/hr</span></div>
+      <div
+        style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:1.25rem;max-width:800px;margin:0 auto;"
+        class="fade-in">
+
+        <div
+          style="background:white;border:1px solid var(--gray-200);border-radius:var(--radius-lg);padding:2rem;text-align:center;">
+          <div
+            style="width:44px;height:44px;border-radius:var(--radius-md);background:var(--accent-glow);border:1px solid var(--green-200);display:flex;align-items:center;justify-content:center;margin:0 auto 1rem;">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2">
+              <circle cx="12" cy="12" r="5" />
+              <line x1="12" y1="2" x2="12" y2="4" />
+              <line x1="12" y1="20" x2="12" y2="22" />
+              <line x1="2" y1="12" x2="4" y2="12" />
+              <line x1="20" y1="12" x2="22" y2="12" />
+            </svg>
+          </div>
+          <div style="font-weight:700;font-size:0.9rem;margin-bottom:0.2rem;color:var(--gray-700);">Morning</div>
+          <div style="font-size:0.78rem;color:var(--gray-400);margin-bottom:1rem;">6 AM – 12 PM</div>
+          <div style="font-family:var(--font-primary);font-size:2rem;font-weight:900;color:var(--accent-dark);">
+            ₹500<span style="font-size:0.85rem;font-weight:500;color:var(--gray-400)">/hr</span></div>
         </div>
-        <div style="background:white;border:1px solid var(--gray-200);border-radius:var(--radius-lg);padding:1.75rem;text-align:center;">
-          <div style="font-size:1.5rem;margin-bottom:0.75rem;">☀️</div>
-          <div style="font-weight:700;font-size:0.9rem;margin-bottom:0.25rem;color:var(--gray-700);">Afternoon</div>
-          <div style="font-size:0.8rem;color:var(--gray-400);margin-bottom:1rem;">12 PM – 6 PM</div>
-          <div style="font-family:var(--font-primary);font-size:1.8rem;font-weight:900;color:var(--accent-dark);">$38<span style="font-size:0.9rem;font-weight:500;color:var(--gray-400)">/hr</span></div>
+
+        <div
+          style="background:white;border:1px solid var(--gray-200);border-radius:var(--radius-lg);padding:2rem;text-align:center;">
+          <div
+            style="width:44px;height:44px;border-radius:var(--radius-md);background:var(--accent-glow);border:1px solid var(--green-200);display:flex;align-items:center;justify-content:center;margin:0 auto 1rem;">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2">
+              <circle cx="12" cy="12" r="6" />
+              <line x1="12" y1="1" x2="12" y2="3" />
+              <line x1="12" y1="21" x2="12" y2="23" />
+              <line x1="1" y1="12" x2="3" y2="12" />
+              <line x1="21" y1="12" x2="23" y2="12" />
+            </svg>
+          </div>
+          <div style="font-weight:700;font-size:0.9rem;margin-bottom:0.2rem;color:var(--gray-700);">Afternoon</div>
+          <div style="font-size:0.78rem;color:var(--gray-400);margin-bottom:1rem;">12 PM – 5 PM</div>
+          <div style="font-family:var(--font-primary);font-size:2rem;font-weight:900;color:var(--accent-dark);">
+            ₹500<span style="font-size:0.85rem;font-weight:500;color:var(--gray-400)">/hr</span></div>
         </div>
-        <div style="background:linear-gradient(135deg,var(--green-50),white);border:1.5px solid var(--green-200);border-radius:var(--radius-lg);padding:1.75rem;text-align:center;position:relative;">
-          <div style="position:absolute;top:-10px;left:50%;transform:translateX(-50%);background:var(--accent);color:white;font-size:0.7rem;font-weight:700;padding:0.25rem 0.75rem;border-radius:var(--radius-full);letter-spacing:0.06em;">POPULAR</div>
-          <div style="font-size:1.5rem;margin-bottom:0.75rem;">🌆</div>
-          <div style="font-weight:700;font-size:0.9rem;margin-bottom:0.25rem;color:var(--gray-700);">Evening</div>
-          <div style="font-size:0.8rem;color:var(--gray-400);margin-bottom:1rem;">6 PM – 11 PM</div>
-          <div style="font-family:var(--font-primary);font-size:1.8rem;font-weight:900;color:var(--accent-dark);">$45<span style="font-size:0.9rem;font-weight:500;color:var(--gray-400)">/hr</span></div>
+
+        <div
+          style="background:linear-gradient(135deg,var(--green-50),white);border:1.5px solid var(--green-200);border-radius:var(--radius-lg);padding:2rem;text-align:center;position:relative;">
+          <div
+            style="position:absolute;top:-10px;left:50%;transform:translateX(-50%);background:var(--accent);color:white;font-size:0.68rem;font-weight:700;padding:0.22rem 0.72rem;border-radius:var(--radius-full);">
+            POPULAR</div>
+          <div
+            style="width:44px;height:44px;border-radius:var(--radius-md);background:var(--accent-glow);border:1px solid var(--green-200);display:flex;align-items:center;justify-content:center;margin:0 auto 1rem;">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2">
+              <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
+            </svg>
+          </div>
+          <div style="font-weight:700;font-size:0.9rem;margin-bottom:0.2rem;color:var(--gray-700);">Evening</div>
+          <div style="font-size:0.78rem;color:var(--gray-400);margin-bottom:1rem;">5 PM – 10 PM</div>
+          <div style="font-family:var(--font-primary);font-size:2rem;font-weight:900;color:var(--accent-dark);">
+            ₹500<span style="font-size:0.85rem;font-weight:500;color:var(--gray-400)">/hr</span></div>
         </div>
-        <div style="background:white;border:1px solid var(--gray-200);border-radius:var(--radius-lg);padding:1.75rem;text-align:center;">
-          <div style="font-size:1.5rem;margin-bottom:0.75rem;">🏆</div>
-          <div style="font-weight:700;font-size:0.9rem;margin-bottom:0.25rem;color:var(--gray-700);">League Block</div>
-          <div style="font-size:0.8rem;color:var(--gray-400);margin-bottom:1rem;">4+ hours</div>
-          <div style="font-family:var(--font-primary);font-size:1.8rem;font-weight:900;color:var(--accent-dark);">$28<span style="font-size:0.9rem;font-weight:500;color:var(--gray-400)">/hr</span></div>
+
+        <div
+          style="background:white;border:1px solid var(--gray-200);border-radius:var(--radius-lg);padding:2rem;text-align:center;">
+          <div
+            style="width:44px;height:44px;border-radius:var(--radius-md);background:var(--accent-glow);border:1px solid var(--green-200);display:flex;align-items:center;justify-content:center;margin:0 auto 1rem;">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2">
+              <polygon
+                points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
+            </svg>
+          </div>
+          <div style="font-weight:700;font-size:0.9rem;margin-bottom:0.2rem;color:var(--gray-700);">Tournament Block
+          </div>
+          <div style="font-size:0.78rem;color:var(--gray-400);margin-bottom:1rem;">4+ hours</div>
+          <div style="font-family:var(--font-primary);font-size:2rem;font-weight:900;color:var(--accent-dark);">
+            ₹450<span style="font-size:0.85rem;font-weight:500;color:var(--gray-400)">/hr</span></div>
         </div>
+
       </div>
     </div>
   </section>
 
+  <!-- FOOTER -->
   <footer class="footer">
     <div class="container">
       <div class="footer-grid">
         <div class="footer-brand">
-          <div class="footer-logo"><span class="logo-icon">⚽</span> Elite<span>Turf</span> Arena</div>
-          <p>World-class football facilities with seamless online booking.</p>
-          <div class="footer-social" style="margin-top:1.5rem;"><div class="social-btn">𝕏</div><div class="social-btn">in</div><div class="social-btn">📷</div></div>
+          <div class="footer-logo">
+            <span class="logo-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white"
+                stroke-width="2.5">
+                <path d="M3 17l4-8 4 4 4-6 4 10" />
+              </svg></span>
+            Penalty<span>Box</span> Turf
+          </div>
+          <p>Premium cricket turf with seamless online booking. Your game, your timing.</p>
+          <div class="footer-social" style="margin-top:1.5rem;">
+            <div class="social-btn">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path
+                  d="M22 4s-.7 2.1-2 3.4c1.6 10-9.4 17.3-18 11.6 2.2.1 4.4-.6 6-2C3 15.5.5 9.6 3 5c2.2 2.7 5.5 4.3 9 4.5-.3-1.4.1-2.7 1-3.5C15 4 22 4 22 4z" />
+              </svg>
+            </div>
+            <div class="social-btn">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <rect x="2" y="2" width="20" height="20" rx="5" />
+                <circle cx="12" cy="12" r="4" />
+                <circle cx="17.5" cy="6.5" r="0.5" fill="currentColor" />
+              </svg>
+            </div>
+            <div class="social-btn">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z" />
+                <rect x="2" y="9" width="4" height="12" />
+                <circle cx="4" cy="4" r="2" />
+              </svg>
+            </div>
+          </div>
         </div>
-        <div class="footer-col"><h4>Facility</h4><ul><li><a href="turf.html">Turf Details</a></li><li><a href="gallery.html">Gallery</a></li></ul></div>
-        <div class="footer-col"><h4>Booking</h4><ul><li><a href="booking.html">Book a Slot</a></li><li><a href="#">Cancel Booking</a></li></ul></div>
-        <div class="footer-col"><h4>Company</h4><ul><li><a href="#">Our Story</a></li><li><a href="reviews.html">Reviews</a></li></ul></div>
+        <div class="footer-col">
+          <h4>Facility</h4>
+          <ul>
+            <li><a href="turf.html">Turf Details</a></li>
+            <li><a href="gallery.html">Gallery</a></li>
+            <li><a href="turf.html#amenities">Amenities</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h4>Booking</h4>
+          <ul>
+            <li><a href="booking.html">Book Slot</a></li>
+            <li><a href="#pricing">Pricing</a></li>
+            <li><a href="#">Cancel Booking</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h4>Company</h4>
+          <ul>
+            <li><a href="#">Our Story</a></li>
+            <li><a href="reviews.html">Reviews</a></li>
+            <li><a href="#">Contact</a></li>
+          </ul>
+        </div>
       </div>
       <div class="footer-divider"></div>
       <div class="footer-bottom">
-        <p>© 2024 Elite Turf Arena. All rights reserved.</p>
+        <p>© 2024 Penalty Box Turf. All rights reserved.</p>
       </div>
     </div>
   </footer>
 
-  <!-- Confirmation Modal -->
+  <!-- CONFIRMATION MODAL -->
   <div class="modal-overlay" id="confirmModal">
     <div class="modal">
-      <div class="modal-icon">⚡</div>
+      <div class="modal-icon" style="font-size:1.4rem;">
+        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="var(--green-700)" stroke-width="2">
+          <path d="M3 17l4-8 4 4 4-6 4 10" />
+        </svg>
+      </div>
       <h2>Confirm Your Booking</h2>
-      <p>You're about to reserve this slot. Please review the details below.</p>
-      <div class="modal-detail" id="modalDetails">
-        <div class="modal-detail-row"><span class="label">Slot</span><span class="value" id="modalSlotTime">-</span></div>
-        <div class="modal-detail-row"><span class="label">Date</span><span class="value" id="modalSlotDate">-</span></div>
-        <div class="modal-detail-row"><span class="label">Format</span><span class="value" id="modalSlotFormat">11 v 11</span></div>
-        <div class="modal-detail-row"><span class="label">Payment</span><span class="value" id="modalPayment">-</span></div>
-        <div class="modal-detail-row"><span class="label">Total</span><span class="value" id="modalTotal" style="color:var(--accent);">-</span></div>
+      <p>Please review your slot details before confirming.</p>
+      <div class="modal-detail">
+        <div class="modal-detail-row"><span class="label">Slot</span><span class="value" id="modalSlotTime">—</span>
+        </div>
+        <div class="modal-detail-row"><span class="label">Date</span><span class="value" id="modalSlotDate">—</span>
+        </div>
+        <div class="modal-detail-row"><span class="label">Duration</span><span class="value" id="modalDuration">—</span>
+        </div>
+        <div class="modal-detail-row"><span class="label">Format</span><span class="value" id="modalSlotFormat">Box
+            Cricket 6s</span></div>
+        <div class="modal-detail-row"><span class="label">Payment</span><span class="value" id="modalPayment">—</span>
+        </div>
+        <div class="modal-detail-row"><span class="label">Total</span><span class="value" id="modalTotal"
+            style="color:var(--accent-dark);">—</span></div>
       </div>
       <div class="modal-actions">
-        <button class="btn btn-outline" onclick="closeModal()">Cancel</button>
-        <button class="btn btn-primary" onclick="confirmBooking()" id="confirmBtn">Confirm Booking ✓</button>
+        <button class="btn btn-outline" onclick="closeModal()">Go Back</button>
+        <button class="btn btn-primary" onclick="confirmBooking()" id="confirmBtn">Confirm Booking</button>
       </div>
     </div>
   </div>
 
-  <!-- Toast -->
+  <!-- TOAST -->
   <div class="toast" id="toast">
-    <div class="toast-icon">✓</div>
+    <div class="toast-icon">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3">
+        <polyline points="20 6 9 17 4 12" />
+      </svg>
+    </div>
     <div>
       <div class="toast-title">Booking Confirmed!</div>
       <div class="toast-desc" id="toastDesc">Your slot has been reserved.</div>
     </div>
   </div>
 
+  <script>
+    // Duration value display update
+    function setDuration(delta) {
+      if (typeof window._setDuration === 'function') window._setDuration(delta);
+    }
+  </script>
   <script src="app.js"></script>
+  <script>
+    // Wire duration into global scope after app.js loads
+    window._setDuration = function (delta) {
+      selectedDuration = Math.max(1, Math.min(4, selectedDuration + delta));
+      const dv = document.getElementById('durValue');
+      if (dv) dv.textContent = selectedDuration + 'h';
+      updatePanel();
+    };
+  </script>
 </body>
+
 </html>

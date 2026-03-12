@@ -714,7 +714,6 @@ h1, h2, h3, h4, h5, h6 {
   overflow: hidden;
   border-radius: var(--radius-lg);
   cursor: pointer;
-  group: true;
 }
 
 .gallery-item:nth-child(1) { grid-column: span 8; grid-row: span 2; height: 480px; }
