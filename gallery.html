@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Gallery | Elite Turf Arena</title>
+  <meta name="description" content="Explore our premium football turf facility through our image gallery. See the real pitch, locker rooms, and amenities." />
+  <link rel="stylesheet" href="styles.css" />
+  <style>
+    .gallery-page-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 1.25rem;
+    }
+    .gallery-page-item {
+      position: relative;
+      overflow: hidden;
+      border-radius: var(--radius-lg);
+      cursor: pointer;
+      background: var(--gray-100);
+      aspect-ratio: 4/3;
+    }
+    .gallery-page-item img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .gallery-page-item:hover img { transform: scale(1.07); }
+    .gallery-page-item .overlay {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(to top, rgba(0,0,0,0.6), transparent 50%);
+      opacity: 0;
+      transition: var(--transition);
+      display: flex;
+      align-items: flex-end;
+      padding: 1.25rem;
+      flex-direction: column;
+      justify-content: flex-end;
+    }
+    .gallery-page-item:hover .overlay { opacity: 1; }
+    .gallery-caption {
+      color: white;
+      font-weight: 700;
+      font-size: 0.9rem;
+    }
+    .gallery-expand {
+      position: absolute;
+      top: 1rem;
+      right: 1rem;
+      width: 36px;
+      height: 36px;
+      background: rgba(255,255,255,0.15);
+      backdrop-filter: blur(8px);
+      border: 1px solid rgba(255,255,255,0.25);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-size: 0.85rem;
+      opacity: 0;
+      transition: var(--transition);
+    }
+    .gallery-page-item:hover .gallery-expand { opacity: 1; }
+    .gallery-featured {
+      grid-column: span 2;
+      aspect-ratio: 16/7;
+    }
+    .filter-tabs {
+      display: flex;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+      margin-bottom: 2.5rem;
+    }
+    .filter-tab {
+      padding: 0.5rem 1.1rem;
+      border: 1.5px solid var(--gray-200);
+      border-radius: var(--radius-full);
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--gray-500);
+      cursor: pointer;
+      transition: var(--transition);
+      background: white;
+    }
+    .filter-tab.active {
+      border-color: var(--accent);
+      background: var(--green-50);
+      color: var(--green-800);
+    }
+    @media (max-width: 768px) {
+      .gallery-featured { grid-column: span 1; aspect-ratio: 4/3; }
+      .gallery-page-grid { grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); }
+    }
+    @media (max-width: 480px) {
+      .gallery-page-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body class="page-wrapper">
+
+  <nav class="navbar scrolled" id="navbar">
+    <div class="navbar-inner">
+      <a href="index.html" class="navbar-logo">
+        <span class="logo-icon">⚽</span>Elite<span>Turf</span>
+      </a>
+      <ul class="navbar-nav">
+        <li><a href="index.html" class="nav-link">Home</a></li>
+        <li><a href="turf.html" class="nav-link">Turf Details</a></li>
+        <li><a href="booking.html" class="nav-link">Booking</a></li>
+        <li><a href="gallery.html" class="nav-link active">Gallery</a></li>
+        <li><a href="reviews.html" class="nav-link">Reviews</a></li>
+      </ul>
+      <div class="navbar-cta">
+        <a href="booking.html" class="btn btn-primary btn-sm">Book Your Slot</a>
+      </div>
+      <div class="nav-toggle" id="navToggle"><span></span><span></span><span></span></div>
+    </div>
+  </nav>
+
+  <div class="mobile-menu" id="mobileMenu">
+    <div class="mobile-menu-header">
+      <a href="index.html" class="navbar-logo" style="color:#1f2937">
+        <span class="logo-icon">⚽</span>
+        Elite<span style="color:var(--accent)">Turf</span>
+      </a>
+      <button id="mobileMenuClose" style="background:none;border:none;font-size:1.5rem;cursor:pointer;color:#374151;">✕</button>
+    </div>
+    <nav class="mobile-menu-links">
+      <a href="index.html">Home</a><a href="turf.html">Turf Details</a><a href="booking.html">Booking</a><a href="gallery.html">Gallery</a><a href="reviews.html">Reviews</a>
+    </nav>
+    <a href="booking.html" class="btn btn-primary" style="margin-top:2rem;">Book Your Slot →</a>
+  </div>
+
+  <div class="page-header">
+    <div class="container page-header-content">
+      <div class="breadcrumb">
+        <a href="index.html">Home</a><span>›</span><span>Gallery</span>
+      </div>
+      <h1>Gallery</h1>
+      <p>See the pitch, the facilities, and the experience that sets us apart.</p>
+    </div>
+  </div>
+
+  <section class="section">
+    <div class="container">
+      <div class="filter-tabs fade-in">
+        <div class="filter-tab active" onclick="filterGallery(this, 'all')">All Photos</div>
+        <div class="filter-tab" onclick="filterGallery(this,'pitch')">The Pitch</div>
+        <div class="filter-tab" onclick="filterGallery(this,'facilities')">Facilities</div>
+        <div class="filter-tab" onclick="filterGallery(this,'action')">In Action</div>
+      </div>
+
+      <div class="gallery-page-grid" id="galleryGrid">
+
+        <div class="gallery-page-item gallery-featured fade-in" data-category="pitch" onclick="openLightbox('images/hero_aerial.png')">
+          <img src="images/hero_aerial.png" alt="Aerial view of Elite Turf Arena" loading="lazy" />
+          <div class="overlay">
+            <div class="gallery-expand">⤢</div>
+            <div class="gallery-caption">Aerial View — Full Stadium</div>
+          </div>
+        </div>
+
+        <div class="gallery-page-item fade-in" data-category="pitch" onclick="openLightbox('images/turf_closeup.png')">
+          <img src="images/turf_closeup.png" alt="FIFA quality turf closeup" loading="lazy" />
+          <div class="overlay">
+            <div class="gallery-expand">⤢</div>
+            <div class="gallery-caption">FIFA Quality Turf Surface</div>
+          </div>
+        </div>
+
+        <div class="gallery-page-item fade-in" data-category="pitch" onclick="openLightbox('images/turf_panoramic.png')">
+          <img src="images/turf_panoramic.png" alt="Full pitch panoramic" loading="lazy" />
+          <div class="overlay">
+            <div class="gallery-expand">⤢</div>
+            <div class="gallery-caption">Full Pitch Panoramic</div>
+          </div>
+        </div>
+
+        <div class="gallery-page-item fade-in" data-category="facilities" onclick="openLightbox('images/locker_room.png')">
+          <img src="images/locker_room.png" alt="Premium locker rooms" loading="lazy" />
+          <div class="overlay">
+            <div class="gallery-expand">⤢</div>
+            <div class="gallery-caption">Premium Locker Rooms</div>
+          </div>
+        </div>
+
+        <div class="gallery-page-item fade-in" data-category="facilities" onclick="openLightbox('images/facility_wide.png')">
+          <img src="images/facility_wide.png" alt="Facility exterior" loading="lazy" />
+          <div class="overlay">
+            <div class="gallery-expand">⤢</div>
+            <div class="gallery-caption">Facility Exterior & Complex</div>
+          </div>
+        </div>
+
+        <div class="gallery-page-item fade-in" data-category="action" onclick="openLightbox('images/night_action.png')">
+          <img src="images/night_action.png" alt="Night match in action" loading="lazy" />
+          <div class="overlay">
+            <div class="gallery-expand">⤢</div>
+            <div class="gallery-caption">Night Match Under Floodlights</div>
+          </div>
+        </div>
+
+        <!-- Duplicate entries for a fuller grid look using same images with different crops represented by alt -->
+        <div class="gallery-page-item fade-in" data-category="pitch" onclick="openLightbox('images/turf_panoramic.png')">
+          <img src="images/turf_panoramic.png" alt="City skyline from pitch" loading="lazy" style="object-position:center bottom;" />
+          <div class="overlay">
+            <div class="gallery-expand">⤢</div>
+            <div class="gallery-caption">City Views from the Touchline</div>
+          </div>
+        </div>
+
+        <div class="gallery-page-item fade-in" data-category="action" onclick="openLightbox('images/night_action.png')">
+          <img src="images/night_action.png" alt="LED floodlit game" loading="lazy" style="object-position:left center;" />
+          <div class="overlay">
+            <div class="gallery-expand">⤢</div>
+            <div class="gallery-caption">500 LUX LED Floodlights</div>
+          </div>
+        </div>
+
+        <div class="gallery-page-item fade-in" data-category="facilities" onclick="openLightbox('images/locker_room.png')">
+          <img src="images/locker_room.png" alt="Hot showers" loading="lazy" style="object-position:right center;" />
+          <div class="overlay">
+            <div class="gallery-expand">⤢</div>
+            <div class="gallery-caption">Hot Showers & Recovery Area</div>
+          </div>
+        </div>
+
+        <div class="gallery-page-item fade-in" data-category="pitch" onclick="openLightbox('images/turf_closeup.png')">
+          <img src="images/turf_closeup.png" alt="Corner kick area" loading="lazy" style="object-position:right top;" />
+          <div class="overlay">
+            <div class="gallery-expand">⤢</div>
+            <div class="gallery-caption">Precision Marked Corner Lines</div>
+          </div>
+        </div>
+
+        <div class="gallery-page-item fade-in gallery-featured" data-category="facilities" onclick="openLightbox('images/facility_wide.png')">
+          <img src="images/facility_wide.png" alt="Complex overhead" loading="lazy" style="object-position:center top;" />
+          <div class="overlay">
+            <div class="gallery-expand">⤢</div>
+            <div class="gallery-caption">Full Complex — Aerial Overview</div>
+          </div>
+        </div>
+
+      </div>
+
+      <div style="text-align:center;margin-top:3rem;" class="fade-in">
+        <a href="booking.html" class="btn btn-primary btn-lg">Book Your Game Now →</a>
+      </div>
+    </div>
+  </section>
+
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-brand">
+          <div class="footer-logo"><span class="logo-icon">⚽</span> Elite<span>Turf</span> Arena</div>
+          <p>World-class football facilities with seamless online booking.</p>
+          <div class="footer-social" style="margin-top:1.5rem;"><div class="social-btn">𝕏</div><div class="social-btn">in</div><div class="social-btn">📷</div></div>
+        </div>
+        <div class="footer-col"><h4>Facility</h4><ul><li><a href="turf.html">Turf Details</a></li><li><a href="gallery.html">Gallery</a></li></ul></div>
+        <div class="footer-col"><h4>Booking</h4><ul><li><a href="booking.html">Book a Slot</a></li><li><a href="#">Cancel Booking</a></li></ul></div>
+        <div class="footer-col"><h4>Company</h4><ul><li><a href="#">Our Story</a></li><li><a href="reviews.html">Reviews</a></li></ul></div>
+      </div>
+      <div class="footer-divider"></div>
+      <div class="footer-bottom">
+        <p>© 2024 Elite Turf Arena. All rights reserved.</p>
+      </div>
+    </div>
+  </footer>
+
+  <div class="lightbox" id="lightbox" onclick="closeLightbox()">
+    <div class="lightbox-content" onclick="event.stopPropagation()">
+      <button class="lightbox-close" onclick="closeLightbox()">✕</button>
+      <img id="lightboxImg" src="" alt="" />
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+  <script>
+    function filterGallery(el, cat) {
+      document.querySelectorAll('.filter-tab').forEach(t => t.classList.remove('active'));
+      el.classList.add('active');
+      document.querySelectorAll('.gallery-page-item').forEach(item => {
+        if (cat === 'all' || item.dataset.category === cat) {
+          item.style.display = '';
+          setTimeout(() => { item.style.opacity = '1'; item.style.transform = 'scale(1)'; }, 10);
+        } else {
+          item.style.opacity = '0';
+          item.style.transform = 'scale(0.96)';
+          setTimeout(() => { item.style.display = 'none'; }, 300);
+        }
+      });
+    }
+  </script>
+</body>
+</html>

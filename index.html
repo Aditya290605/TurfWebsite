@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Elite Turf Arena | Premium Football Booking</title>
+  <meta name="description" content="Experience world-class football facilities with easy online booking. FIFA-quality synthetic turf, LED floodlights, and premium amenities." />
+  <link rel="stylesheet" href="styles.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+</head>
+<body>
+
+  <!-- ===== NAVBAR ===== -->
+  <nav class="navbar navbar-hero" id="navbar">
+    <div class="navbar-inner">
+      <a href="index.html" class="navbar-logo">
+        <span class="logo-icon">⚽</span>
+        Elite<span>Turf</span>
+      </a>
+      <ul class="navbar-nav">
+        <li><a href="index.html" class="nav-link active" data-page="home">Home</a></li>
+        <li><a href="turf.html" class="nav-link" data-page="turf">Turf Details</a></li>
+        <li><a href="booking.html" class="nav-link" data-page="booking">Booking</a></li>
+        <li><a href="gallery.html" class="nav-link" data-page="gallery">Gallery</a></li>
+        <li><a href="reviews.html" class="nav-link" data-page="reviews">Reviews</a></li>
+      </ul>
+      <div class="navbar-cta">
+        <a href="booking.html" class="btn btn-primary btn-sm">Book Your Slot</a>
+      </div>
+      <div class="nav-toggle" id="navToggle">
+        <span></span><span></span><span></span>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Mobile Menu -->
+  <div class="mobile-menu" id="mobileMenu">
+    <div class="mobile-menu-header">
+      <a href="index.html" class="navbar-logo" style="color:#1f2937">
+        <span class="logo-icon">⚽</span>
+        Elite<span style="color:var(--accent)">Turf</span>
+      </a>
+      <button id="mobileMenuClose" style="background:none;border:none;font-size:1.5rem;cursor:pointer;color:#374151;">✕</button>
+    </div>
+    <nav class="mobile-menu-links">
+      <a href="index.html">Home</a>
+      <a href="turf.html">Turf Details</a>
+      <a href="booking.html">Booking</a>
+      <a href="gallery.html">Gallery</a>
+      <a href="reviews.html">Reviews</a>
+    </nav>
+    <a href="booking.html" class="btn btn-primary" style="margin-top:2rem;">Book Your Slot →</a>
+  </div>
+
+  <!-- ===== HERO ===== -->
+  <section class="hero" id="hero">
+    <div class="hero-bg" id="heroBg"></div>
+    <div class="hero-overlay"></div>
+    <div class="hero-grain"></div>
+    <div class="hero-content">
+      <div class="container">
+        <div class="hero-badge">
+          <span class="dot"></span>
+          Now Open — Downtown City
+        </div>
+        <h1 class="hero-title">
+          The Perfect Pitch<br>for Your <span class="highlight">Game</span>
+        </h1>
+        <p class="hero-description">
+          Experience world-class football facilities with seamless online booking. FIFA-quality surface. LED floodlights. Zero hassle.
+        </p>
+        <div class="hero-actions">
+          <a href="booking.html" class="btn btn-primary btn-lg" id="heroBookBtn">
+            ⚡ Book Your Slot
+          </a>
+          <a href="turf.html" class="btn btn-ghost btn-lg">
+            Explore Turf →
+          </a>
+        </div>
+        <div class="hero-stats">
+          <div class="hero-stat">
+            <div class="hero-stat-number">4.9★</div>
+            <div class="hero-stat-label">Average Rating</div>
+          </div>
+          <div class="hero-stat">
+            <div class="hero-stat-number">200+</div>
+            <div class="hero-stat-label">Teams Served</div>
+          </div>
+          <div class="hero-stat">
+            <div class="hero-stat-number">FIFA</div>
+            <div class="hero-stat-label">Quality Certified</div>
+          </div>
+          <div class="hero-stat">
+            <div class="hero-stat-number">24/7</div>
+            <div class="hero-stat-label">Facility Access</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="hero-scroll" onclick="document.getElementById('statsSection').scrollIntoView({behavior:'smooth'})">
+      <div class="scroll-indicator"></div>
+      scroll
+    </div>
+  </section>
+
+  <!-- ===== STATS BAND ===== -->
+  <div class="stats-band" id="statsSection">
+    <div class="container">
+      <div class="stats-band-inner">
+        <div class="stat-item">
+          <div class="stat-icon">🏟️</div>
+          <div class="stat-content">
+            <div class="stat-value">FIFA Pro</div>
+            <div class="stat-desc">Quality Surface</div>
+          </div>
+        </div>
+        <div class="stat-divider"></div>
+        <div class="stat-item">
+          <div class="stat-icon">💡</div>
+          <div class="stat-content">
+            <div class="stat-value">500 LUX</div>
+            <div class="stat-desc">LED Floodlights</div>
+          </div>
+        </div>
+        <div class="stat-divider"></div>
+        <div class="stat-item">
+          <div class="stat-icon">🅿️</div>
+          <div class="stat-content">
+            <div class="stat-value">50 Cars</div>
+            <div class="stat-desc">Private Parking</div>
+          </div>
+        </div>
+        <div class="stat-divider"></div>
+        <div class="stat-item">
+          <div class="stat-icon">🚿</div>
+          <div class="stat-content">
+            <div class="stat-value">Premium</div>
+            <div class="stat-desc">Locker Rooms</div>
+          </div>
+        </div>
+        <div class="stat-divider"></div>
+        <div class="stat-item">
+          <div class="stat-icon">📍</div>
+          <div class="stat-content">
+            <div class="stat-value">Downtown</div>
+            <div class="stat-desc">Central Location</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== GALLERY PREVIEW ===== -->
+  <section class="section">
+    <div class="container">
+      <div class="section-header fade-in">
+        <div class="section-tag">📸 Our Facility</div>
+        <h2 class="section-title">Unmatched Quality</h2>
+        <p class="section-subtitle">View our state-of-the-art facilities designed for elite performance and premium comfort.</p>
+      </div>
+      <div class="gallery-grid fade-in">
+        <div class="gallery-item" onclick="window.location.href='gallery.html'">
+          <img src="images/hero_aerial.png" alt="Aerial view of Elite Turf Arena" loading="lazy" />
+          <div class="gallery-overlay">
+            <div class="gallery-overlay-icon">🔍</div>
+          </div>
+        </div>
+        <div class="gallery-item" onclick="window.location.href='gallery.html'">
+          <img src="images/turf_closeup.png" alt="FIFA quality turf closeup" loading="lazy" />
+          <div class="gallery-overlay"><div class="gallery-overlay-icon">🔍</div></div>
+        </div>
+        <div class="gallery-item" onclick="window.location.href='gallery.html'">
+          <img src="images/turf_panoramic.png" alt="Full pitch panoramic" loading="lazy" />
+          <div class="gallery-overlay"><div class="gallery-overlay-icon">🔍</div></div>
+        </div>
+        <div class="gallery-item" onclick="window.location.href='gallery.html'">
+          <img src="images/locker_room.png" alt="Premium locker rooms" loading="lazy" />
+          <div class="gallery-overlay"><div class="gallery-overlay-icon">🔍</div></div>
+        </div>
+        <div class="gallery-item" onclick="window.location.href='gallery.html'">
+          <img src="images/facility_wide.png" alt="Facility exterior" loading="lazy" />
+          <div class="gallery-overlay"><div class="gallery-overlay-icon">🔍</div></div>
+        </div>
+        <div class="gallery-item" onclick="window.location.href='gallery.html'">
+          <img src="images/night_action.png" alt="Night match action" loading="lazy" />
+          <div class="gallery-overlay"><div class="gallery-overlay-icon">🔍</div></div>
+        </div>
+      </div>
+      <div class="flex items-center" style="justify-content:center;margin-top:2.5rem;" class="fade-in">
+        <a href="gallery.html" class="btn btn-outline">View Full Gallery →</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== FEATURES ===== -->
+  <section class="section bg-gray">
+    <div class="container">
+      <div class="section-header centered fade-in">
+        <div class="section-tag">✨ Elite Amenities</div>
+        <h2 class="section-title">More Than Just a Pitch</h2>
+        <p class="section-subtitle">Every booking includes access to our premium facilities designed for serious athletes.</p>
+      </div>
+      <div class="features-grid">
+        <div class="feature-card fade-in" style="--stagger-index:0" data-stagger>
+          <div class="feature-icon">🏟️</div>
+          <h3>FIFA Quality Turf</h3>
+          <p>Synthetic monofilament grass used by professional clubs globally. Perfect bounce and traction every time.</p>
+        </div>
+        <div class="feature-card fade-in" style="--stagger-index:1" data-stagger>
+          <div class="feature-icon">💡</div>
+          <h3>LED Floodlights</h3>
+          <p>Shadow-free 500 LUX lighting for perfect visibility during night matches and training sessions.</p>
+        </div>
+        <div class="feature-card fade-in" style="--stagger-index:2" data-stagger>
+          <div class="feature-icon">🅿️</div>
+          <h3>Private Parking</h3>
+          <p>Secured parking space for up to 50 vehicles directly adjacent to the field. No more street parking.</p>
+        </div>
+        <div class="feature-card fade-in" style="--stagger-index:3" data-stagger>
+          <div class="feature-icon">🚿</div>
+          <h3>Locker Rooms</h3>
+          <p>Clean, temperature-controlled changing rooms with hot showers and secure storage.</p>
+        </div>
+        <div class="feature-card fade-in" style="--stagger-index:4" data-stagger>
+          <div class="feature-icon">🥤</div>
+          <h3>Refreshment Zone</h3>
+          <p>Hydration station and sports lounge for pre and post-game recovery. Keep your energy up.</p>
+        </div>
+        <div class="feature-card fade-in" style="--stagger-index:5" data-stagger>
+          <div class="feature-icon">🪑</div>
+          <h3>Spectator Seating</h3>
+          <p>Comfortable stands for fans and substitutes with high visibility sightlines across the pitch.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== TONIGHT'S SLOTS PREVIEW ===== -->
+  <section class="section">
+    <div class="container">
+      <div class="section-header fade-in" style="display:flex;align-items:flex-end;justify-content:space-between;flex-wrap:wrap;gap:1.5rem;margin-bottom:3rem;">
+        <div>
+          <div class="section-tag">⚡ Quick Book</div>
+          <h2 class="section-title" style="margin-bottom:0.5rem;">Tonight's Slots</h2>
+          <p class="section-subtitle" style="max-width:none;">Grab a slot before they're gone.</p>
+        </div>
+        <a href="booking.html" class="btn btn-outline">See All Slots →</a>
+      </div>
+      <div class="slots-grid" id="homeSlots">
+        <!-- Rendered by JS -->
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== REVIEWS PREVIEW ===== -->
+  <section class="section bg-gray">
+    <div class="container">
+      <div class="section-header centered fade-in">
+        <div class="section-tag">💬 Player Feedback</div>
+        <h2 class="section-title">Don't Just Take Our Word</h2>
+        <p class="section-subtitle">Rated 4.9/5 by over 200 competitive local teams.</p>
+      </div>
+      <div class="reviews-grid">
+        <div class="review-card fade-in">
+          <div class="review-stars">★★★★★</div>
+          <p class="review-text">"Best turf in the city. The grass is incredible and the lighting is perfect for our late-night games. Easy booking too!"</p>
+          <div class="review-author">
+            <div class="review-avatar">AM</div>
+            <div>
+              <div class="review-author-name">Alex M.</div>
+              <div class="review-author-role">Team Captain</div>
+            </div>
+          </div>
+        </div>
+        <div class="review-card fade-in">
+          <div class="review-stars">★★★★★</div>
+          <p class="review-text">"The locker rooms are cleaner than most gyms I've been to. Great experience from start to finish. Highly recommend!"</p>
+          <div class="review-author">
+            <div class="review-avatar">SJ</div>
+            <div>
+              <div class="review-author-name">Sarah J.</div>
+              <div class="review-author-role">Weekend Warrior</div>
+            </div>
+          </div>
+        </div>
+        <div class="review-card fade-in">
+          <div class="review-stars">★★★★★</div>
+          <p class="review-text">"We've been playing here for 6 months. The loyalty rewards and consistent quality make it our home pitch."</p>
+          <div class="review-author">
+            <div class="review-avatar">MT</div>
+            <div>
+              <div class="review-author-name">Marcus T.</div>
+              <div class="review-author-role">Amateur League Member</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div style="text-align:center;margin-top:2.5rem;" class="fade-in">
+        <a href="reviews.html" class="btn btn-outline">Read All Reviews →</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== CTA BAND ===== -->
+  <section style="background:linear-gradient(135deg,#166534 0%,#14532d 50%,#052e16 100%);padding:80px 0;position:relative;overflow:hidden;">
+    <div style="position:absolute;top:-40%;right:-10%;width:500px;height:500px;background:radial-gradient(circle,rgba(46,204,113,0.15) 0%,transparent 70%);border-radius:50%;"></div>
+    <div class="container" style="position:relative;z-index:2;text-align:center;">
+      <div class="fade-in">
+        <div class="section-tag" style="display:inline-flex;margin-bottom:1.5rem;">🏆 Book Today</div>
+        <h2 style="font-family:var(--font-primary);font-size:clamp(2rem,4vw,3rem);font-weight:900;color:white;letter-spacing:-0.03em;margin-bottom:1rem;">
+          Ready to Hit the Pitch?
+        </h2>
+        <p style="color:rgba(255,255,255,0.65);font-size:1.05rem;max-width:500px;margin:0 auto 2.5rem;line-height:1.7;">
+          Book your slot in under 2 minutes. No registration required. Just pick a time and show up.
+        </p>
+        <div style="display:flex;align-items:center;justify-content:center;gap:1rem;flex-wrap:wrap;">
+          <a href="booking.html" class="btn btn-primary btn-lg">Book Your Slot →</a>
+          <a href="turf.html" class="btn btn-ghost btn-lg">Learn More</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== FOOTER ===== -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-brand">
+          <div class="footer-logo">
+            <span class="logo-icon">⚽</span>
+            Elite<span>Turf</span> Arena
+          </div>
+          <p>World-class football facilities with seamless online booking. Your game deserves the best surface.</p>
+          <div class="footer-social" style="margin-top:1.5rem;">
+            <div class="social-btn">𝕏</div>
+            <div class="social-btn">in</div>
+            <div class="social-btn">📷</div>
+          </div>
+        </div>
+        <div class="footer-col">
+          <h4>Facility</h4>
+          <ul>
+            <li><a href="turf.html">Turf Details</a></li>
+            <li><a href="gallery.html">Gallery</a></li>
+            <li><a href="turf.html#amenities">Amenities</a></li>
+            <li><a href="turf.html#location">Location</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h4>Booking</h4>
+          <ul>
+            <li><a href="booking.html">Book a Slot</a></li>
+            <li><a href="booking.html#pricing">Pricing</a></li>
+            <li><a href="#">Cancel Booking</a></li>
+            <li><a href="#">Refund Policy</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h4>Company</h4>
+          <ul>
+            <li><a href="#">Our Story</a></li>
+            <li><a href="reviews.html">Reviews</a></li>
+            <li><a href="#">Contact Us</a></li>
+            <li><a href="#">Privacy Policy</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer-divider"></div>
+      <div class="footer-bottom">
+        <p>© 2024 Elite Turf Arena. All rights reserved.</p>
+        <div style="display:flex;gap:1.5rem;">
+          <a href="#" style="font-size:0.82rem;color:rgba(255,255,255,0.35);">Privacy Policy</a>
+          <a href="#" style="font-size:0.82rem;color:rgba(255,255,255,0.35);">Terms of Service</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Lightbox -->
+  <div class="lightbox" id="lightbox" onclick="closeLightbox()">
+    <div class="lightbox-content" onclick="event.stopPropagation()">
+      <button class="lightbox-close" onclick="closeLightbox()">✕</button>
+      <img id="lightboxImg" src="" alt="Gallery Image" />
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>

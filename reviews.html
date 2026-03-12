@@ -1,0 +1,469 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Reviews | Elite Turf Arena</title>
+  <meta name="description" content="Read what players and teams say about Elite Turf Arena. Rated 4.9/5 by over 200 competitive local teams." />
+  <link rel="stylesheet" href="styles.css" />
+  <style>
+    .rating-overview {
+      display: grid;
+      grid-template-columns: auto 1fr;
+      gap: 3rem;
+      align-items: center;
+      background: white;
+      border: 1px solid var(--gray-200);
+      border-radius: var(--radius-xl);
+      padding: 3rem;
+      margin-bottom: 4rem;
+    }
+    .rating-big {
+      text-align: center;
+    }
+    .rating-number {
+      font-family: var(--font-primary);
+      font-size: 5rem;
+      font-weight: 900;
+      line-height: 1;
+      color: var(--gray-800);
+      letter-spacing: -0.04em;
+    }
+    .rating-stars-big {
+      font-size: 1.4rem;
+      color: #f59e0b;
+      margin: 0.5rem 0;
+      letter-spacing: 0.05em;
+    }
+    .rating-count {
+      font-size: 0.85rem;
+      color: var(--gray-400);
+    }
+    .rating-bars {
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+    }
+    .rating-bar-row {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+    .rating-bar-label {
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--gray-600);
+      width: 40px;
+      flex-shrink: 0;
+      text-align: right;
+    }
+    .rating-bar-track {
+      flex: 1;
+      height: 8px;
+      background: var(--gray-100);
+      border-radius: 99px;
+      overflow: hidden;
+    }
+    .rating-bar-fill {
+      height: 100%;
+      background: linear-gradient(90deg, var(--accent), var(--green-400));
+      border-radius: 99px;
+      transition: width 1.5s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .rating-bar-pct {
+      font-size: 0.8rem;
+      color: var(--gray-400);
+      width: 32px;
+      flex-shrink: 0;
+    }
+    .reviews-full-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+      gap: 1.5rem;
+    }
+    .review-card-full {
+      background: white;
+      border: 1px solid var(--gray-200);
+      border-radius: var(--radius-lg);
+      padding: 2rem;
+      transition: var(--transition-slow);
+      position: relative;
+    }
+    .review-card-full:hover {
+      transform: translateY(-4px);
+      box-shadow: var(--shadow-xl);
+      border-color: rgba(46,204,113,0.2);
+    }
+    .review-card-full .quote-mark {
+      font-size: 4rem;
+      line-height: 1;
+      color: var(--green-100);
+      font-family: Georgia, serif;
+      position: absolute;
+      top: 0.75rem;
+      right: 1.5rem;
+    }
+    .verified-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.3rem;
+      font-size: 0.72rem;
+      font-weight: 700;
+      color: var(--green-700);
+      background: var(--green-50);
+      border: 1px solid var(--green-200);
+      padding: 0.2rem 0.6rem;
+      border-radius: var(--radius-full);
+      margin-top: 0.25rem;
+    }
+    .sort-controls {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      margin-bottom: 2rem;
+      flex-wrap: wrap;
+    }
+    .sort-btn {
+      padding: 0.45rem 1rem;
+      border: 1.5px solid var(--gray-200);
+      border-radius: var(--radius-full);
+      font-size: 0.82rem;
+      font-weight: 600;
+      color: var(--gray-500);
+      cursor: pointer;
+      transition: var(--transition);
+      background: white;
+    }
+    .sort-btn.active {
+      border-color: var(--accent);
+      background: var(--green-50);
+      color: var(--green-800);
+    }
+    @media (max-width: 768px) {
+      .rating-overview { grid-template-columns: 1fr; gap: 2rem; }
+      .rating-number { font-size: 3.5rem; }
+      .reviews-full-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body class="page-wrapper">
+
+  <nav class="navbar scrolled" id="navbar">
+    <div class="navbar-inner">
+      <a href="index.html" class="navbar-logo">
+        <span class="logo-icon">⚽</span>Elite<span>Turf</span>
+      </a>
+      <ul class="navbar-nav">
+        <li><a href="index.html" class="nav-link">Home</a></li>
+        <li><a href="turf.html" class="nav-link">Turf Details</a></li>
+        <li><a href="booking.html" class="nav-link">Booking</a></li>
+        <li><a href="gallery.html" class="nav-link">Gallery</a></li>
+        <li><a href="reviews.html" class="nav-link active">Reviews</a></li>
+      </ul>
+      <div class="navbar-cta">
+        <a href="booking.html" class="btn btn-primary btn-sm">Book Your Slot</a>
+      </div>
+      <div class="nav-toggle" id="navToggle"><span></span><span></span><span></span></div>
+    </div>
+  </nav>
+
+  <div class="mobile-menu" id="mobileMenu">
+    <div class="mobile-menu-header">
+      <a href="index.html" class="navbar-logo" style="color:#1f2937">
+        <span class="logo-icon">⚽</span>
+        Elite<span style="color:var(--accent)">Turf</span>
+      </a>
+      <button id="mobileMenuClose" style="background:none;border:none;font-size:1.5rem;cursor:pointer;color:#374151;">✕</button>
+    </div>
+    <nav class="mobile-menu-links">
+      <a href="index.html">Home</a><a href="turf.html">Turf Details</a><a href="booking.html">Booking</a><a href="gallery.html">Gallery</a><a href="reviews.html">Reviews</a>
+    </nav>
+    <a href="booking.html" class="btn btn-primary" style="margin-top:2rem;">Book Your Slot →</a>
+  </div>
+
+  <div class="page-header">
+    <div class="container page-header-content">
+      <div class="breadcrumb">
+        <a href="index.html">Home</a><span>›</span><span>Reviews</span>
+      </div>
+      <h1>Player Reviews</h1>
+      <p>Real feedback from the teams and players who call Elite Turf Arena home.</p>
+    </div>
+  </div>
+
+  <section class="section">
+    <div class="container">
+
+      <!-- Rating Overview -->
+      <div class="rating-overview fade-in">
+        <div class="rating-big">
+          <div class="rating-number">4.9</div>
+          <div class="rating-stars-big">★★★★★</div>
+          <div class="rating-count">Based on 247 reviews</div>
+        </div>
+        <div>
+          <div class="rating-bars" id="ratingBars">
+            <div class="rating-bar-row">
+              <div class="rating-bar-label">5 ★</div>
+              <div class="rating-bar-track"><div class="rating-bar-fill" style="width:0%" data-width="88%"></div></div>
+              <div class="rating-bar-pct">88%</div>
+            </div>
+            <div class="rating-bar-row">
+              <div class="rating-bar-label">4 ★</div>
+              <div class="rating-bar-track"><div class="rating-bar-fill" style="width:0%" data-width="9%"></div></div>
+              <div class="rating-bar-pct">9%</div>
+            </div>
+            <div class="rating-bar-row">
+              <div class="rating-bar-label">3 ★</div>
+              <div class="rating-bar-track"><div class="rating-bar-fill" style="width:0%" data-width="2%"></div></div>
+              <div class="rating-bar-pct">2%</div>
+            </div>
+            <div class="rating-bar-row">
+              <div class="rating-bar-label">2 ★</div>
+              <div class="rating-bar-track"><div class="rating-bar-fill" style="width:0%" data-width="1%"></div></div>
+              <div class="rating-bar-pct">1%</div>
+            </div>
+            <div class="rating-bar-row">
+              <div class="rating-bar-label">1 ★</div>
+              <div class="rating-bar-track"><div class="rating-bar-fill" style="width:0%" data-width="0%"></div></div>
+              <div class="rating-bar-pct">0%</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Category Highlights -->
+      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:1rem;margin-bottom:3rem;" class="fade-in">
+        <div style="background:white;border:1px solid var(--gray-200);border-radius:var(--radius-lg);padding:1.5rem;text-align:center;">
+          <div style="font-size:1.4rem;margin-bottom:0.5rem;">🏟️</div>
+          <div style="font-weight:800;font-size:1.1rem;color:var(--gray-800);">4.9</div>
+          <div style="font-size:0.78rem;color:var(--gray-400);margin-top:0.2rem;">Turf Quality</div>
+        </div>
+        <div style="background:white;border:1px solid var(--gray-200);border-radius:var(--radius-lg);padding:1.5rem;text-align:center;">
+          <div style="font-size:1.4rem;margin-bottom:0.5rem;">🚿</div>
+          <div style="font-weight:800;font-size:1.1rem;color:var(--gray-800);">4.8</div>
+          <div style="font-size:0.78rem;color:var(--gray-400);margin-top:0.2rem;">Cleanliness</div>
+        </div>
+        <div style="background:white;border:1px solid var(--gray-200);border-radius:var(--radius-lg);padding:1.5rem;text-align:center;">
+          <div style="font-size:1.4rem;margin-bottom:0.5rem;">📲</div>
+          <div style="font-weight:800;font-size:1.1rem;color:var(--gray-800);">5.0</div>
+          <div style="font-size:0.78rem;color:var(--gray-400);margin-top:0.2rem;">Booking Ease</div>
+        </div>
+        <div style="background:white;border:1px solid var(--gray-200);border-radius:var(--radius-lg);padding:1.5rem;text-align:center;">
+          <div style="font-size:1.4rem;margin-bottom:0.5rem;">💡</div>
+          <div style="font-weight:800;font-size:1.1rem;color:var(--gray-800);">4.9</div>
+          <div style="font-size:0.78rem;color:var(--gray-400);margin-top:0.2rem;">Lighting</div>
+        </div>
+        <div style="background:white;border:1px solid var(--gray-200);border-radius:var(--radius-lg);padding:1.5rem;text-align:center;">
+          <div style="font-size:1.4rem;margin-bottom:0.5rem;">📍</div>
+          <div style="font-weight:800;font-size:1.1rem;color:var(--gray-800);">4.7</div>
+          <div style="font-size:0.78rem;color:var(--gray-400);margin-top:0.2rem;">Location</div>
+        </div>
+        <div style="background:white;border:1px solid var(--gray-200);border-radius:var(--radius-lg);padding:1.5rem;text-align:center;">
+          <div style="font-size:1.4rem;margin-bottom:0.5rem;">💰</div>
+          <div style="font-weight:800;font-size:1.1rem;color:var(--gray-800);">4.8</div>
+          <div style="font-size:0.78rem;color:var(--gray-400);margin-top:0.2rem;">Value</div>
+        </div>
+      </div>
+
+      <!-- Sort Controls -->
+      <div class="sort-controls fade-in">
+        <span style="font-size:0.85rem;font-weight:600;color:var(--gray-600);">Sort by:</span>
+        <div class="sort-btn active">Most Recent</div>
+        <div class="sort-btn">Highest Rated</div>
+        <div class="sort-btn">Most Helpful</div>
+      </div>
+
+      <!-- Reviews Grid -->
+      <div class="reviews-full-grid">
+
+        <div class="review-card-full fade-in">
+          <div class="quote-mark">"</div>
+          <div class="review-stars"><span class="star">★★★★★</span></div>
+          <p class="review-text" style="margin-top:0.75rem;">"Best turf in the city. Bar none. The grass is incredible and the lighting is perfect for our late-night games. Easy booking too! We've been coming here every Friday for 3 months."</p>
+          <div class="review-author">
+            <div class="review-avatar">AM</div>
+            <div>
+              <div class="review-author-name">Alex M.</div>
+              <div class="review-author-role">Team Captain</div>
+              <div class="verified-badge">✓ Verified Player</div>
+            </div>
+            <div style="margin-left:auto;font-size:0.75rem;color:var(--gray-400);">3 days ago</div>
+          </div>
+        </div>
+
+        <div class="review-card-full fade-in">
+          <div class="quote-mark">"</div>
+          <div class="review-stars"><span class="star">★★★★★</span></div>
+          <p class="review-text" style="margin-top:0.75rem;">"The locker rooms are cleaner than most gyms I've been to. Hot water was perfect, towels were provided, and the lockers actually lock. Great experience from start to finish!"</p>
+          <div class="review-author">
+            <div class="review-avatar" style="background:linear-gradient(135deg,#8b5cf6,#6d28d9)">SJ</div>
+            <div>
+              <div class="review-author-name">Sarah J.</div>
+              <div class="review-author-role">Weekend Warrior</div>
+              <div class="verified-badge">✓ Verified Player</div>
+            </div>
+            <div style="margin-left:auto;font-size:0.75rem;color:var(--gray-400);">1 week ago</div>
+          </div>
+        </div>
+
+        <div class="review-card-full fade-in">
+          <div class="quote-mark">"</div>
+          <div class="review-stars"><span class="star">★★★★★</span></div>
+          <p class="review-text" style="margin-top:0.75rem;">"We've been playing here for 6 months and it's consistently excellent. The loyalty rewards and the quality of the pitch make it our home ground. Can't recommend enough."</p>
+          <div class="review-author">
+            <div class="review-avatar" style="background:linear-gradient(135deg,#f59e0b,#d97706)">MT</div>
+            <div>
+              <div class="review-author-name">Marcus T.</div>
+              <div class="review-author-role">Amateur League Member</div>
+              <div class="verified-badge">✓ Verified Player</div>
+            </div>
+            <div style="margin-left:auto;font-size:0.75rem;color:var(--gray-400);">2 weeks ago</div>
+          </div>
+        </div>
+
+        <div class="review-card-full fade-in">
+          <div class="quote-mark">"</div>
+          <div class="review-stars"><span class="star">★★★★★</span></div>
+          <p class="review-text" style="margin-top:0.75rem;">"Played an hour after heavy rain and the pitch was perfect. The drainage system is unreal. Not a single muddy patch. Absolutely the best maintained turf we've ever played on."</p>
+          <div class="review-author">
+            <div class="review-avatar" style="background:linear-gradient(135deg,#ef4444,#dc2626)">KR</div>
+            <div>
+              <div class="review-author-name">Kevin R.</div>
+              <div class="review-author-role">League Organizer</div>
+              <div class="verified-badge">✓ Verified Player</div>
+            </div>
+            <div style="margin-left:auto;font-size:0.75rem;color:var(--gray-400);">3 weeks ago</div>
+          </div>
+        </div>
+
+        <div class="review-card-full fade-in">
+          <div class="quote-mark">"</div>
+          <div class="review-stars"><span class="star">★★★★★</span></div>
+          <p class="review-text" style="margin-top:0.75rem;">"The booking system is incredibly smooth. Picked our time, paid instantly, got a confirmation email. Showed up and everything was set. That level of professionalism is rare in local sports facilities."</p>
+          <div class="review-author">
+            <div class="review-avatar" style="background:linear-gradient(135deg,#06b6d4,#0891b2)">JL</div>
+            <div>
+              <div class="review-author-name">Jordan L.</div>
+              <div class="review-author-role">Recreational Player</div>
+              <div class="verified-badge">✓ Verified Player</div>
+            </div>
+            <div style="margin-left:auto;font-size:0.75rem;color:var(--gray-400);">1 month ago</div>
+          </div>
+        </div>
+
+        <div class="review-card-full fade-in">
+          <div class="quote-mark">"</div>
+          <div class="review-stars"><span class="star">★★★★☆</span></div>
+          <p class="review-text" style="margin-top:0.75rem;">"Fantastic facility and great value for money. The only minor thing is parking can fill up quickly on Friday evenings. Arrive 15 mins early and you're golden. Pitch is absolutely world-class."</p>
+          <div class="review-author">
+            <div class="review-avatar" style="background:linear-gradient(135deg,#10b981,#059669)">DW</div>
+            <div>
+              <div class="review-author-name">Daniel W.</div>
+              <div class="review-author-role">5-a-side Regular</div>
+              <div class="verified-badge">✓ Verified Player</div>
+            </div>
+            <div style="margin-left:auto;font-size:0.75rem;color:var(--gray-400);">1 month ago</div>
+          </div>
+        </div>
+
+        <div class="review-card-full fade-in">
+          <div class="quote-mark">"</div>
+          <div class="review-stars"><span class="star">★★★★★</span></div>
+          <p class="review-text" style="margin-top:0.75rem;">"Organized our corporate football day here. The staff were incredibly helpful, the catering area was perfect, and the pitch looked amazing on camera. Our team can't stop talking about it."</p>
+          <div class="review-author">
+            <div class="review-avatar" style="background:linear-gradient(135deg,#f97316,#ea580c)">PK</div>
+            <div>
+              <div class="review-author-name">Priya K.</div>
+              <div class="review-author-role">Corporate Event Manager</div>
+              <div class="verified-badge">✓ Verified Booking</div>
+            </div>
+            <div style="margin-left:auto;font-size:0.75rem;color:var(--gray-400);">6 weeks ago</div>
+          </div>
+        </div>
+
+        <div class="review-card-full fade-in">
+          <div class="quote-mark">"</div>
+          <div class="review-stars"><span class="star">★★★★★</span></div>
+          <p class="review-text" style="margin-top:0.75rem;">"After years of playing on substandard pitches, this feels like playing in the Premier League. The ball response is incredible, the lighting is shadow-free, and the surface stays consistent throughout."</p>
+          <div class="review-author">
+            <div class="review-avatar" style="background:linear-gradient(135deg,#6366f1,#4f46e5)">TB</div>
+            <div>
+              <div class="review-author-name">Thomas B.</div>
+              <div class="review-author-role">Semi-Professional Player</div>
+              <div class="verified-badge">✓ Verified Player</div>
+            </div>
+            <div style="margin-left:auto;font-size:0.75rem;color:var(--gray-400);">2 months ago</div>
+          </div>
+        </div>
+
+        <div class="review-card-full fade-in">
+          <div class="quote-mark">"</div>
+          <div class="review-stars"><span class="star">★★★★★</span></div>
+          <p class="review-text" style="margin-top:0.75rem;">"The refreshment zone is a brilliant addition. Post-game recovery with proper sports drinks and good seating makes the whole experience complete. It's not just a turf, it's a destination."</p>
+          <div class="review-author">
+            <div class="review-avatar" style="background:linear-gradient(135deg,#ec4899,#db2777)">NA</div>
+            <div>
+              <div class="review-author-name">Nina A.</div>
+              <div class="review-author-role">Women's Team Captain</div>
+              <div class="verified-badge">✓ Verified Player</div>
+            </div>
+            <div style="margin-left:auto;font-size:0.75rem;color:var(--gray-400);">2 months ago</div>
+          </div>
+        </div>
+
+      </div>
+
+      <div style="text-align:center;margin-top:3.5rem;" class="fade-in">
+        <a href="booking.html" class="btn btn-primary btn-lg" style="padding:1.1rem 2.5rem;">
+          Join 200+ Happy Teams →
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-brand">
+          <div class="footer-logo"><span class="logo-icon">⚽</span> Elite<span>Turf</span> Arena</div>
+          <p>World-class football facilities with seamless online booking.</p>
+          <div class="footer-social" style="margin-top:1.5rem;"><div class="social-btn">𝕏</div><div class="social-btn">in</div><div class="social-btn">📷</div></div>
+        </div>
+        <div class="footer-col"><h4>Facility</h4><ul><li><a href="turf.html">Turf Details</a></li><li><a href="gallery.html">Gallery</a></li></ul></div>
+        <div class="footer-col"><h4>Booking</h4><ul><li><a href="booking.html">Book a Slot</a></li><li><a href="#">Cancel Booking</a></li></ul></div>
+        <div class="footer-col"><h4>Company</h4><ul><li><a href="#">Our Story</a></li><li><a href="reviews.html">Reviews</a></li></ul></div>
+      </div>
+      <div class="footer-divider"></div>
+      <div class="footer-bottom">
+        <p>© 2024 Elite Turf Arena. All rights reserved.</p>
+      </div>
+    </div>
+  </footer>
+
+  <script src="app.js"></script>
+  <script>
+    // Animate rating bars on scroll
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(e => {
+        if (e.isIntersecting) {
+          e.target.querySelectorAll('.rating-bar-fill').forEach(bar => {
+            bar.style.width = bar.dataset.width;
+          });
+          observer.unobserve(e.target);
+        }
+      });
+    }, { threshold: 0.3 });
+    const ratingEl = document.querySelector('.rating-overview');
+    if (ratingEl) observer.observe(ratingEl);
+
+    // Sort buttons (UI only)
+    document.querySelectorAll('.sort-btn').forEach(btn => {
+      btn.onclick = () => {
+        document.querySelectorAll('.sort-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+      };
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Book a Slot | Elite Turf Arena</title>
+  <meta name="description" content="Book your football slot at Elite Turf Arena. Choose from morning, afternoon, and evening slots. Instant confirmation." />
+  <link rel="stylesheet" href="styles.css" />
+  <style>
+    .date-tabs {
+      display: flex;
+      gap: 0.75rem;
+      flex-wrap: wrap;
+      margin-bottom: 2.5rem;
+    }
+    .date-tab {
+      padding: 0.65rem 1.25rem;
+      border: 1.5px solid var(--gray-200);
+      border-radius: var(--radius-full);
+      font-size: 0.88rem;
+      font-weight: 600;
+      color: var(--gray-500);
+      cursor: pointer;
+      transition: var(--transition);
+      background: white;
+    }
+    .date-tab:hover {
+      border-color: var(--accent);
+      color: var(--gray-800);
+    }
+    .date-tab.active {
+      border-color: var(--accent);
+      background: var(--green-50);
+      color: var(--green-800);
+    }
+    .booking-layout {
+      display: grid;
+      grid-template-columns: 1fr 360px;
+      gap: 2.5rem;
+      align-items: start;
+    }
+    .time-group-label {
+      font-size: 0.78rem;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--gray-400);
+      margin-bottom: 1rem;
+      margin-top: 2rem;
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+    }
+    .time-group-label::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: var(--gray-200);
+    }
+    .size-pills {
+      display: flex;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+      margin-bottom: 2rem;
+    }
+    .size-pill {
+      padding: 0.45rem 1rem;
+      border: 1.5px solid var(--gray-200);
+      border-radius: var(--radius-full);
+      font-size: 0.82rem;
+      font-weight: 600;
+      color: var(--gray-500);
+      cursor: pointer;
+      transition: var(--transition);
+      background: white;
+    }
+    .size-pill.active {
+      border-color: var(--accent);
+      background: var(--green-50);
+      color: var(--green-800);
+    }
+    .booking-steps {
+      display: flex;
+      align-items: center;
+      gap: 0;
+      margin-bottom: 3rem;
+    }
+    .booking-step {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.3rem;
+      flex: 1;
+      position: relative;
+    }
+    .booking-step:not(:last-child)::after {
+      content: '';
+      position: absolute;
+      top: 14px;
+      left: 50%;
+      width: 100%;
+      height: 2px;
+      background: var(--gray-200);
+      z-index: 0;
+    }
+    .booking-step.active:not(:last-child)::after {
+      background: var(--accent);
+    }
+    .step-circle {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      background: var(--gray-200);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.72rem;
+      font-weight: 700;
+      color: var(--gray-500);
+      position: relative;
+      z-index: 1;
+    }
+    .booking-step.active .step-circle {
+      background: var(--accent);
+      color: white;
+    }
+    .booking-step.done .step-circle {
+      background: var(--green-100);
+      color: var(--green-700);
+    }
+    .step-label {
+      font-size: 0.72rem;
+      color: var(--gray-400);
+      font-weight: 600;
+      white-space: nowrap;
+    }
+    .booking-step.active .step-label { color: var(--gray-700); }
+    @media (max-width: 900px) {
+      .booking-layout { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body class="page-wrapper">
+
+  <nav class="navbar scrolled" id="navbar">
+    <div class="navbar-inner">
+      <a href="index.html" class="navbar-logo">
+        <span class="logo-icon">⚽</span>
+        Elite<span>Turf</span>
+      </a>
+      <ul class="navbar-nav">
+        <li><a href="index.html" class="nav-link">Home</a></li>
+        <li><a href="turf.html" class="nav-link">Turf Details</a></li>
+        <li><a href="booking.html" class="nav-link active">Booking</a></li>
+        <li><a href="gallery.html" class="nav-link">Gallery</a></li>
+        <li><a href="reviews.html" class="nav-link">Reviews</a></li>
+      </ul>
+      <div class="navbar-cta">
+        <a href="booking.html" class="btn btn-primary btn-sm">Book Your Slot</a>
+      </div>
+      <div class="nav-toggle" id="navToggle"><span></span><span></span><span></span></div>
+    </div>
+  </nav>
+
+  <div class="mobile-menu" id="mobileMenu">
+    <div class="mobile-menu-header">
+      <a href="index.html" class="navbar-logo" style="color:#1f2937">
+        <span class="logo-icon">⚽</span>
+        Elite<span style="color:var(--accent)">Turf</span>
+      </a>
+      <button id="mobileMenuClose" style="background:none;border:none;font-size:1.5rem;cursor:pointer;color:#374151;">✕</button>
+    </div>
+    <nav class="mobile-menu-links">
+      <a href="index.html">Home</a><a href="turf.html">Turf Details</a><a href="booking.html">Booking</a><a href="gallery.html">Gallery</a><a href="reviews.html">Reviews</a>
+    </nav>
+    <a href="booking.html" class="btn btn-primary" style="margin-top:2rem;">Book Your Slot →</a>
+  </div>
+
+  <div class="page-header">
+    <div class="container page-header-content">
+      <div class="breadcrumb">
+        <a href="index.html">Home</a><span>›</span><span>Booking</span>
+      </div>
+      <h1>Book Your Slot</h1>
+      <p>Real-time availability. Instant confirmation. No hidden fees.</p>
+    </div>
+  </div>
+
+  <section class="section">
+    <div class="container">
+
+      <!-- Booking Steps -->
+      <div class="booking-steps fade-in">
+        <div class="booking-step active" id="step1indicator">
+          <div class="step-circle">1</div>
+          <div class="step-label">Choose Slot</div>
+        </div>
+        <div class="booking-step" id="step2indicator">
+          <div class="step-circle">2</div>
+          <div class="step-label">Payment</div>
+        </div>
+        <div class="booking-step" id="step3indicator">
+          <div class="step-circle">3</div>
+          <div class="step-label">Confirm</div>
+        </div>
+      </div>
+
+      <div class="booking-layout">
+        <!-- Left: Slots -->
+        <div>
+          <!-- Date Tabs -->
+          <div class="fade-in">
+            <div style="margin-bottom:1rem;">
+              <h3 style="font-family:var(--font-primary);font-size:1.1rem;font-weight:700;margin-bottom:0.25rem;">Select Date</h3>
+              <p style="font-size:0.85rem;color:var(--gray-400);">Showing availability for the next 7 days</p>
+            </div>
+            <div class="date-tabs" id="dateTabs">
+              <!-- rendered by JS -->
+            </div>
+          </div>
+
+          <!-- Format filters -->
+          <div class="fade-in">
+            <div style="margin-bottom:0.75rem;">
+              <h3 style="font-family:var(--font-primary);font-size:1rem;font-weight:700;">Game Format</h3>
+            </div>
+            <div class="size-pills">
+              <div class="size-pill active" onclick="setFormat(this,'11v11')">11 v 11</div>
+              <div class="size-pill" onclick="setFormat(this,'7v7')">7 v 7</div>
+              <div class="size-pill" onclick="setFormat(this,'5v5')">5 v 5</div>
+            </div>
+          </div>
+
+          <!-- Slot Groups -->
+          <div id="slotGroups" class="fade-in">
+            <!-- Rendered by JS -->
+          </div>
+        </div>
+
+        <!-- Right: Booking Summary Panel -->
+        <div>
+          <div class="booking-panel fade-in-right">
+            <h3>Booking Summary</h3>
+            <p class="subtitle">Select a slot to get started</p>
+
+            <div class="selected-slot-display" id="selectedSlotDisplay">
+              <div style="font-size:0.75rem;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:var(--green-700);margin-bottom:0.75rem;">Selected Slot</div>
+              <div style="font-family:var(--font-primary);font-size:1.3rem;font-weight:800;color:var(--gray-800);" id="summaryTime">-</div>
+              <div style="font-size:0.82rem;color:var(--gray-400);margin-bottom:0.75rem;" id="summaryDate">-</div>
+              <div style="display:flex;justify-content:space-between;align-items:center;padding-top:0.75rem;border-top:1px solid var(--green-200);">
+                <span style="font-size:0.88rem;color:var(--gray-600);">Price</span>
+                <span style="font-family:var(--font-primary);font-size:1.2rem;font-weight:900;color:var(--accent-dark);" id="summaryPrice">-</span>
+              </div>
+            </div>
+
+            <div id="paymentSection" style="display:none;">
+              <div style="font-size:0.85rem;font-weight:700;color:var(--gray-700);margin-bottom:0.75rem;">Payment Method</div>
+              <div class="payment-options">
+                <div class="payment-option selected" onclick="selectPayment(this)" data-method="Credit Card">
+                  <span class="payment-icon">💳</span> Credit Card
+                </div>
+                <div class="payment-option" onclick="selectPayment(this)" data-method="UPI">
+                  <span class="payment-icon">📱</span> UPI
+                </div>
+                <div class="payment-option" onclick="selectPayment(this)" data-method="Net Banking">
+                  <span class="payment-icon">🏦</span> Net Banking
+                </div>
+                <div class="payment-option" onclick="selectPayment(this)" data-method="Pay at Venue">
+                  <span class="payment-icon">🤝</span> Pay at Venue
+                </div>
+              </div>
+              <div style="background:var(--gray-50);border-radius:var(--radius-md);padding:1rem;margin-bottom:1.25rem;border:1px solid var(--gray-200);">
+                <div style="display:flex;justify-content:space-between;font-size:0.85rem;margin-bottom:0.4rem;"><span style="color:var(--gray-500)">Slot Rate</span><span id="priceBreakdown1" style="font-weight:600">-</span></div>
+                <div style="display:flex;justify-content:space-between;font-size:0.85rem;margin-bottom:0.4rem;"><span style="color:var(--gray-500)">Service Fee</span><span style="font-weight:600">$2.00</span></div>
+                <div style="height:1px;background:var(--gray-200);margin:0.6rem 0;"></div>
+                <div style="display:flex;justify-content:space-between;font-size:0.95rem;"><span style="font-weight:700;color:var(--gray-800)">Total</span><span id="priceBreakdownTotal" style="font-weight:800;color:var(--green-700);font-family:var(--font-primary);">-</span></div>
+              </div>
+            </div>
+
+            <button class="btn btn-primary" style="width:100%;font-size:1rem;padding:0.9rem;" id="bookBtn" disabled onclick="handleBooking()">
+              Select a Slot to Continue
+            </button>
+            <p style="font-size:0.75rem;color:var(--gray-400);text-align:center;margin-top:0.75rem;">
+              By clicking, you agree to our <a href="#" style="color:var(--accent)">Terms of Play</a> and <a href="#" style="color:var(--accent)">Refund Policy</a>.
+            </p>
+          </div>
+
+          <!-- Why Book Here -->
+          <div style="background:var(--gray-50);border:1px solid var(--gray-200);border-radius:var(--radius-lg);padding:1.5rem;margin-top:1.5rem;" class="fade-in">
+            <div style="font-size:0.8rem;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:var(--gray-400);margin-bottom:1rem;">Why Elite Turf?</div>
+            <div style="display:flex;flex-direction:column;gap:0.7rem;">
+              <div style="display:flex;align-items:center;gap:0.6rem;font-size:0.85rem;color:var(--gray-600);">
+                <span style="color:var(--accent)">✓</span> Instant booking confirmation
+              </div>
+              <div style="display:flex;align-items:center;gap:0.6rem;font-size:0.85rem;color:var(--gray-600);">
+                <span style="color:var(--accent)">✓</span> Free cancellation up to 2 hours before
+              </div>
+              <div style="display:flex;align-items:center;gap:0.6rem;font-size:0.85rem;color:var(--gray-600);">
+                <span style="color:var(--accent)">✓</span> No hidden fees, ever
+              </div>
+              <div style="display:flex;align-items:center;gap:0.6rem;font-size:0.85rem;color:var(--gray-600);">
+                <span style="color:var(--accent)">✓</span> 4.9★ rated by 200+ teams
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Pricing Section -->
+  <section class="section bg-gray" id="pricing">
+    <div class="container">
+      <div class="section-header centered fade-in">
+        <div class="section-tag">💰 Transparent Pricing</div>
+        <h2 class="section-title">Simple, Fair Rates</h2>
+        <p class="section-subtitle">No membership required. Book any slot, any day.</p>
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:1.25rem;max-width:900px;margin:0 auto;" class="fade-in">
+        <div style="background:white;border:1px solid var(--gray-200);border-radius:var(--radius-lg);padding:1.75rem;text-align:center;">
+          <div style="font-size:1.5rem;margin-bottom:0.75rem;">🌅</div>
+          <div style="font-weight:700;font-size:0.9rem;margin-bottom:0.25rem;color:var(--gray-700);">Morning</div>
+          <div style="font-size:0.8rem;color:var(--gray-400);margin-bottom:1rem;">6 AM – 12 PM</div>
+          <div style="font-family:var(--font-primary);font-size:1.8rem;font-weight:900;color:var(--accent-dark);">$30<span style="font-size:0.9rem;font-weight:500;color:var(--gray-400)">/hr</span></div>
+        </div>
+        <div style="background:white;border:1px solid var(--gray-200);border-radius:var(--radius-lg);padding:1.75rem;text-align:center;">
+          <div style="font-size:1.5rem;margin-bottom:0.75rem;">☀️</div>
+          <div style="font-weight:700;font-size:0.9rem;margin-bottom:0.25rem;color:var(--gray-700);">Afternoon</div>
+          <div style="font-size:0.8rem;color:var(--gray-400);margin-bottom:1rem;">12 PM – 6 PM</div>
+          <div style="font-family:var(--font-primary);font-size:1.8rem;font-weight:900;color:var(--accent-dark);">$38<span style="font-size:0.9rem;font-weight:500;color:var(--gray-400)">/hr</span></div>
+        </div>
+        <div style="background:linear-gradient(135deg,var(--green-50),white);border:1.5px solid var(--green-200);border-radius:var(--radius-lg);padding:1.75rem;text-align:center;position:relative;">
+          <div style="position:absolute;top:-10px;left:50%;transform:translateX(-50%);background:var(--accent);color:white;font-size:0.7rem;font-weight:700;padding:0.25rem 0.75rem;border-radius:var(--radius-full);letter-spacing:0.06em;">POPULAR</div>
+          <div style="font-size:1.5rem;margin-bottom:0.75rem;">🌆</div>
+          <div style="font-weight:700;font-size:0.9rem;margin-bottom:0.25rem;color:var(--gray-700);">Evening</div>
+          <div style="font-size:0.8rem;color:var(--gray-400);margin-bottom:1rem;">6 PM – 11 PM</div>
+          <div style="font-family:var(--font-primary);font-size:1.8rem;font-weight:900;color:var(--accent-dark);">$45<span style="font-size:0.9rem;font-weight:500;color:var(--gray-400)">/hr</span></div>
+        </div>
+        <div style="background:white;border:1px solid var(--gray-200);border-radius:var(--radius-lg);padding:1.75rem;text-align:center;">
+          <div style="font-size:1.5rem;margin-bottom:0.75rem;">🏆</div>
+          <div style="font-weight:700;font-size:0.9rem;margin-bottom:0.25rem;color:var(--gray-700);">League Block</div>
+          <div style="font-size:0.8rem;color:var(--gray-400);margin-bottom:1rem;">4+ hours</div>
+          <div style="font-family:var(--font-primary);font-size:1.8rem;font-weight:900;color:var(--accent-dark);">$28<span style="font-size:0.9rem;font-weight:500;color:var(--gray-400)">/hr</span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-brand">
+          <div class="footer-logo"><span class="logo-icon">⚽</span> Elite<span>Turf</span> Arena</div>
+          <p>World-class football facilities with seamless online booking.</p>
+          <div class="footer-social" style="margin-top:1.5rem;"><div class="social-btn">𝕏</div><div class="social-btn">in</div><div class="social-btn">📷</div></div>
+        </div>
+        <div class="footer-col"><h4>Facility</h4><ul><li><a href="turf.html">Turf Details</a></li><li><a href="gallery.html">Gallery</a></li></ul></div>
+        <div class="footer-col"><h4>Booking</h4><ul><li><a href="booking.html">Book a Slot</a></li><li><a href="#">Cancel Booking</a></li></ul></div>
+        <div class="footer-col"><h4>Company</h4><ul><li><a href="#">Our Story</a></li><li><a href="reviews.html">Reviews</a></li></ul></div>
+      </div>
+      <div class="footer-divider"></div>
+      <div class="footer-bottom">
+        <p>© 2024 Elite Turf Arena. All rights reserved.</p>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Confirmation Modal -->
+  <div class="modal-overlay" id="confirmModal">
+    <div class="modal">
+      <div class="modal-icon">⚡</div>
+      <h2>Confirm Your Booking</h2>
+      <p>You're about to reserve this slot. Please review the details below.</p>
+      <div class="modal-detail" id="modalDetails">
+        <div class="modal-detail-row"><span class="label">Slot</span><span class="value" id="modalSlotTime">-</span></div>
+        <div class="modal-detail-row"><span class="label">Date</span><span class="value" id="modalSlotDate">-</span></div>
+        <div class="modal-detail-row"><span class="label">Format</span><span class="value" id="modalSlotFormat">11 v 11</span></div>
+        <div class="modal-detail-row"><span class="label">Payment</span><span class="value" id="modalPayment">-</span></div>
+        <div class="modal-detail-row"><span class="label">Total</span><span class="value" id="modalTotal" style="color:var(--accent);">-</span></div>
+      </div>
+      <div class="modal-actions">
+        <button class="btn btn-outline" onclick="closeModal()">Cancel</button>
+        <button class="btn btn-primary" onclick="confirmBooking()" id="confirmBtn">Confirm Booking ✓</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast -->
+  <div class="toast" id="toast">
+    <div class="toast-icon">✓</div>
+    <div>
+      <div class="toast-title">Booking Confirmed!</div>
+      <div class="toast-desc" id="toastDesc">Your slot has been reserved.</div>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
