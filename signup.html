@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="icon" type="image/png" href="favicon.png" />
+  <title>Player Registration | CA Sports Arena</title>
+  <meta name="description" content="Create a player account at CA Sports Arena to reserve cricket and football turf slots with advance payments." />
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800&family=Barlow:wght@400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+  <style>
+    .auth-page-wrap {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: var(--space-6);
+      background: radial-gradient(circle at 50% 20%, rgba(200, 255, 0, 0.05) 0%, var(--bg) 70%);
+    }
+  </style>
+</head>
+<body>
+
+  <div class="auth-page-wrap">
+    <div class="auth-card" style="margin:0 auto;">
+      <div style="text-align:center;margin-bottom:var(--space-6);">
+        <a href="index.html" class="brand-link" style="justify-content:center;margin-bottom:var(--space-3);">
+          <div class="brand-badge">CA</div>
+          <div class="brand-name">CA Sports <span>Arena</span></div>
+        </a>
+        <h1 style="font-family:var(--font-display);font-size:1.75rem;font-weight:800;text-transform:uppercase;color:var(--text);margin-bottom:4px;">Register Account</h1>
+        <p style="font-size:var(--text-sm);color:var(--text-muted);margin:0 auto;">One-tap booking and verified slot holding</p>
+      </div>
+
+      <form id="standaloneSignupForm" class="auth-form">
+        <div>
+          <label class="summary-form-label" for="signupNameInput">Full Name / Team Name</label>
+          <input type="text" id="signupNameInput" class="input-field" placeholder="e.g. Aditya Magar" required autofocus />
+          <span class="field-error-msg" id="signupNameErr"></span>
+        </div>
+
+        <div>
+          <label class="summary-form-label" for="signupPhoneInput">WhatsApp / Mobile Number</label>
+          <input type="tel" id="signupPhoneInput" class="input-field" placeholder="10-digit mobile number" maxlength="10" required />
+          <span class="field-error-msg" id="signupPhoneErr"></span>
+        </div>
+
+        <div>
+          <label class="summary-form-label" for="signupSportInput">Primary Sport</label>
+          <select id="signupSportInput" class="input-field">
+            <option value="Box Cricket">Box Cricket</option>
+            <option value="5-a-side Football">5-a-side Football</option>
+            <option value="Net Practice">Net Practice</option>
+          </select>
+        </div>
+
+        <button type="submit" class="btn btn-primary" style="width:100%;font-size:1.05rem;margin-top:var(--space-2);">
+          Complete Registration →
+        </button>
+
+        <div style="text-align:center;margin-top:var(--space-4);font-size:var(--text-sm);color:var(--text-muted);">
+          Already have an account? <a href="login.html" style="color:var(--accent);font-weight:700;">Sign In</a>
+        </div>
+
+        <div style="text-align:center;margin-top:var(--space-3);">
+          <a href="index.html" style="font-size:var(--text-xs);color:var(--text-dim);">← Back to Ground &amp; Slots</a>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script src="config.js"></script>
+  <script>
+    document.getElementById('standaloneSignupForm').addEventListener('submit', function (e) {
+      e.preventDefault();
+      const name = document.getElementById('signupNameInput').value.trim();
+      const phone = document.getElementById('signupPhoneInput').value.trim();
+      const sport = document.getElementById('signupSportInput').value;
+      const nameErr = document.getElementById('signupNameErr');
+      const phoneErr = document.getElementById('signupPhoneErr');
+
+      let hasError = false;
+      if (!name || name.length < 2) {
+        nameErr.textContent = 'Please enter your name (min 2 characters).';
+        hasError = true;
+      } else {
+        nameErr.textContent = '';
+      }
+
+      if (!/^[6-9]\d{9}$/.test(phone)) {
+        phoneErr.textContent = 'Please enter a valid 10-digit Indian phone number.';
+        hasError = true;
+      } else {
+        phoneErr.textContent = '';
+      }
+
+      if (hasError) return;
+
+      localStorage.setItem('ca_user', JSON.stringify({ name, phone, sport }));
+      window.location.href = 'index.html#booking';
+    });
+  </script>
+</body>
+</html>

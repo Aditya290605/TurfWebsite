@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="icon" type="image/png" href="favicon.png" />
+  <title>Player Sign In | CA Sports Arena</title>
+  <meta name="description" content="Sign in to your CA Sports Arena account to manage slot bookings, track advance payments, and speed up checkout." />
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800&family=Barlow:wght@400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+  <style>
+    .auth-page-wrap {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: var(--space-6);
+      background: radial-gradient(circle at 50% 20%, rgba(200, 255, 0, 0.05) 0%, var(--bg) 70%);
+    }
+  </style>
+</head>
+<body>
+
+  <div class="auth-page-wrap">
+    <div class="auth-card" style="margin:0 auto;">
+      <div style="text-align:center;margin-bottom:var(--space-6);">
+        <a href="index.html" class="brand-link" style="justify-content:center;margin-bottom:var(--space-3);">
+          <div class="brand-badge">CA</div>
+          <div class="brand-name">CA Sports <span>Arena</span></div>
+        </a>
+        <h1 style="font-family:var(--font-display);font-size:1.75rem;font-weight:800;text-transform:uppercase;color:var(--text);margin-bottom:4px;">Player Sign In</h1>
+        <p style="font-size:var(--text-sm);color:var(--text-muted);margin:0 auto;">Access your match history and rapid slot booking</p>
+      </div>
+
+      <form id="standaloneLoginForm" class="auth-form">
+        <div>
+          <label class="summary-form-label" for="loginPhoneInput">Registered Mobile Number</label>
+          <input type="tel" id="loginPhoneInput" class="input-field" placeholder="10-digit mobile number" maxlength="10" required autofocus />
+          <span class="field-error-msg" id="loginPhoneErr"></span>
+        </div>
+
+        <div>
+          <label class="summary-form-label" for="loginNameInput">Player Name (Optional)</label>
+          <input type="text" id="loginNameInput" class="input-field" placeholder="e.g. Aditya" />
+        </div>
+
+        <button type="submit" class="btn btn-primary" style="width:100%;font-size:1.05rem;margin-top:var(--space-2);">
+          Sign In to Account →
+        </button>
+
+        <div style="text-align:center;margin-top:var(--space-4);font-size:var(--text-sm);color:var(--text-muted);">
+          Don't have an account yet? <a href="signup.html" style="color:var(--accent);font-weight:700;">Register Here</a>
+        </div>
+
+        <div style="text-align:center;margin-top:var(--space-3);">
+          <a href="index.html" style="font-size:var(--text-xs);color:var(--text-dim);">← Back to Ground &amp; Slots</a>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script src="config.js"></script>
+  <script>
+    document.getElementById('standaloneLoginForm').addEventListener('submit', function (e) {
+      e.preventDefault();
+      const phone = document.getElementById('loginPhoneInput').value.trim();
+      const name = document.getElementById('loginNameInput').value.trim() || 'Player';
+      const err = document.getElementById('loginPhoneErr');
+
+      if (!/^[6-9]\d{9}$/.test(phone)) {
+        err.textContent = 'Please enter a valid 10-digit Indian phone number.';
+        return;
+      }
+
+      err.textContent = '';
+      localStorage.setItem('ca_user', JSON.stringify({ name, phone }));
+      window.location.href = 'index.html#booking';
+    });
+  </script>
+</body>
+</html>

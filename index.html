@@ -1,323 +1,577 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <link rel="icon" type="image/png" href="favicon.png" />
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Champions Turf | Premium Cricket Booking</title>
-  <meta name="description" content="Book your cricket turf at Champions Turf. Premium synthetic wicket surface, LED floodlights, and top-tier amenities. ₹500/hour, instant confirmation." />
-  <link rel="stylesheet" href="styles.css" />
+  <link rel="icon" type="image/png" href="favicon.png" />
+  
+  <title>CA Sports Arena | Premium Box Cricket & Football Turf in Baner, Pune</title>
+  <meta name="description" content="Book your slot at CA Sports Arena, Baner, Pune. FIFA-grade 50mm synthetic surface, 500 LUX LED floodlights, ₹500/hr weekdays, ₹800/hr weekends. Instant WhatsApp confirmation." />
+  
+  <!-- Canonical & Open Graph SEO -->
+  <meta property="og:title" content="CA Sports Arena | Premium Floodlit Turf in Baner, Pune" />
+  <meta property="og:description" content="Pro box cricket and football under 500 LUX floodlights. Book online with 25% advance. ₹500/hr weekdays, ₹800/hr weekends." />
+  <meta property="og:type" content="website" />
+  <meta property="og:image" content="images/hero_aerial.png" />
+  
+  <!-- Font Preloads (Barlow Condensed & Barlow - swapping display, no heavy unused weights) -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800&family=Barlow:wght@400;500;600&display=swap" rel="stylesheet" />
+
+  <!-- Core Styles -->
+  <link rel="stylesheet" href="styles.css" />
+
+  <!-- LocalBusiness Schema (Structured Data) -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "SportsActivityLocation",
+    "name": "CA Sports Arena",
+    "image": "images/hero_aerial.png",
+    "telephone": "+919823045678",
+    "priceRange": "₹500 - ₹800",
+    "address": {
+      "@type": "PostalAddress",
+      "streetAddress": "Survey No. 48/2, Near Balewadi High Street",
+      "addressLocality": "Baner",
+      "addressRegion": "Maharashtra",
+      "postalCode": "411045",
+      "addressCountry": "IN"
+    },
+    "geo": {
+      "@type": "GeoCoordinates",
+      "latitude": 18.5590,
+      "longitude": 73.7868
+    },
+    "openingHoursSpecification": {
+      "@type": "OpeningHoursSpecification",
+      "dayOfWeek": ["Monday","Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday"],
+      "opens": "06:00",
+      "closes": "24:00"
+    }
+  }
+  </script>
 </head>
 <body>
 
-  <!-- ===== NAVBAR ===== -->
-  <nav class="navbar navbar-hero" id="navbar">
-    <div class="navbar-inner">
-      <a href="index.html" class="navbar-logo">
-        <span class="logo-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round"><path d="M3 17l4-8 4 4 4-6 4 10"/></svg></span>
-        Champions<span>Turf</span>
+  <!-- ===== HEADER ===== -->
+  <header class="header" id="header">
+    <div class="container header-inner">
+      <a href="index.html" class="brand-link" aria-label="CA Sports Arena Home">
+        <div class="brand-badge">CA</div>
+        <div class="brand-name">CA Sports <span>Arena</span></div>
       </a>
-      <ul class="navbar-nav">
-        <li><a href="index.html" class="nav-link active" data-page="home">Home</a></li>
-        <li><a href="turf.html" class="nav-link" data-page="turf">Turf Details</a></li>
-        <li><a href="booking.html" class="nav-link" data-page="booking">Booking</a></li>
-        <li><a href="gallery.html" class="nav-link" data-page="gallery">Gallery</a></li>
-        <li><a href="reviews.html" class="nav-link" data-page="reviews">Reviews</a></li>
-      </ul>
-      <div class="navbar-cta">
-        <a href="booking.html" class="btn btn-primary btn-sm">Book Your Slot</a>
-      </div>
-      <div class="nav-toggle" id="navToggle">
-        <span></span><span></span><span></span>
-      </div>
-    </div>
-  </nav>
 
-  <!-- Mobile Menu -->
-  <div class="mobile-menu" id="mobileMenu">
-    <div class="mobile-menu-header">
-      <a href="index.html" class="navbar-logo" style="color:#1f2937">
-        <span class="logo-icon"><svg width="18" height="18" viewbox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round"><path d="M3 17l4-8 4 4 4-6 4 10"/></svg></span>
-        Champions<span style="color:var(--accent)">Turf</span>
-      </a>
-      <button id="mobileMenuClose" style="background:none;border:none;font-size:1.5rem;cursor:pointer;color:#374151;">✕</button>
+      <!-- Desktop Navigation -->
+      <nav class="nav-desktop" aria-label="Main Navigation">
+        <a href="#quickFacts" class="nav-link">Facility</a>
+        <a href="#booking" class="nav-link active">Book a Slot</a>
+        <a href="#gallery" class="nav-link">Gallery</a>
+        <a href="#pricing" class="nav-link">Pricing</a>
+        <a href="#location" class="nav-link">Location</a>
+      </nav>
+
+      <!-- Header Actions -->
+      <div class="header-actions">
+        <!-- User Account / Bookings Trigger -->
+        <button type="button" class="user-btn" id="userAuthBtn" aria-label="Account and bookings">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+          <span>Login / Sign Up</span>
+        </button>
+
+        <a href="#booking" class="btn btn-primary btn-sm">Book Slot</a>
+
+        <!-- Mobile Menu Toggle -->
+        <button type="button" class="nav-toggle-btn" id="navToggleBtn" aria-label="Open navigation menu">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+        </button>
+      </div>
     </div>
-    <nav class="mobile-menu-links">
-      <a href="index.html">Home</a>
-      <a href="turf.html">Turf Details</a>
-      <a href="booking.html">Booking</a>
-      <a href="gallery.html">Gallery</a>
-      <a href="reviews.html">Reviews</a>
-    </nav>
-    <a href="booking.html" class="btn btn-primary" style="margin-top:2rem;">Book Your Slot →</a>
+  </header>
+
+  <!-- Mobile Drawer -->
+  <div class="mobile-nav-drawer" id="mobileNavDrawer" aria-hidden="true">
+    <div class="mobile-drawer-header">
+      <div class="brand-link">
+        <div class="brand-badge">CA</div>
+        <div class="brand-name">CA Sports <span>Arena</span></div>
+      </div>
+      <button type="button" class="auth-close-btn" id="mobileDrawerClose" aria-label="Close menu">✕</button>
+    </div>
+    <div class="mobile-nav-links">
+      <a href="#booking" class="mobile-nav-link">Book a Slot</a>
+      <a href="#quickFacts" class="mobile-nav-link">Turf Specs</a>
+      <a href="#gallery" class="mobile-nav-link">Arena Gallery</a>
+      <a href="#pricing" class="mobile-nav-link">Hourly Rates</a>
+      <a href="#location" class="mobile-nav-link">Location &amp; Map</a>
+      <a href="login.html" class="mobile-nav-link" style="color:var(--accent);">Member Login / Sign Up</a>
+    </div>
+    <div style="margin-top:auto;padding-top:2rem;">
+      <a href="https://wa.me/919823045678" target="_blank" rel="noopener noreferrer" class="btn btn-whatsapp" style="width:100%;">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12.031 6.172c-3.181 0-5.767 2.586-5.768 5.766-.001 1.298.38 2.27 1.019 3.287l-.582 2.128 2.182-.573c.978.58 1.911.928 3.145.929 3.178 0 5.767-2.587 5.768-5.766.001-3.187-2.575-5.771-5.764-5.771zm3.392 8.244c-.144.405-.837.774-1.17.824-.312.045-.698.086-2.223-.554-1.954-.82-3.21-2.824-3.308-2.955-.097-.133-.787-1.047-.787-1.996 0-.948.498-1.413.675-1.605.176-.192.385-.24.513-.24.129 0 .257.001.369.006.118.005.277-.045.434.331.161.385.55 1.343.6 1.444.05.101.083.219.017.352-.066.133-.1.217-.199.333-.099.117-.208.261-.297.351-.1.1-.205.21-.088.411.117.201.52 1.088 1.115 1.618.767.683 1.414.894 1.616.994.201.1.32.083.438-.05.118-.134.505-.589.64-.79.135-.202.271-.168.455-.101.185.067 1.17.552 1.371.653.201.101.336.151.385.235.049.084.049.488-.095.893z"/></svg>
+        WhatsApp Coordinator
+      </a>
+    </div>
   </div>
 
-  <!-- ===== HERO ===== -->
+  <!-- ===== HERO SECTION ===== -->
   <section class="hero" id="hero">
-    <div class="hero-bg" id="heroBg"></div>
-    <div class="hero-overlay"></div>
-    <div class="hero-grain"></div>
-    <div class="hero-content">
-      <div class="container">
-        <div class="hero-badge">
-          <span class="dot"></span>
-          Now Open — Downtown City
-        </div>
-        <h1 class="hero-title">
-          The Premier Court<br>for Your <span class="highlight">Match</span>
-        </h1>
-        <p class="hero-description">
-          Champions Turf — premium cricket ground with seamless online booking. Pro-grade synthetic surface. 500 LUX LED floodlights. Zero hassle.
-        </p>
-        <div class="hero-actions">
-          <a href="booking.html" class="btn btn-primary btn-lg" id="heroBookBtn">
-            Book Your Slot
-          </a>
-          <a href="turf.html" class="btn btn-ghost btn-lg">
-            Explore Turf →
-          </a>
-        </div>
-        <div class="hero-stats">
-          <div class="hero-stat">
-            <div class="hero-stat-number">4.9★</div>
-            <div class="hero-stat-label">Average Rating</div>
-          </div>
-          <div class="hero-stat">
-            <div class="hero-stat-number">200+</div>
-            <div class="hero-stat-label">Teams Served</div>
-          </div>
-          <div class="hero-stat">
-            <div class="hero-stat-number">Pro</div>
-            <div class="hero-stat-label">Grade Surface</div>
-          </div>
-          <div class="hero-stat">
-            <div class="hero-stat-number">24/7</div>
-            <div class="hero-stat-label">Facility Access</div>
-          </div>
+    <div class="hero-media-wrap">
+      <picture>
+        <source srcset="images/hero_aerial.webp" type="image/webp" />
+        <img src="images/hero_aerial.png" alt="CA Sports Arena aerial floodlit turf" class="hero-img" width="640" height="640" fetchpriority="high" />
+      </picture>
+      <div class="hero-gradient-overlay"></div>
+    </div>
+
+    <div class="container hero-content">
+      <div class="hero-pill">
+        <span class="live-pulse-dot"></span>
+        <span>Slots Open Today — Baner, Pune</span>
+      </div>
+
+      <h1 class="hero-headline">
+        The Premier <span class="highlight">Floodlit Arena</span> For Your Match
+      </h1>
+
+      <p class="hero-desc">
+        Engineered for intense box cricket &amp; 5-a-side football. 500 LUX shadowless floodlights, FIFA-grade 50mm synthetic turf, and zero-hassle online slot booking.
+      </p>
+
+      <div class="hero-actions">
+        <a href="#booking" class="btn btn-primary">Book a Slot Now</a>
+        <a href="https://wa.me/919823045678" target="_blank" rel="noopener noreferrer" class="btn btn-whatsapp">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12.031 6.172c-3.181 0-5.767 2.586-5.768 5.766-.001 1.298.38 2.27 1.019 3.287l-.582 2.128 2.182-.573c.978.58 1.911.928 3.145.929 3.178 0 5.767-2.587 5.768-5.766.001-3.187-2.575-5.771-5.764-5.771zm3.392 8.244c-.144.405-.837.774-1.17.824-.312.045-.698.086-2.223-.554-1.954-.82-3.21-2.824-3.308-2.955-.097-.133-.787-1.047-.787-1.996 0-.948.498-1.413.675-1.605.176-.192.385-.24.513-.24.129 0 .257.001.369.006.118.005.277-.045.434.331.161.385.55 1.343.6 1.444.05.101.083.219.017.352-.066.133-.1.217-.199.333-.099.117-.208.261-.297.351-.1.1-.205.21-.088.411.117.201.52 1.088 1.115 1.618.767.683 1.414.894 1.616.994.201.1.32.083.438-.05.118-.134.505-.589.64-.79.135-.202.271-.168.455-.101.185.067 1.17.552 1.371.653.201.101.336.151.385.235.049.084.049.488-.095.893z"/></svg>
+          WhatsApp Us
+        </a>
+        <div class="hero-price-tag">
+          From <strong>₹500</strong> / hr
         </div>
       </div>
-    </div>
-    <div class="hero-scroll" onclick="document.getElementById('statsSection').scrollIntoView({behavior:'smooth'})">
-      <div class="scroll-indicator"></div>
-      scroll
     </div>
   </section>
 
-  <!-- ===== STATS BAND ===== -->
-  <div class="stats-band" id="statsSection">
+  <!-- ===== QUICK FACTS ROW ===== -->
+  <section class="facts-strip" id="quickFacts">
     <div class="container">
-      <div class="stats-band-inner">
-        <div class="stat-item">
-          <div class="stat-icon"><svg width="20" height="20" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 3a9 9 0 0 1 6.36 15.36M5.64 5.64a9 9 0 0 0 0 12.72"/></svg></div>
-          <div class="stat-content">
-            <div class="stat-value">Pro Grade</div>
-            <div class="stat-desc">Synthetic Surface</div>
+      <div class="facts-grid">
+        <div class="fact-item">
+          <div class="fact-icon-wrap">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 3a9 9 0 0 1 6.36 15.36M5.64 5.64a9 9 0 0 0 0 12.72"/></svg>
+          </div>
+          <div class="fact-meta">
+            <span class="fact-label">Turf Surface</span>
+            <span class="fact-value">FIFA 50mm Monofilament</span>
           </div>
         </div>
-        <div class="stat-divider"></div>
-        <div class="stat-item">
-          <div class="stat-icon"><svg width="20" height="20" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><line x1="12" y1="2" x2="12" y2="4"/><line x1="12" y1="20" x2="12" y2="22"/><line x1="2" y1="12" x2="4" y2="12"/><line x1="20" y1="12" x2="22" y2="12"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg></div>
-          <div class="stat-content">
-            <div class="stat-value">500 LUX</div>
-            <div class="stat-desc">LED Floodlights</div>
+
+        <div class="fact-item">
+          <div class="fact-icon-wrap">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><line x1="12" y1="2" x2="12" y2="4"/><line x1="12" y1="20" x2="12" y2="22"/><line x1="2" y1="12" x2="4" y2="12"/><line x1="20" y1="12" x2="22" y2="12"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+          </div>
+          <div class="fact-meta">
+            <span class="fact-label">Lighting</span>
+            <span class="fact-value">500 LUX Floodlights</span>
           </div>
         </div>
-        <div class="stat-divider"></div>
-        <div class="stat-item">
-          <div class="stat-icon"><svg width="20" height="20" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="1" y="3" width="15" height="13" rx="1"/><path d="M16 8h4l3 3v5h-7V8z"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg></div>
-          <div class="stat-content">
-            <div class="stat-value">50 Cars</div>
-            <div class="stat-desc">Private Parking</div>
+
+        <div class="fact-item">
+          <div class="fact-icon-wrap">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="12" y1="3" x2="12" y2="21"/></svg>
+          </div>
+          <div class="fact-meta">
+            <span class="fact-label">Arena Size</span>
+            <span class="fact-value">110 × 65 ft Box Court</span>
           </div>
         </div>
-        <div class="stat-divider"></div>
-        <div class="stat-item">
-          <div class="stat-icon"><svg width="20" height="20" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"/><line x1="4" y1="22" x2="4" y2="15"/></svg></div>
-          <div class="stat-content">
-            <div class="stat-value">Premium</div>
-            <div class="stat-desc">Locker Rooms</div>
+
+        <div class="fact-item">
+          <div class="fact-icon-wrap">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="1" y="3" width="15" height="13" rx="1"/><path d="M16 8h4l3 3v5h-7V8z"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>
+          </div>
+          <div class="fact-meta">
+            <span class="fact-label">Parking</span>
+            <span class="fact-value">40+ Car Slots Free</span>
           </div>
         </div>
-        <div class="stat-divider"></div>
-        <div class="stat-item">
-          <div class="stat-icon"><svg width="20" height="20" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg></div>
-          <div class="stat-content">
-            <div class="stat-value">Downtown</div>
-            <div class="stat-desc">Central Location</div>
+
+        <div class="fact-item">
+          <div class="fact-icon-wrap">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+          </div>
+          <div class="fact-meta">
+            <span class="fact-label">Hours</span>
+            <span class="fact-value">6 AM – 12 AM Midnight</span>
           </div>
         </div>
       </div>
     </div>
-  </div>
+  </section>
 
-  <!-- ===== TONIGHT'S SLOTS PREVIEW (Moved Up) ===== -->
-  <section class="section" style="padding-bottom:0;">
+  <!-- ===== BOOKING SECTION (Main Feature) ===== -->
+  <section class="section booking-section" id="booking">
     <div class="container">
-      <div class="section-header fade-in" style="display:flex;align-items:flex-end;justify-content:space-between;flex-wrap:wrap;gap:1.5rem;margin-bottom:3rem;">
+      <div class="section-header">
+        <span class="section-tag">Direct Slot Booking</span>
+        <h2 class="section-title">Select Date &amp; Reserve Slot</h2>
+        <p class="section-subtitle">Real-time availability. ₹500/hr weekdays &amp; ₹800/hr weekends. Pay 25% advance to hold your slot.</p>
+      </div>
+
+      <div class="booking-layout">
+        <!-- Left: Date Picker + Format Pills + Time Slots -->
         <div>
-          <div class="section-tag">Quick Book</div>
-          <h2 class="section-title" style="margin-bottom:0.5rem;">Tonight's Slots</h2>
-          <p class="section-subtitle" style="max-width:none;">Grab a slot before they're gone. ₹500/hour.</p>
-        </div>
-        <a href="booking.html" class="btn btn-outline">See All Slots →</a>
-      </div>
-      <div class="slots-grid" id="homeSlots">
-        <!-- Rendered by JS -->
-      </div>
-    </div>
-  </section>
-
-  <!-- ===== GALLERY PREVIEW ===== -->
-  <section class="section">
-    <div class="container">
-      <div class="section-header fade-in">
-        <div class="section-tag">Our Facility</div>
-        <h2 class="section-title">Unmatched Quality</h2>
-        <p class="section-subtitle">State-of-the-art cricket facilities built for serious players and casual teams alike.</p>
-      </div>
-      <div class="gallery-grid fade-in">
-        <div class="gallery-item" onclick="window.location.href='gallery.html'">
-          <img src="images/hero_aerial.png" alt="Aerial view of Champions Turf" loading="lazy" />
-          <div class="gallery-overlay">
-            <div class="gallery-overlay-icon"><svg width="16" height="16" viewbox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></div>
+          <!-- Date Tabs -->
+          <div class="date-selector-wrap">
+            <div class="date-selector-label">
+              <span class="date-label-text">1. Choose Date (Next 7 Days)</span>
+              <span style="font-size:var(--text-xs);color:var(--accent);">Saturday &amp; Sunday = Weekend Rate</span>
+            </div>
+            <div class="date-tabs-scroller" id="dateTabs" role="tablist" aria-label="Booking Dates">
+              <!-- Rendered via JS -->
+            </div>
           </div>
-        </div>
-        <div class="gallery-item" onclick="window.location.href='gallery.html'">
-          <img src="images/turf_closeup.png" alt="Premium cricket surface closeup" loading="lazy" />
-          <div class="gallery-overlay"><div class="gallery-overlay-icon"><svg width="16" height="16" viewbox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></div></div>
-        </div>
-        <div class="gallery-item" onclick="window.location.href='gallery.html'">
-          <img src="images/turf_panoramic.png" alt="Full ground panoramic" loading="lazy" />
-          <div class="gallery-overlay"><div class="gallery-overlay-icon"><svg width="16" height="16" viewbox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></div></div>
-        </div>
-        <div class="gallery-item" onclick="window.location.href='gallery.html'">
-          <img src="images/locker_room.png" alt="Premium locker rooms" loading="lazy" />
-          <div class="gallery-overlay"><div class="gallery-overlay-icon"><svg width="16" height="16" viewbox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></div></div>
-        </div>
-        <div class="gallery-item" onclick="window.location.href='gallery.html'">
-          <img src="images/facility_wide.png" alt="Facility exterior" loading="lazy" />
-          <div class="gallery-overlay"><div class="gallery-overlay-icon"><svg width="16" height="16" viewbox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></div></div>
-        </div>
-        <div class="gallery-item" onclick="window.location.href='gallery.html'">
-          <img src="images/night_action.png" alt="Night match in action" loading="lazy" />
-          <div class="gallery-overlay"><div class="gallery-overlay-icon"><svg width="16" height="16" viewbox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></div></div>
-        </div>
-      </div>
-      <div class="flex items-center" style="justify-content:center;margin-top:2.5rem;" class="fade-in">
-        <a href="gallery.html" class="btn btn-outline">View Full Gallery →</a>
-      </div>
-    </div>
-  </section>
 
-  <!-- ===== FEATURES ===== -->
-  <section class="section bg-gray">
-    <div class="container">
-      <div class="section-header centered fade-in">
-        <div class="section-tag">Top Amenities</div>
-        <h2 class="section-title">More Than Just a Ground</h2>
-        <p class="section-subtitle">Every booking includes access to our premium facilities designed for serious cricketers.</p>
-      </div>
-      <div class="features-grid">
-        <div class="feature-card fade-in" style="--stagger-index:0" data-stagger>
-          <div class="feature-icon"><svg width="24" height="24" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 3a9 9 0 0 1 6.36 15.36M5.64 5.64a9 9 0 0 0 0 12.72"/></svg></div>
-          <h3>Pro-Grade Surface</h3>
-          <p>Premium synthetic turf engineered for cricket — consistent bounce, true seam, all weather playable.</p>
-        </div>
-        <div class="feature-card fade-in" style="--stagger-index:1" data-stagger>
-          <div class="feature-icon"><svg width="24" height="24" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><line x1="12" y1="2" x2="12" y2="4"/><line x1="12" y1="20" x2="12" y2="22"/><line x1="2" y1="12" x2="4" y2="12"/><line x1="20" y1="12" x2="22" y2="12"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg></div>
-          <h3>LED Floodlights</h3>
-          <p>Shadow-free 500 LUX lighting for perfect visibility during evening matches and practice sessions.</p>
-        </div>
-        <div class="feature-card fade-in" style="--stagger-index:2" data-stagger>
-          <div class="feature-icon"><svg width="24" height="24" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="1" y="3" width="15" height="13" rx="1"/><path d="M16 8h4l3 3v5h-7V8z"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg></div>
-          <h3>Private Parking</h3>
-          <p>Secured parking for 50+ vehicles right adjacent to the ground. Arrive, park, and play.</p>
-        </div>
-        <div class="feature-card fade-in" style="--stagger-index:3" data-stagger>
-          <div class="feature-icon"><svg width="24" height="24" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"/><line x1="4" y1="22" x2="4" y2="15"/></svg></div>
-          <h3>Locker Rooms</h3>
-          <p>Clean changing rooms with hot showers and secure lockers. Ready when you are.</p>
-        </div>
-        <div class="feature-card fade-in" style="--stagger-index:4" data-stagger>
-          <div class="feature-icon"><svg width="24" height="24" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8h1a4 4 0 0 1 0 8h-1"/><path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"/><line x1="6" y1="1" x2="6" y2="4"/><line x1="10" y1="1" x2="10" y2="4"/><line x1="14" y1="1" x2="14" y2="4"/></svg></div>
-          <h3>Refreshment Zone</h3>
-          <p>Canteen and sports lounge for pre and post-game hydration and recovery.</p>
-        </div>
-        <div class="feature-card fade-in" style="--stagger-index:5" data-stagger>
-          <div class="feature-icon"><svg width="24" height="24" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg></div>
-          <h3>Spectator Seating</h3>
-          <p>Comfortable gallery seating for supporters with excellent sightlines across the ground.</p>
-        </div>
-      </div>
-    </div>
-  </section>
+          <!-- Format Pills -->
+          <div class="date-selector-wrap">
+            <div class="date-selector-label">
+              <span class="date-label-text">2. Match Format</span>
+            </div>
+            <div class="format-pills">
+              <button type="button" class="format-pill active" data-format="Box Cricket (6–8 a side)">Box Cricket (6–8s)</button>
+              <button type="button" class="format-pill" data-format="5-a-side Football">5-a-side Football</button>
+              <button type="button" class="format-pill" data-format="Net Practice / Coaching">Net Practice</button>
+            </div>
+          </div>
 
-  <!-- ===== REVIEWS PREVIEW ===== -->
-  <section class="section bg-gray">
-    <div class="container">
-      <div class="section-header centered fade-in">
-        <div class="section-tag">Player Feedback</div>
-        <h2 class="section-title">Don't Take Our Word for It</h2>
-        <p class="section-subtitle">Rated 4.9/5 by over 200 local cricket teams.</p>
-      </div>
-      <div class="reviews-grid">
-        <div class="review-card fade-in">
-          <div class="review-stars">★★★★★</div>
-          <p class="review-text">"Best turf in the city. The grass is incredible and the lighting is perfect for our late-night games. Easy booking too!"</p>
-          <div class="review-author">
-            <div class="review-avatar">AM</div>
-            <div>
-              <div class="review-author-name">Alex M.</div>
-              <div class="review-author-role">Team Captain</div>
+          <!-- Time Slots by Daypart -->
+          <div class="date-selector-wrap">
+            <div class="date-selector-label">
+              <span class="date-label-text">3. Available Time Slots</span>
+              <span style="font-size:var(--text-xs);color:var(--text-dim);">Past slots today are automatically disabled</span>
+            </div>
+            <div id="slotsContainer">
+              <!-- Rendered via JS -->
             </div>
           </div>
         </div>
-        <div class="review-card fade-in">
-          <div class="review-stars">★★★★★</div>
-          <p class="review-text">"The locker rooms are cleaner than most gyms I've been to. Great experience from start to finish. Highly recommend!"</p>
-          <div class="review-author">
-            <div class="review-avatar">SJ</div>
-            <div>
-              <div class="review-author-name">Sarah J.</div>
-              <div class="review-author-role">Weekend Warrior</div>
+
+        <!-- Right: Sticky Order Summary Panel -->
+        <aside class="booking-summary-panel" id="bookingPanel">
+          <h3 class="summary-title">Booking Summary</h3>
+          <p class="summary-subtitle">Review selection &amp; confirm advance payment</p>
+
+          <!-- Empty State -->
+          <div class="summary-empty-state" id="summaryEmpty">
+            <div class="summary-empty-icon">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+            </div>
+            <h4>No Slot Selected</h4>
+            <p style="font-size:var(--text-sm);color:var(--text-dim);margin:0 auto;">Pick a time slot from the schedule on the left to review price and pay advance.</p>
+          </div>
+
+          <!-- Filled State -->
+          <div id="summaryFilled" style="display:none;">
+            <!-- Active Slot Box -->
+            <div class="summary-active-details">
+              <div class="summary-badge-strip">
+                <span style="font-size:0.7rem;font-weight:700;color:var(--accent);text-transform:uppercase;">Selected Time</span>
+                <span class="summary-rate-tag" id="summaryRateTag">Weekday Rate</span>
+              </div>
+              <div class="summary-slot-time" id="summarySlotTime">—</div>
+              <div class="summary-slot-date" id="summarySlotDate">—</div>
+            </div>
+
+            <!-- Duration Selector -->
+            <div class="summary-form-group">
+              <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:var(--space-2);">
+                <label class="summary-form-label" style="margin:0;">Duration</label>
+                <div style="display:flex;align-items:center;gap:var(--space-2);">
+                  <button type="button" class="btn btn-outline btn-sm" id="durMinus" style="min-width:36px;padding:0;" aria-label="Decrease duration">−</button>
+                  <span id="durationVal" style="font-family:var(--font-display);font-size:1.1rem;font-weight:700;min-width:60px;text-align:center;">1 hour</span>
+                  <button type="button" class="btn btn-outline btn-sm" id="durPlus" style="min-width:36px;padding:0;" aria-label="Increase duration">+</button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Payment Mode: Advance vs Full -->
+            <div class="summary-form-group">
+              <label class="summary-form-label">Payment Choice</label>
+              <div class="payment-type-toggle">
+                <button type="button" class="pay-toggle-btn active" id="payModeAdvance">
+                  <div class="pay-toggle-title">Pay 25% Advance</div>
+                  <div class="pay-toggle-sub">Lock slot, pay balance at venue</div>
+                </button>
+                <button type="button" class="pay-toggle-btn" id="payModeFull">
+                  <div class="pay-toggle-title">Pay 100% Full</div>
+                  <div class="pay-toggle-sub">Settle total amount now</div>
+                </button>
+              </div>
+            </div>
+
+            <!-- Customer Details Form -->
+            <div class="summary-form-group">
+              <label class="summary-form-label" for="bookName">Your Name</label>
+              <input type="text" id="bookName" class="input-field" placeholder="e.g. Rahul Sharma" autocomplete="name" required />
+              <span class="field-error-msg" id="bookNameError"></span>
+            </div>
+
+            <div class="summary-form-group">
+              <label class="summary-form-label" for="bookPhone">WhatsApp / Mobile Number</label>
+              <input type="tel" id="bookPhone" class="input-field" placeholder="10-digit Indian Mobile (e.g. 9823045678)" maxlength="10" autocomplete="tel" required />
+              <span class="field-error-msg" id="bookPhoneError"></span>
+            </div>
+
+            <!-- Live Calculation Breakdown -->
+            <div class="pricing-breakdown">
+              <div class="price-row">
+                <span>Slot Rate</span>
+                <span id="summaryRateRow">₹500 × 1h</span>
+              </div>
+              <div class="price-row">
+                <span>Platform Booking Fee</span>
+                <span style="color:var(--state-avail);font-weight:700;">₹0 (Free)</span>
+              </div>
+              <div class="price-row total-row">
+                <span>Total Amount</span>
+                <span class="val" id="summaryTotalRow">₹500</span>
+              </div>
+
+              <!-- Advance Details -->
+              <div class="advance-due-row" id="summaryAdvanceRow">
+                <span>Due Now (Advance)</span>
+                <span id="summaryAdvanceVal">₹200</span>
+              </div>
+              <div class="price-row" id="summaryBalanceRow" style="font-size:0.8rem;margin-top:4px;">
+                <span>Payable at Venue</span>
+                <span id="summaryBalanceVal" style="font-weight:700;">₹300</span>
+              </div>
             </div>
           </div>
-        </div>
-        <div class="review-card fade-in">
-          <div class="review-stars">★★★★★</div>
-          <p class="review-text">"We've been playing here for 6 months. The loyalty rewards and consistent quality make it our home pitch."</p>
-          <div class="review-author">
-            <div class="review-avatar">MT</div>
-            <div>
-              <div class="review-author-name">Marcus T.</div>
-              <div class="review-author-role">Amateur League Member</div>
-            </div>
+
+          <!-- Confirm / Submit Action Button -->
+          <div style="margin-top:var(--space-4);">
+            <button type="button" class="btn btn-primary" id="confirmBookBtn" style="width:100%;font-size:1.1rem;padding:var(--space-3);" disabled>
+              Select a Time Slot First
+            </button>
+            <p style="font-size:0.72rem;color:var(--text-dim);text-align:center;margin-top:var(--space-2);line-height:1.4;">
+              Instant booking confirmation via WhatsApp &amp; SMS. Free cancellation up to 4h before your match.
+            </p>
           </div>
-        </div>
-      </div>
-      <div style="text-align:center;margin-top:2.5rem;" class="fade-in">
-        <a href="reviews.html" class="btn btn-outline">Read All Reviews →</a>
+        </aside>
       </div>
     </div>
   </section>
 
-  <!-- ===== CTA BAND ===== -->
-  <section style="background:linear-gradient(135deg,#166534 0%,#14532d 50%,#052e16 100%);padding:80px 0;position:relative;overflow:hidden;">
-    <div style="position:absolute;top:-40%;right:-10%;width:500px;height:500px;background:radial-gradient(circle,rgba(46,204,113,0.15) 0%,transparent 70%);border-radius:50%;"></div>
-    <div class="container" style="position:relative;z-index:2;text-align:center;">
-      <div class="fade-in">
-        <div class="section-tag" style="display:inline-flex;margin-bottom:1.5rem;">Book Today</div>
-        <h2 style="font-family:var(--font-primary);font-size:clamp(2rem,4vw,3rem);font-weight:900;color:white;letter-spacing:-0.03em;margin-bottom:1rem;">
-          Ready to Play?
-        </h2>
-        <p style="color:rgba(255,255,255,0.65);font-size:1.05rem;max-width:500px;margin:0 auto 2.5rem;line-height:1.7;">
-          Book your slot in under 2 minutes. No registration needed. Just pick a time, show up, and bat.
-        </p>
-        <div style="display:flex;align-items:center;justify-content:center;gap:1rem;flex-wrap:wrap;">
-          <a href="booking.html" class="btn btn-primary btn-lg">Book for ₹500/hr →</a>
-          <a href="turf.html" class="btn btn-ghost btn-lg">Learn More</a>
+  <!-- ===== ARENA GALLERY ===== -->
+  <section class="section" id="gallery">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-tag">Ground Photography</span>
+        <h2 class="section-title">Built For Peak Match Action</h2>
+        <p class="section-subtitle">Real turf surface, shadowless floodlighting, and clean team facilities.</p>
+      </div>
+
+      <div class="gallery-grid">
+        <div class="gallery-card" data-gallery-index="0" role="button" tabindex="0" aria-label="View Night Action Under Floodlights">
+          <picture>
+            <source srcset="images/night_action.webp" type="image/webp" />
+            <img src="images/night_action.png" alt="Night Action Under Floodlights" class="gallery-img" width="640" height="640" loading="lazy" />
+          </picture>
+          <div class="gallery-caption-overlay">Night Floodlit Match</div>
+        </div>
+
+        <div class="gallery-card" data-gallery-index="1" role="button" tabindex="0" aria-label="View Aerial Ground View">
+          <picture>
+            <source srcset="images/hero_aerial.webp" type="image/webp" />
+            <img src="images/hero_aerial.png" alt="Aerial Ground View" class="gallery-img" width="640" height="640" loading="lazy" />
+          </picture>
+          <div class="gallery-caption-overlay">Full Aerial Ground</div>
+        </div>
+
+        <div class="gallery-card" data-gallery-index="2" role="button" tabindex="0" aria-label="View FIFA Grade Surface">
+          <picture>
+            <source srcset="images/turf_closeup.webp" type="image/webp" />
+            <img src="images/turf_closeup.png" alt="FIFA Grade Surface" class="gallery-img" width="640" height="640" loading="lazy" />
+          </picture>
+          <div class="gallery-caption-overlay">50mm Monofilament Synthetic</div>
+        </div>
+
+        <div class="gallery-card" data-gallery-index="3" role="button" tabindex="0" aria-label="View Panoramic Turf">
+          <picture>
+            <source srcset="images/turf_panoramic.webp" type="image/webp" />
+            <img src="images/turf_panoramic.png" alt="Panoramic Turf" class="gallery-img" width="640" height="640" loading="lazy" />
+          </picture>
+          <div class="gallery-caption-overlay">High Perimeter Safety Netting</div>
+        </div>
+
+        <div class="gallery-card" data-gallery-index="4" role="button" tabindex="0" aria-label="View Clean Locker Rooms">
+          <picture>
+            <source srcset="images/locker_room.webp" type="image/webp" />
+            <img src="images/locker_room.png" alt="Clean Locker Rooms" class="gallery-img" width="640" height="640" loading="lazy" />
+          </picture>
+          <div class="gallery-caption-overlay">Hot Showers &amp; Lockers</div>
+        </div>
+
+        <div class="gallery-card" data-gallery-index="5" role="button" tabindex="0" aria-label="View Dugouts and Lounge">
+          <picture>
+            <source srcset="images/facility_wide.webp" type="image/webp" />
+            <img src="images/facility_wide.png" alt="Dugouts and Lounge" class="gallery-img" width="640" height="640" loading="lazy" />
+          </picture>
+          <div class="gallery-caption-overlay">Spacious Dugouts &amp; Canteen</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== PRICING COMPARISON ===== -->
+  <section class="section" id="pricing" style="background:var(--bg-alt);">
+    <div class="container">
+      <div class="section-header" style="text-align:center;">
+        <span class="section-tag">Flat, Predictable Rates</span>
+        <h2 class="section-title">Transparent Hourly Pricing</h2>
+        <p class="section-subtitle" style="margin:0 auto;">No hidden light charges. No surge pricing. Standard ball and stumps included.</p>
+      </div>
+
+      <div class="pricing-cards-grid">
+        <!-- Weekday Card -->
+        <div class="pricing-card">
+          <h3 class="pricing-plan-title">Weekday Play</h3>
+          <p class="pricing-plan-sub">Monday through Friday (All Day &amp; Night)</p>
+          <div class="pricing-amount">₹500<span> / hour</span></div>
+          <ul class="pricing-features-list">
+            <li class="pricing-feature-item">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+              <span>Full court access for cricket or football</span>
+            </li>
+            <li class="pricing-feature-item">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+              <span>500 LUX floodlights included after sunset</span>
+            </li>
+            <li class="pricing-feature-item">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+              <span>Complimentary match ball &amp; wooden stumps</span>
+            </li>
+            <li class="pricing-feature-item">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+              <span>Changing rooms and shower facilities</span>
+            </li>
+          </ul>
+          <a href="#booking" class="btn btn-outline" style="width:100%;">Book Weekday Slot</a>
+        </div>
+
+        <!-- Weekend Card (Featured) -->
+        <div class="pricing-card featured">
+          <div class="pricing-badge">Peak Match Day</div>
+          <h3 class="pricing-plan-title">Weekend Match</h3>
+          <p class="pricing-plan-sub">Saturday &amp; Sunday (High Demand Sessions)</p>
+          <div class="pricing-amount">₹800<span> / hour</span></div>
+          <ul class="pricing-features-list">
+            <li class="pricing-feature-item">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+              <span>Priority court prep &amp; pre-brushed synthetic turf</span>
+            </li>
+            <li class="pricing-feature-item">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+              <span>Full 500 LUX floodlighting with zero glare</span>
+            </li>
+            <li class="pricing-feature-item">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+              <span>Scoreboard &amp; spectator dugouts access</span>
+            </li>
+            <li class="pricing-feature-item">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+              <span>Reserved parking directly beside ground</span>
+            </li>
+          </ul>
+          <a href="#booking" class="btn btn-primary" style="width:100%;">Reserve Weekend Slot</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== LOCATION & DIRECTIONS ===== -->
+  <section class="section" id="location">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-tag">Arena Location</span>
+        <h2 class="section-title">Easy Access in Baner, Pune</h2>
+        <p class="section-subtitle">Located minutes away from Balewadi High Street with private parking.</p>
+      </div>
+
+      <div class="location-card">
+        <div class="location-info">
+          <h3 style="font-family:var(--font-display);font-size:1.6rem;font-weight:800;text-transform:uppercase;margin-bottom:var(--space-2);">CA Sports Arena</h3>
+          <p class="location-address">Survey No. 48/2, Near Balewadi High Street, Baner, Pune, Maharashtra 411045</p>
+
+          <div class="location-hours">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+            <span>Open Every Day: 6:00 AM – 12:00 AM Midnight</span>
+          </div>
+
+          <div style="display:flex;gap:var(--space-3);flex-wrap:wrap;">
+            <a href="https://maps.google.com/?q=Baner+Pune" target="_blank" rel="noopener noreferrer" class="btn btn-primary">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+              Get Driving Directions
+            </a>
+            <a href="tel:+919823045678" class="btn btn-outline">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+              Call Coordinator
+            </a>
+          </div>
+        </div>
+
+        <div class="location-map-visual">
+          <div class="map-card-graphic">
+            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="1.5" style="margin-bottom:var(--space-2);"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+            <div style="font-family:var(--font-display);font-size:1.2rem;font-weight:700;color:var(--text);margin-bottom:4px;">Baner - Balewadi Hub</div>
+            <p style="font-size:0.85rem;color:var(--text-dim);margin:0 auto 1rem;">2 minutes from Mumbai-Bangalore Highway exit</p>
+            <a href="https://maps.google.com/?q=Baner+Pune" target="_blank" rel="noopener noreferrer" class="btn btn-outline btn-sm">Open in Google Maps →</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== VENUE RULES & STANDARDS ===== -->
+  <section class="section" style="padding-top:0;">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-tag">Match Guidelines</span>
+        <h2 class="section-title">Turf Rules &amp; Equipment</h2>
+      </div>
+
+      <div class="rules-grid">
+        <div class="rule-box">
+          <div class="rule-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div>
+          <div>
+            <h4 style="font-family:var(--font-display);font-size:1.05rem;color:var(--text);margin-bottom:2px;">Footwear Policy</h4>
+            <p style="font-size:0.85rem;color:var(--text-muted);margin:0;">Rubber studs or flat turf shoes only. Metal spikes are strictly prohibited to preserve turf fibers.</p>
+          </div>
+        </div>
+
+        <div class="rule-box">
+          <div class="rule-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/></svg></div>
+          <div>
+            <h4 style="font-family:var(--font-display);font-size:1.05rem;color:var(--text);margin-bottom:2px;">Reporting Time</h4>
+            <p style="font-size:0.85rem;color:var(--text-muted);margin:0;">Please report 10 minutes prior to slot start time for warmup and toss.</p>
+          </div>
+        </div>
+
+        <div class="rule-box">
+          <div class="rule-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="4.93" y1="4.93" x2="19.07" y2="19.07"/></svg></div>
+          <div>
+            <h4 style="font-family:var(--font-display);font-size:1.05rem;color:var(--text);margin-bottom:2px;">Cancellation &amp; Refund</h4>
+            <p style="font-size:0.85rem;color:var(--text-muted);margin:0;">Advance deposit is 100% refundable or reschedule-eligible if informed 4 hours in advance.</p>
+          </div>
+        </div>
+
+        <div class="rule-box">
+          <div class="rule-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg></div>
+          <div>
+            <h4 style="font-family:var(--font-display);font-size:1.05rem;color:var(--text);margin-bottom:2px;">Free Gear Included</h4>
+            <p style="font-size:0.85rem;color:var(--text-muted);margin:0;">Match ball, lightweight wooden stumps, and bibs provided with every booking at no charge.</p>
+          </div>
         </div>
       </div>
     </div>
@@ -327,65 +581,202 @@
   <footer class="footer">
     <div class="container">
       <div class="footer-grid">
-        <div class="footer-brand">
-          <div class="footer-logo">
-            <span class="logo-icon"><svg width="18" height="18" viewbox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round"><path d="M3 17l4-8 4 4 4-6 4 10"/></svg></span>
-            Champions<span>Turf</span> Turf
+        <div>
+          <div class="brand-link">
+            <div class="brand-badge">CA</div>
+            <div class="brand-name">CA Sports <span>Arena</span></div>
           </div>
-          <p>Premium cricket turf with seamless online booking. Your innings deserves the best ground.</p>
-          <div class="footer-social" style="margin-top:1.5rem;">
-            <div class="social-btn"><svg width="13" height="13" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 4s-.7 2.1-2 3.4c1.6 10-9.4 17.3-18 11.6 2.2.1 4.4-.6 6-2C3 15.5.5 9.6 3 5c2.2 2.7 5.5 4.3 9 4.5-.3-1.4.1-2.7 1-3.5C15 4 22 4 22 4z"/></svg></div>
-            <div class="social-btn"><svg width="13" height="13" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="0.5" fill="currentColor"/></svg></div>
-            <div class="social-btn"><svg width="13" height="13" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/></svg></div>
-          </div>
+          <p class="footer-brand-desc">
+            Premier sports turf in Baner, Pune. 500 LUX floodlights, FIFA-grade turf, and instant slot reservations for box cricket and football matches.
+          </p>
         </div>
-        <div class="footer-col">
-          <h4>Facility</h4>
-          <ul>
-            <li><a href="turf.html">Turf Details</a></li>
-            <li><a href="gallery.html">Gallery</a></li>
-            <li><a href="turf.html#amenities">Amenities</a></li>
-            <li><a href="turf.html#location">Location</a></li>
+
+        <div>
+          <h4 class="footer-col-title">Quick Navigation</h4>
+          <ul class="footer-nav-list">
+            <li><a href="#booking" class="footer-nav-link">Book a Slot</a></li>
+            <li><a href="#quickFacts" class="footer-nav-link">Ground Features</a></li>
+            <li><a href="#gallery" class="footer-nav-link">Arena Gallery</a></li>
+            <li><a href="#pricing" class="footer-nav-link">Pricing Plans</a></li>
+            <li><a href="login.html" class="footer-nav-link">Member Sign In</a></li>
           </ul>
         </div>
-        <div class="footer-col">
-          <h4>Booking</h4>
-          <ul>
-            <li><a href="booking.html">Book a Slot</a></li>
-            <li><a href="booking.html#pricing">Pricing</a></li>
-            <li><a href="#">Cancel Booking</a></li>
-            <li><a href="#">Refund Policy</a></li>
-          </ul>
-        </div>
-        <div class="footer-col">
-          <h4>Company</h4>
-          <ul>
-            <li><a href="#">Our Story</a></li>
-            <li><a href="reviews.html">Reviews</a></li>
-            <li><a href="#">Contact Us</a></li>
-            <li><a href="#">Privacy Policy</a></li>
-          </ul>
+
+        <div>
+          <h4 class="footer-col-title">Contact &amp; Hours</h4>
+          <p style="font-size:var(--text-sm);color:var(--text-muted);margin-bottom:var(--space-2);">
+            <strong>Address:</strong> Survey No. 48/2, Baner, Pune 411045
+          </p>
+          <p style="font-size:var(--text-sm);color:var(--text-muted);margin-bottom:var(--space-2);">
+            <strong>Phone:</strong> +91 98230 45678
+          </p>
+          <p style="font-size:var(--text-sm);color:var(--text-muted);margin-bottom:var(--space-4);">
+            <strong>Hours:</strong> 6:00 AM – 12:00 AM Midnight (Daily)
+          </p>
+          <a href="https://wa.me/919823045678" target="_blank" rel="noopener noreferrer" class="btn btn-whatsapp btn-sm">
+            Chat on WhatsApp
+          </a>
         </div>
       </div>
-      <div class="footer-divider"></div>
+
       <div class="footer-bottom">
-        <p>© 2024 Champions Turf. All rights reserved.</p>
-        <div style="display:flex;gap:1.5rem;">
-          <a href="#" style="font-size:0.82rem;color:rgba(255,255,255,0.35);">Privacy Policy</a>
-          <a href="#" style="font-size:0.82rem;color:rgba(255,255,255,0.35);">Terms of Service</a>
+        <div>© 2026 CA Sports Arena. All rights reserved.</div>
+        <div style="display:flex;gap:var(--space-4);">
+          <span>₹500/hr Weekdays</span>
+          <span>·</span>
+          <span>₹800/hr Weekends</span>
+          <span>·</span>
+          <span>Baner, Pune</span>
         </div>
       </div>
     </div>
   </footer>
 
-  <!-- LightTurf -->
-  <div class="lightTurf" id="lightTurf" onclick="closeLightTurf()">
-    <div class="lightTurf-content" onclick="event.stopPropagation()">
-      <button class="lightTurf-close" onclick="closeLightTurf()">✕</button>
-      <img id="lightTurfImg" src="" alt="Gallery Image" />
+  <!-- ===== PERSISTENT MOBILE BOTTOM BAR ===== -->
+  <aside class="mobile-sticky-bar" aria-label="Quick mobile booking bar">
+    <div class="sticky-bar-price">
+      <span class="label">Starting From</span>
+      <span class="amount" id="stickyBarAmount">₹500<span>/hr</span></span>
+    </div>
+    <a href="#booking" class="btn btn-primary btn-sm">Book a Slot</a>
+  </aside>
+
+  <!-- ===== LIGHTBOX MODAL ===== -->
+  <div class="lightbox-modal" id="lightboxModal" role="dialog" aria-modal="true" aria-label="Image Preview">
+    <button type="button" class="lightbox-close" id="lightboxClose" aria-label="Close image preview">✕</button>
+    <button type="button" class="lightbox-nav lightbox-prev" id="lightboxPrev" aria-label="Previous image">‹</button>
+    <div class="lightbox-content">
+      <img id="lightboxImg" src="" alt="Arena facility preview" />
+      <div class="lightbox-caption" id="lightboxCaption"></div>
+    </div>
+    <button type="button" class="lightbox-nav lightbox-next" id="lightboxNext" aria-label="Next image">›</button>
+  </div>
+
+  <!-- ===== BOOKING CONFIRMATION MODAL ===== -->
+  <div class="auth-modal" id="confirmationModal" role="dialog" aria-modal="true" aria-label="Booking Confirmation Receipt">
+    <div class="auth-card" style="max-width:480px;">
+      <button type="button" class="auth-close-btn" data-close-modal="confirmationModal" aria-label="Close confirmation">✕</button>
+      
+      <div style="text-align:center;margin-bottom:var(--space-4);">
+        <div style="width:52px;height:52px;border-radius:50%;background:rgba(0,230,118,0.15);border:1.5px solid var(--state-avail);color:var(--state-avail);display:flex;align-items:center;justify-content:center;margin:0 auto var(--space-2);font-size:1.5rem;font-weight:900;">
+          ✓
+        </div>
+        <h3 style="font-family:var(--font-display);font-size:1.6rem;font-weight:800;color:var(--text);text-transform:uppercase;">Slot Reserved!</h3>
+        <p style="font-size:var(--text-sm);color:var(--text-muted);margin:0 auto;">Your booking reference has been registered.</p>
+      </div>
+
+      <div style="background:var(--bg);border:1px solid var(--border);border-radius:var(--radius-md);padding:var(--space-4);margin-bottom:var(--space-4);font-size:var(--text-sm);">
+        <div class="price-row">
+          <span>Booking Ref</span>
+          <span style="font-family:var(--font-display);font-weight:700;color:var(--accent);" id="confRef">#CA-89211</span>
+        </div>
+        <div class="price-row">
+          <span>Match Slot</span>
+          <span style="font-weight:700;color:var(--text);" id="confSlot">—</span>
+        </div>
+        <div class="price-row">
+          <span>Date</span>
+          <span id="confDate">—</span>
+        </div>
+        <div class="price-row">
+          <span>Player</span>
+          <span id="confName">—</span>
+        </div>
+        <div class="price-row" style="border-top:1px solid var(--border);margin-top:var(--space-2);padding-top:var(--space-2);">
+          <span>Total Match Fee</span>
+          <span style="font-weight:700;color:var(--text);" id="confTotal">—</span>
+        </div>
+        <div class="price-row">
+          <span>Advance Paid / Due Now</span>
+          <span style="color:var(--accent);font-weight:700;" id="confAdvance">—</span>
+        </div>
+        <div class="price-row">
+          <span>Remaining at Venue</span>
+          <span id="confBalance">—</span>
+        </div>
+      </div>
+
+      <div style="display:flex;flex-direction:column;gap:var(--space-2);">
+        <a id="confWhatsAppLink" href="#" class="btn btn-whatsapp" style="width:100%;">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12.031 6.172c-3.181 0-5.767 2.586-5.768 5.766-.001 1.298.38 2.27 1.019 3.287l-.582 2.128 2.182-.573c.978.58 1.911.928 3.145.929 3.178 0 5.767-2.587 5.768-5.766.001-3.187-2.575-5.771-5.764-5.771zm3.392 8.244c-.144.405-.837.774-1.17.824-.312.045-.698.086-2.223-.554-1.954-.82-3.21-2.824-3.308-2.955-.097-.133-.787-1.047-.787-1.996 0-.948.498-1.413.675-1.605.176-.192.385-.24.513-.24.129 0 .257.001.369.006.118.005.277-.045.434.331.161.385.55 1.343.6 1.444.05.101.083.219.017.352-.066.133-.1.217-.199.333-.099.117-.208.261-.297.351-.1.1-.205.21-.088.411.117.201.52 1.088 1.115 1.618.767.683 1.414.894 1.616.994.201.1.32.083.438-.05.118-.134.505-.589.64-.79.135-.202.271-.168.455-.101.185.067 1.17.552 1.371.653.201.101.336.151.385.235.049.084.049.488-.095.893z"/></svg>
+          Send Confirmation to WhatsApp
+        </a>
+        <button type="button" class="btn btn-outline" data-close-modal="confirmationModal">Done</button>
+      </div>
     </div>
   </div>
 
+  <!-- ===== AUTH MODAL (Login / Sign Up) ===== -->
+  <div class="auth-modal" id="authModal" role="dialog" aria-modal="true" aria-label="User Account">
+    <div class="auth-card">
+      <button type="button" class="auth-close-btn" id="authCloseBtn" aria-label="Close modal">✕</button>
+      
+      <div class="auth-tabs">
+        <button type="button" class="auth-tab-btn active" id="tabLogin">Sign In</button>
+        <button type="button" class="auth-tab-btn" id="tabSignup">Register</button>
+      </div>
+
+      <!-- Login Form -->
+      <form class="auth-form" id="formLogin">
+        <div>
+          <label class="summary-form-label" for="loginPhone">Mobile Number</label>
+          <input type="tel" id="loginPhone" class="input-field" placeholder="10-digit phone number" maxlength="10" required />
+        </div>
+        <div>
+          <label class="summary-form-label" for="loginName">Your Name</label>
+          <input type="text" id="loginName" class="input-field" placeholder="Player Name" />
+        </div>
+        <button type="submit" class="btn btn-primary" style="width:100%;margin-top:var(--space-2);">Sign In &amp; Auto-fill Bookings</button>
+      </form>
+
+      <!-- Sign Up Form -->
+      <form class="auth-form" id="formSignup" style="display:none;">
+        <div>
+          <label class="summary-form-label" for="signupName">Full Name</label>
+          <input type="text" id="signupName" class="input-field" placeholder="Your Full Name" required />
+        </div>
+        <div>
+          <label class="summary-form-label" for="signupPhone">Mobile Number</label>
+          <input type="tel" id="signupPhone" class="input-field" placeholder="10-digit mobile" maxlength="10" required />
+        </div>
+        <div>
+          <label class="summary-form-label" for="signupEmail">Email (Optional)</label>
+          <input type="email" id="signupEmail" class="input-field" placeholder="you@example.com" />
+        </div>
+        <button type="submit" class="btn btn-primary" style="width:100%;margin-top:var(--space-2);">Create Account</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- ===== MY BOOKINGS MODAL ===== -->
+  <div class="bookings-modal" id="myBookingsModal" role="dialog" aria-modal="true" aria-label="My Bookings">
+    <div class="bookings-modal-content">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:var(--space-4);">
+        <h3 style="font-family:var(--font-display);font-size:1.45rem;font-weight:800;text-transform:uppercase;color:var(--text);">My Booked Matches</h3>
+        <button type="button" class="auth-close-btn" data-close-modal="myBookingsModal" aria-label="Close my bookings">✕</button>
+      </div>
+
+      <div id="myBookingsList">
+        <!-- Rendered via JS -->
+      </div>
+
+      <div style="margin-top:var(--space-6);text-align:right;">
+        <button type="button" class="btn btn-outline btn-sm" id="userLogoutBtn">Log Out</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== TOAST NOTIFICATION ===== -->
+  <div class="toast-msg" id="toastMsg" role="status" aria-live="polite">
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+    <div>
+      <div style="font-weight:700;font-size:0.9rem;color:var(--text);" id="toastTitle">Success</div>
+      <div style="font-size:0.75rem;color:var(--text-muted);" id="toastDesc">Action confirmed</div>
+    </div>
+  </div>
+
+  <!-- Scripts: Config First, then App Logic -->
+  <script src="config.js"></script>
   <script src="app.js"></script>
 </body>
 </html>

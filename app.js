@@ -1,554 +1,912 @@
+/**
+ * CA Sports Arena - Core Application Logic
+ * Mobile-first, responsive slot engine, advance payment, auth, and WhatsApp dispatch.
+ */
 'use strict';
 
-/* ============================================================
-   PENALTY BOX TURF — Application Script
-   Cricket Turf Booking | ₹500/hour | 6 slots/day
-   ============================================================ */
-
-// ---- DAYS / MONTHS ----
-const DAYS = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
-const MONTHS = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
-
-// ---- BASE PRICE ----
-const BASE_PRICE = 500; // ₹ per hour
-
-// ---- SLOT DEFINITIONS (6 slots only) ----
-const SLOT_DEFS = [
-  { id: 's1', label: '6:00 AM', end: '8:00 AM',  period: 'Morning'   },
-  { id: 's2', label: '8:00 AM', end: '10:00 AM', period: 'Morning'   },
-  { id: 's3', label: '11:00 AM',end: '1:00 PM',  period: 'Afternoon' },
-  { id: 's4', label: '2:00 PM', end: '4:00 PM',  period: 'Afternoon' },
-  { id: 's5', label: '5:00 PM', end: '7:00 PM',  period: 'Evening'   },
-  { id: 's6', label: '8:00 PM', end: '10:00 PM', period: 'Evening'   },
-];
-
-// Slots pre-booked by others per day index
-const PRE_BOOKED = {
-  0: ['s3'],
-  1: ['s6'],
-  2: ['s2','s5'],
-};
-
-function getSlotsForDay(dayOffset) {
-  const key = `pbt_booked_d${dayOffset}`;
-  let userBooked = [];
-  try { userBooked = JSON.parse(localStorage.getItem(key) || '[]'); } catch(e) {}
-
-  const preBooked = PRE_BOOKED[dayOffset] || [];
-
-  return SLOT_DEFS.map(def => ({
-    ...def,
-    uid: def.id + '_d' + dayOffset,
-    storageKey: key,
-    booked: preBooked.includes(def.id),
-    bookedByUser: userBooked.includes(def.id + '_d' + dayOffset),
-  }));
-}
-
-function persistUserBooking(uid, key) {
-  let arr = [];
-  try { arr = JSON.parse(localStorage.getItem(key) || '[]'); } catch(e) {}
-  if (!arr.includes(uid)) { arr.push(uid); localStorage.setItem(key, JSON.stringify(arr)); }
-}
-
-// ---- STATE ----
-let currentDayOffset = 0;
-let selectedSlot = null;
-let selectedDuration = 1;   // hours
-let selectedPayment = 'UPI';
-
-// ---- COMPUTED TOTAL ----
-function computeTotal() { return BASE_PRICE * selectedDuration; }
-
-// ============================================================
-// NAVBAR
-// ============================================================
-function initNavbar() {
-  const nav = document.getElementById('navbar');
-  if (!nav) return;
-  const isHero = nav.classList.contains('navbar-hero');
-  function update() {
-    if (window.scrollY > 60) {
-      nav.classList.add('scrolled');
-      if (isHero) nav.classList.remove('navbar-hero');
-    } else {
-      nav.classList.remove('scrolled');
-      if (isHero) nav.classList.add('navbar-hero');
-    }
-  }
-  window.addEventListener('scroll', update, { passive: true });
-  update();
-}
-
-// ============================================================
-// MOBILE MENU
-// ============================================================
-function initMobileMenu() {
-  const toggle = document.getElementById('navToggle');
-  const closeBtn = document.getElementById('mobileMenuClose');
-  const menu = document.getElementById('mobileMenu');
-  if (!toggle || !menu) return;
-  toggle.addEventListener('click', () => { menu.classList.add('open'); document.body.style.overflow = 'hidden'; });
-  const close = () => { menu.classList.remove('open'); document.body.style.overflow = ''; };
-  if (closeBtn) closeBtn.addEventListener('click', close);
-  menu.querySelectorAll('a').forEach(a => a.addEventListener('click', close));
-}
-
-// ============================================================
-// SCROLL ANIMATIONS
-// ============================================================
-function initScrollAnimations() {
-  const els = document.querySelectorAll('.fade-in, .fade-in-left, .fade-in-right');
-  if (!els.length) return;
-  const io = new IntersectionObserver((entries) => {
-    entries.forEach(e => {
-      if (!e.isIntersecting) return;
-      const idx = parseFloat(e.target.style.getPropertyValue('--stagger-index') || 0);
-      setTimeout(() => e.target.classList.add('visible'), idx * 80);
-      io.unobserve(e.target);
-    });
-  }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
-  els.forEach(el => io.observe(el));
-}
-
-// ============================================================
-// HERO BG
-// ============================================================
-function initHero() {
-  const bg = document.getElementById('heroBg');
-  if (bg) setTimeout(() => bg.classList.add('loaded'), 100);
-}
-
-// ============================================================
-// HOME PAGE — SLOT PREVIEW (2 evening slots)
-// ============================================================
-function initHomeSlots() {
-  const container = document.getElementById('homeSlots');
-  if (!container) return;
-  const slots = getSlotsForDay(0).filter(s => s.period === 'Evening');
-  container.innerHTML = slots.map(s => renderHomeSlotCard(s)).join('');
-  container.querySelectorAll('.slot-card').forEach((c, i) => {
-    c.style.opacity = '0'; c.style.transform = 'translateY(20px)';
-    setTimeout(() => { c.style.transition = 'opacity 0.5s ease, transform 0.5s ease'; c.style.opacity = '1'; c.style.transform = ''; }, i * 120);
-  });
-}
-
-function renderHomeSlotCard(slot) {
-  const isBooked = slot.booked || slot.bookedByUser;
-  return `
-  <div class="slot-card ${isBooked ? 'booked' : 'available'}">
-    <div class="slot-status-badge ${isBooked ? 'booked' : 'available'}">
-      <span class="status-dot"></span>${isBooked ? (slot.bookedByUser ? 'Your Booking' : 'Booked') : 'Available'}
-    </div>
-    <div class="slot-time">${slot.label} – ${slot.end}</div>
-    <div class="slot-date">${slot.period} Session</div>
-    <div class="slot-price">₹${BASE_PRICE}<span>/hr</span></div>
-    <div class="slot-footer">
-      ${isBooked
-        ? `<button class="btn" style="width:100%;background:var(--gray-100);color:var(--gray-400);cursor:not-allowed;" disabled>Unavailable</button>`
-        : `<a href="booking.html" class="btn btn-outline" style="width:100%;">Book This Slot</a>`}
-    </div>
-  </div>`;
-}
-
-// ============================================================
-// BOOKING PAGE — DATE TABS
-// ============================================================
-function initBookingPage() {
-  const dateTabs = document.getElementById('dateTabs');
-  const slotContainer = document.getElementById('slotGroups');
-  if (!dateTabs || !slotContainer) return;
-
-  const today = new Date();
-  for (let i = 0; i < 7; i++) {
-    const d = new Date(today); d.setDate(today.getDate() + i);
-    const label = i === 0 ? 'Today' : i === 1 ? 'Tomorrow'
-      : `${DAYS[d.getDay()]}, ${d.getDate()} ${MONTHS[d.getMonth()]}`;
-    const tab = document.createElement('div');
-    tab.className = 'date-tab' + (i === 0 ? ' active' : '');
-    tab.innerHTML = `<span class="tab-day">${label}</span>`;
-    tab.dataset.offset = i;
-    tab.onclick = () => {
-      document.querySelectorAll('.date-tab').forEach(t => t.classList.remove('active'));
-      tab.classList.add('active');
-      currentDayOffset = i;
-      selectedSlot = null;
-      selectedDuration = 1;
-      updatePanel();
-      renderSlots(i);
-    };
-    dateTabs.appendChild(tab);
-  }
-  renderSlots(0);
-}
-
-function renderSlots(dayOffset) {
-  const container = document.getElementById('slotGroups');
-  if (!container) return;
-  const slots = getSlotsForDay(dayOffset);
-  const groups = { Morning: [], Afternoon: [], Evening: [] };
-  slots.forEach(s => groups[s.period].push(s));
-
-  const periodLabel = {
-    Morning:   `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="5"/><line x1="12" y1="2" x2="12" y2="4"/><line x1="12" y1="20" x2="12" y2="22"/><line x1="2" y1="12" x2="4" y2="12"/><line x1="20" y1="12" x2="22" y2="12"/></svg> Morning`,
-    Afternoon: `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="6"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg> Afternoon`,
-    Evening:   `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg> Evening`,
+(function () {
+  // Safe config fallback
+  const CFG = window.TURF_CONFIG || {
+    name: "CA Sports Arena",
+    shortName: "CA Turf",
+    contact: { whatsappNumber: "919823045678", phone: "+91 98230 45678" },
+    pricing: { weekdayPerHour: 500, weekendPerHour: 800, advancePercentage: 25, advanceMinAmount: 200 }
   };
 
-  let html = '';
-  for (const [period, list] of Object.entries(groups)) {
-    if (!list.length) continue;
-    html += `<div class="time-group-label">${periodLabel[period]}</div><div class="slots-grid" style="margin-bottom:0.5rem;">`;
-    list.forEach(s => { html += renderBookingSlotCard(s); });
-    html += `</div>`;
-  }
-  container.innerHTML = html;
+  const DAYS = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+  const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 
-  container.querySelectorAll('.slot-card').forEach((c, i) => {
-    c.style.opacity = '0'; c.style.transform = 'translateY(14px)';
-    setTimeout(() => { c.style.transition = 'opacity 0.38s ease,transform 0.38s ease'; c.style.opacity=''; c.style.transform=''; }, i * 50);
-  });
-}
+  // Base 1-hour slots definition (6:00 AM to 12:00 AM Midnight)
+  const HOURLY_SLOTS = [
+    // Morning
+    { id: 'h06', startHour: 6,  label: '06:00 AM', end: '07:00 AM', period: 'Morning' },
+    { id: 'h07', startHour: 7,  label: '07:00 AM', end: '08:00 AM', period: 'Morning' },
+    { id: 'h08', startHour: 8,  label: '08:00 AM', end: '09:00 AM', period: 'Morning' },
+    { id: 'h09', startHour: 9,  label: '09:00 AM', end: '10:00 AM', period: 'Morning' },
+    { id: 'h10', startHour: 10, label: '10:00 AM', end: '11:00 AM', period: 'Morning' },
+    { id: 'h11', startHour: 11, label: '11:00 AM', end: '12:00 PM', period: 'Morning' },
+    // Afternoon
+    { id: 'h12', startHour: 12, label: '12:00 PM', end: '01:00 PM', period: 'Afternoon' },
+    { id: 'h13', startHour: 13, label: '01:00 PM', end: '02:00 PM', period: 'Afternoon' },
+    { id: 'h14', startHour: 14, label: '02:00 PM', end: '03:00 PM', period: 'Afternoon' },
+    { id: 'h15', startHour: 15, label: '03:00 PM', end: '04:00 PM', period: 'Afternoon' },
+    { id: 'h16', startHour: 16, label: '04:00 PM', end: '05:00 PM', period: 'Afternoon' },
+    // Evening
+    { id: 'h17', startHour: 17, label: '05:00 PM', end: '06:00 PM', period: 'Evening' },
+    { id: 'h18', startHour: 18, label: '06:00 PM', end: '07:00 PM', period: 'Evening' },
+    { id: 'h19', startHour: 19, label: '07:00 PM', end: '08:00 PM', period: 'Evening' },
+    { id: 'h20', startHour: 20, label: '08:00 PM', end: '09:00 PM', period: 'Evening' },
+    // Night Under Floodlights
+    { id: 'h21', startHour: 21, label: '09:00 PM', end: '10:00 PM', period: 'Night Match' },
+    { id: 'h22', startHour: 22, label: '10:00 PM', end: '11:00 PM', period: 'Night Match' },
+    { id: 'h23', startHour: 23, label: '11:00 PM', end: '12:00 AM', period: 'Night Match' }
+  ];
 
-function renderBookingSlotCard(slot) {
-  const isBooked = slot.booked;
-  const isUserBooked = slot.bookedByUser;
+  // Pre-seeded booked slots for demonstration
+  const DEFAULT_SEED_BOOKINGS = {
+    0: ['h08', 'h18', 'h20'],
+    1: ['h07', 'h19'],
+    2: ['h18', 'h21']
+  };
 
-  if (isUserBooked) {
-    return `
-    <div class="slot-card booked" id="card_${slot.uid}" style="border-color:var(--green-300);background:var(--green-50);">
-      <div class="slot-status-badge" style="background:var(--green-100);color:var(--green-800);border:1px solid var(--green-300);">
-        <span class="status-dot" style="background:var(--green-600);"></span>Your Booking
-      </div>
-      <div class="slot-time">${slot.label} – ${slot.end}</div>
-      <div class="slot-date">${slot.period} · Confirmed</div>
-      <div class="slot-price" style="color:var(--green-700);">₹${BASE_PRICE}<span>/hr</span></div>
-      <div class="slot-footer">
-        <div style="display:flex;align-items:center;gap:0.5rem;padding:0.7rem 1rem;background:var(--green-100);border-radius:var(--radius-full);font-size:0.84rem;font-weight:700;color:var(--green-800);">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
-          Booked by You
-        </div>
-      </div>
-    </div>`;
-  }
+  // State
+  let state = {
+    dayOffset: 0,
+    selectedSlot: null,
+    selectedDuration: 1, // hours
+    selectedFormat: 'Box Cricket (6–8 a side)',
+    paymentMode: 'advance', // 'advance' (25% / ₹200 min) or 'full'
+    currentUser: null,
+    lightboxIndex: 0
+  };
 
-  if (isBooked) {
-    return `
-    <div class="slot-card booked" id="card_${slot.uid}">
-      <div class="slot-status-badge booked"><span class="status-dot"></span>Fully Booked</div>
-      <div class="slot-time">${slot.label} – ${slot.end}</div>
-      <div class="slot-date">${slot.period} Session</div>
-      <div class="slot-price">₹${BASE_PRICE}<span>/hr</span></div>
-      <div class="slot-footer">
-        <button class="btn" style="width:100%;background:var(--gray-100);color:var(--gray-400);cursor:not-allowed;font-size:0.85rem;" disabled>Not Available</button>
-      </div>
-    </div>`;
-  }
+  // Gallery images list for lightbox
+  const GALLERY_ITEMS = [
+    { src: 'images/night_action.webp', fallback: 'images/night_action.png', title: 'Night Action Under 500 LUX Floodlights' },
+    { src: 'images/hero_aerial.webp', fallback: 'images/hero_aerial.png', title: 'Full Arena Aerial View' },
+    { src: 'images/turf_closeup.webp', fallback: 'images/turf_closeup.png', title: 'FIFA-Grade Synthetic Monofilament Turf' },
+    { src: 'images/turf_panoramic.webp', fallback: 'images/turf_panoramic.png', title: 'Panoramic Court & Perimeter Netting' },
+    { src: 'images/locker_room.webp', fallback: 'images/locker_room.png', title: 'Clean Changing Rooms & Hot Showers' },
+    { src: 'images/facility_wide.webp', fallback: 'images/facility_wide.png', title: 'Spacious Dugouts & Canteen Lounge' }
+  ];
 
-  return `
-  <div class="slot-card available" id="card_${slot.uid}" onclick="selectSlot('${slot.uid}','${slot.label} – ${slot.end}','${slot.period}','${slot.storageKey}')">
-    <div class="slot-status-badge available"><span class="status-dot"></span>Available</div>
-    <div class="slot-time">${slot.label} – ${slot.end}</div>
-    <div class="slot-date">${slot.period} Session</div>
-    <div class="slot-price">₹${BASE_PRICE}<span>/hr</span></div>
-    <div class="slot-footer">
-      <button class="btn btn-primary" style="width:100%;font-size:0.85rem;" onclick="event.stopPropagation();selectSlot('${slot.uid}','${slot.label} – ${slot.end}','${slot.period}','${slot.storageKey}')">
-        Select Slot
-      </button>
-    </div>
-  </div>`;
-}
-
-// ============================================================
-// SLOT SELECTION
-// ============================================================
-function selectSlot(uid, time, period, storageKey) {
-  document.querySelectorAll('.slot-card.selected').forEach(c => c.classList.remove('selected'));
-  const card = document.getElementById('card_' + uid);
-  if (card) card.classList.add('selected');
-
-  selectedSlot = { uid, time, period, storageKey };
-  selectedDuration = 1;
-
-  updatePanel();
-  updateStepIndicator(2);
-
-  // On mobile scroll to panel
-  const panel = document.querySelector('.booking-panel');
-  if (panel && window.innerWidth < 900) {
-    setTimeout(() => panel.scrollIntoView({ behavior: 'smooth', block: 'start' }), 100);
-  }
-}
-
-// ============================================================
-// PANEL UPDATE
-// ============================================================
-function updatePanel() {
-  const hasSlot = !!selectedSlot;
-  const total = computeTotal();
-
-  // Elements
-  const slotTime = document.getElementById('summaryTime');
-  const slotDate = document.getElementById('summaryDate');
-  const summaryPrice = document.getElementById('summaryPrice');
-  const pb1 = document.getElementById('priceBreakdown1');
-  const pbt = document.getElementById('priceBreakdownTotal');
-  const durDisplay = document.getElementById('durDisplay');
-  const paySection = document.getElementById('paymentSection');
-  const bookBtn = document.getElementById('bookBtn');
-  const panelEmpty = document.getElementById('panelEmpty');
-  const panelFilled = document.getElementById('panelFilled');
-
-  if (panelEmpty) panelEmpty.style.display = hasSlot ? 'none' : '';
-  if (panelFilled) panelFilled.style.display = hasSlot ? '' : 'none';
-
-  if (!hasSlot) {
-    if (bookBtn) { bookBtn.disabled = true; bookBtn.textContent = 'Select a Slot First'; }
-    return;
+  /* -------------------------------------------------------------
+     STORAGE HELPERS
+  ------------------------------------------------------------- */
+  function getStoredBookings() {
+    try {
+      return JSON.parse(localStorage.getItem('ca_booked_slots') || '{}');
+    } catch (e) {
+      return {};
+    }
   }
 
-  // Date label
-  const today = new Date();
-  const d = new Date(today); d.setDate(today.getDate() + currentDayOffset);
-  const dateLabel = `${DAYS[d.getDay()]}, ${d.getDate()} ${MONTHS[d.getMonth()]}`;
-
-  if (slotTime) slotTime.textContent = selectedSlot.time;
-  if (slotDate) slotDate.textContent = dateLabel + ' · ' + selectedSlot.period;
-  if (summaryPrice) summaryPrice.textContent = `₹${total}`;
-  if (pb1) pb1.textContent = `₹${BASE_PRICE} × ${selectedDuration}h`;
-  if (pbt) pbt.textContent = `₹${total}`;
-  if (durDisplay) durDisplay.textContent = selectedDuration + (selectedDuration === 1 ? ' hour' : ' hours');
-  if (paySection) paySection.style.display = '';
-
-  if (bookBtn) {
-    bookBtn.disabled = false;
-    bookBtn.textContent = `Confirm Booking — ₹${total}`;
+  function saveStoredBookings(bookings) {
+    try {
+      localStorage.setItem('ca_booked_slots', JSON.stringify(bookings));
+    } catch (e) {}
   }
-}
 
-function setDuration(delta) {
-  selectedDuration = Math.max(1, Math.min(4, selectedDuration + delta));
-  updatePanel();
-}
-
-function setFormat(el, fmt) {
-  document.querySelectorAll('.size-pill').forEach(p => p.classList.remove('active'));
-  el.classList.add('active');
-  const mf = document.getElementById('modalSlotFormat');
-  if (mf) mf.textContent = fmt;
-}
-
-function selectPayment(el) {
-  document.querySelectorAll('.payment-option').forEach(o => o.classList.remove('selected'));
-  el.classList.add('selected');
-  selectedPayment = el.dataset.method;
-}
-
-function updateStepIndicator(step) {
-  [1,2,3].forEach(n => {
-    const el = document.getElementById('step' + n + 'indicator');
-    if (!el) return;
-    el.classList.remove('active','done');
-    if (n < step) el.classList.add('done');
-    if (n === step) el.classList.add('active');
-  });
-}
-
-// ============================================================
-// BOOKING FLOW
-// ============================================================
-function handleBooking() {
-  if (!selectedSlot) return;
-
-  const ms = document.getElementById('modalSlotTime');
-  const md = document.getElementById('modalSlotDate');
-  const mp = document.getElementById('modalPayment');
-  const mt = document.getElementById('modalTotal');
-  const mdur = document.getElementById('modalDuration');
-
-  const today = new Date();
-  const d = new Date(today); d.setDate(today.getDate() + currentDayOffset);
-  const dateLabel = `${DAYS[d.getDay()]}, ${d.getDate()} ${MONTHS[d.getMonth()]}`;
-
-  if (ms) ms.textContent = selectedSlot.time;
-  if (md) md.textContent = dateLabel;
-  if (mp) mp.textContent = selectedPayment;
-  if (mt) mt.textContent = `₹${computeTotal()}`;
-  if (mdur) mdur.textContent = `${selectedDuration} hour${selectedDuration > 1 ? 's' : ''}`;
-
-  const modal = document.getElementById('confirmModal');
-  if (modal) {
-    modal.classList.add('open');
+  function getUserBookings() {
+    try {
+      return JSON.parse(localStorage.getItem('ca_my_bookings') || '[]');
+    } catch (e) {
+      return [];
+    }
   }
-  updateStepIndicator(3);
-}
 
-function closeModal() {
-  const modal = document.getElementById('confirmModal');
-  if (modal) {
-    modal.classList.remove('open');
+  function saveUserBooking(booking) {
+    const list = getUserBookings();
+    list.unshift(booking);
+    try {
+      localStorage.setItem('ca_my_bookings', JSON.stringify(list));
+    } catch (e) {}
   }
-  if (selectedSlot) updateStepIndicator(2);
-}
 
-function confirmBooking() {
-  if (!selectedSlot) return;
-  const btn = document.getElementById('confirmBtn');
-  if (btn) { btn.textContent = 'Processing…'; btn.disabled = true; }
+  function getCurrentUser() {
+    try {
+      return JSON.parse(localStorage.getItem('ca_user') || 'null');
+    } catch (e) {
+      return null;
+    }
+  }
 
-  setTimeout(() => {
-    // Persist
-    persistUserBooking(selectedSlot.uid, selectedSlot.storageKey);
+  function setCurrentUser(user) {
+    state.currentUser = user;
+    if (user) {
+      localStorage.setItem('ca_user', JSON.stringify(user));
+    } else {
+      localStorage.removeItem('ca_user');
+    }
+    updateUserUI();
+  }
 
-    // Update card in-place — keep visible, mark as "Your Booking"
-    const card = document.getElementById('card_' + selectedSlot.uid);
-    if (card) {
-      card.className = 'slot-card booked just-booked';
-      card.style.borderColor = 'var(--green-300)';
-      card.style.background = 'var(--green-50)';
-      card.onclick = null;
-      card.innerHTML = `
-        <div class="slot-status-badge" style="background:var(--green-100);color:var(--green-800);border:1px solid var(--green-300);">
-          <span class="status-dot" style="background:var(--green-600);"></span>Your Booking
-        </div>
-        <div class="slot-time">${selectedSlot.time}</div>
-        <div class="slot-date">${selectedSlot.period} · Confirmed</div>
-        <div class="slot-price" style="color:var(--green-700);">₹${computeTotal()}<span>/${selectedDuration}hr</span></div>
-        <div class="slot-footer">
-          <div style="display:flex;align-items:center;justify-content:center;gap:0.5rem;padding:0.7rem 1rem;background:var(--green-100);border-radius:var(--radius-full);font-size:0.84rem;font-weight:700;color:var(--green-800);">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
-            Booked by You
-          </div>
-        </div>`;
+  // SessionStorage draft persistence
+  function saveDraftSession() {
+    const draft = {
+      dayOffset: state.dayOffset,
+      slotId: state.selectedSlot ? state.selectedSlot.id : null,
+      slotLabel: state.selectedSlot ? state.selectedSlot.label : null,
+      duration: state.selectedDuration,
+      format: state.selectedFormat,
+      paymentMode: state.paymentMode
+    };
+    try {
+      sessionStorage.setItem('ca_draft_booking', JSON.stringify(draft));
+    } catch (e) {}
+  }
+
+  function loadDraftSession() {
+    try {
+      const data = sessionStorage.getItem('ca_draft_booking');
+      if (!data) return null;
+      return JSON.parse(data);
+    } catch (e) {
+      return null;
+    }
+  }
+
+  /* -------------------------------------------------------------
+     DATE & PRICING UTILITIES
+  ------------------------------------------------------------- */
+  function getDateForOffset(offset) {
+    const d = new Date();
+    d.setDate(d.getDate() + offset);
+    return d;
+  }
+
+  function isWeekend(date) {
+    const day = date.getDay();
+    return day === 0 || day === 6; // Sunday or Saturday
+  }
+
+  function getHourlyRate(date) {
+    return isWeekend(date) ? CFG.pricing.weekendPerHour : CFG.pricing.weekdayPerHour;
+  }
+
+  function calculatePricing() {
+    const date = getDateForOffset(state.dayOffset);
+    const hourlyRate = getHourlyRate(date);
+    const total = hourlyRate * state.selectedDuration;
+    const isWknd = isWeekend(date);
+
+    // Calculate advance
+    let advance = Math.round(total * (CFG.pricing.advancePercentage / 100));
+    if (advance < CFG.pricing.advanceMinAmount) {
+      advance = Math.min(total, CFG.pricing.advanceMinAmount);
     }
 
-    // Close modal, reset
-    document.getElementById('confirmModal').classList.remove('open');
-    if (btn) { btn.textContent = 'Confirm Booking'; btn.disabled = false; }
+    const payNow = state.paymentMode === 'full' ? total : advance;
+    const balanceAtVenue = total - payNow;
 
-    showToast('Booking Confirmed!', `${selectedSlot.time} – ${selectedDuration} hour${selectedDuration>1?'s':''} reserved.`);
+    return {
+      date,
+      isWeekend: isWknd,
+      rate: hourlyRate,
+      duration: state.selectedDuration,
+      total,
+      advance,
+      payNow,
+      balanceAtVenue
+    };
+  }
 
-    selectedSlot = null;
-    selectedDuration = 1;
-    updateStepIndicator(1);
-    updatePanel();
-    if(typeof renderMyBookings === 'function') renderMyBookings();
+  /* -------------------------------------------------------------
+     SLOT GENERATION & TEMPORAL FILTERING
+  ------------------------------------------------------------- */
+  function getSlotsForDay(offset) {
+    const targetDate = getDateForOffset(offset);
+    const now = new Date();
+    const isToday = offset === 0;
+    const currentHour = now.getHours();
 
-  }, 1000);
-}
+    const storedBookings = getStoredBookings();
+    const dayKey = `d_${offset}_${targetDate.getFullYear()}_${targetDate.getMonth()}_${targetDate.getDate()}`;
+    const dayBookedList = storedBookings[dayKey] || DEFAULT_SEED_BOOKINGS[offset] || [];
 
-// ============================================================
-// TOAST
-// ============================================================
-function showToast(title, desc) {
-  const toast = document.getElementById('toast');
-  if (!toast) return;
-  const t = toast.querySelector('.toast-title');
-  const d = document.getElementById('toastDesc');
-  if (t) t.textContent = title;
-  if (d) d.textContent = desc;
-  toast.classList.add('show');
-  setTimeout(() => toast.classList.remove('show'), 4500);
-}
+    return HOURLY_SLOTS.map(slot => {
+      // Temporal check: past hour for today?
+      const isPast = isToday && (slot.startHour <= currentHour);
+      const isBooked = isPast || dayBookedList.includes(slot.id);
 
-// ============================================================
-// LIGHTBOX
-// ============================================================
-function openLightbox(src) {
-  const lb = document.getElementById('lightbox');
-  const img = document.getElementById('lightboxImg');
-  if (!lb || !img) return;
-  img.src = src;
-  lb.classList.add('open');
-  document.body.style.overflow = 'hidden';
-}
-
-function closeLightbox() {
-  const lb = document.getElementById('lightbox');
-  if (!lb) return;
-  lb.classList.remove('open');
-  document.body.style.overflow = '';
-}
-
-document.addEventListener('keydown', e => {
-  if (e.key === 'Escape') { closeLightbox(); closeModal(); }
-});
-
-function initGalleryLightbox() {
-  document.querySelectorAll('#turfGallery .gallery-item').forEach(item => {
-    item.addEventListener('click', () => {
-      const src = item.dataset.img || item.querySelector('img')?.src;
-      if (src) openLightbox(src);
+      return {
+        ...slot,
+        uid: `${dayKey}_${slot.id}`,
+        dayKey,
+        isPast,
+        isBooked
+      };
     });
-  });
-}
+  }
 
-// ============================================================
-// MY BOOKINGS
-// ============================================================
-function renderMyBookings() {
-  const container = document.getElementById('myBookingsList');
-  const section = document.getElementById('myBookingsSection');
-  if (!container || !section) return;
+  /* -------------------------------------------------------------
+     RENDER: DATE TABS
+  ------------------------------------------------------------- */
+  function renderDateTabs() {
+    const container = document.getElementById('dateTabs');
+    if (!container) return;
 
-  const today = new Date();
-  let mySlots = [];
+    container.innerHTML = '';
+    const today = new Date();
 
-  for (let i = 0; i < 7; i++) {
-    const d = new Date(today); d.setDate(today.getDate() + i);
-    const dateLabel = `${DAYS[d.getDay()]}, ${d.getDate()} ${MONTHS[d.getMonth()]}`;
-    const slotsForDay = getSlotsForDay(i);
-    slotsForDay.forEach(slot => {
-      if (slot.bookedByUser) {
-        mySlots.push({ ...slot, dateLabel });
+    for (let i = 0; i < 7; i++) {
+      const d = new Date(today);
+      d.setDate(today.getDate() + i);
+      const dayName = i === 0 ? 'Today' : (i === 1 ? 'Tmrw' : DAYS[d.getDay()]);
+      const dateNum = d.getDate();
+      const monthName = MONTHS[d.getMonth()];
+      const wknd = isWeekend(d);
+
+      const btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = `date-tab-btn ${i === state.dayOffset ? 'active' : ''}`;
+      btn.setAttribute('role', 'tab');
+      btn.setAttribute('aria-selected', i === state.dayOffset ? 'true' : 'false');
+      btn.setAttribute('aria-label', `${dayName}, ${dateNum} ${monthName}`);
+
+      btn.innerHTML = `
+        <span class="date-tab-day">${dayName}</span>
+        <span class="date-tab-num">${dateNum}</span>
+        <span class="date-tab-tag ${wknd ? 'weekend' : ''}">${wknd ? '₹800' : '₹500'}</span>
+      `;
+
+      btn.addEventListener('click', () => {
+        state.dayOffset = i;
+        state.selectedSlot = null; // reset slot on day change
+        renderDateTabs();
+        renderSlotsGrid();
+        updateSummaryPanel();
+        saveDraftSession();
+      });
+
+      container.appendChild(btn);
+    }
+  }
+
+  /* -------------------------------------------------------------
+     RENDER: SLOTS GRID
+  ------------------------------------------------------------- */
+  function renderSlotsGrid() {
+    const container = document.getElementById('slotsContainer');
+    if (!container) return;
+
+    const slots = getSlotsForDay(state.dayOffset);
+    const groups = {
+      'Morning': [],
+      'Afternoon': [],
+      'Evening': [],
+      'Night Match': []
+    };
+
+    slots.forEach(s => {
+      if (groups[s.period]) groups[s.period].push(s);
+    });
+
+    const periodIcons = {
+      'Morning': `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><line x1="12" y1="2" x2="12" y2="4"/><line x1="12" y1="20" x2="12" y2="22"/><line x1="2" y1="12" x2="4" y2="12"/><line x1="20" y1="12" x2="22" y2="12"/></svg>`,
+      'Afternoon': `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="6"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/></svg>`,
+      'Evening': `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>`,
+      'Night Match': `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>`
+    };
+
+    let html = '';
+
+    for (const [period, list] of Object.entries(groups)) {
+      if (!list.length) continue;
+      html += `
+        <div class="daypart-group">
+          <div class="daypart-header">
+            ${periodIcons[period] || ''}
+            <span>${period} (${period === 'Night Match' ? 'Floodlit' : list.length + ' Slots'})</span>
+          </div>
+          <div class="slots-grid">
+      `;
+
+      list.forEach(slot => {
+        const isSelected = state.selectedSlot && state.selectedSlot.id === slot.id;
+        const disabledAttr = slot.isBooked ? 'disabled' : '';
+        const statusLabel = slot.isPast ? 'Expired' : (slot.isBooked ? 'Booked' : 'Available');
+        const statusClass = slot.isBooked ? 'taken' : 'avail';
+
+        html += `
+          <button type="button"
+                  class="slot-btn ${isSelected ? 'selected' : ''} ${slot.isBooked ? 'booked' : ''}"
+                  data-slot-id="${slot.id}"
+                  data-slot-label="${slot.label} – ${slot.end}"
+                  data-start-hour="${slot.startHour}"
+                  data-period="${slot.period}"
+                  data-daykey="${slot.dayKey}"
+                  ${disabledAttr}
+                  aria-label="${slot.label} to ${slot.end}, ${statusLabel}">
+            <div class="slot-time-text">${slot.label}</div>
+            <div class="slot-status-pill ${statusClass}">${statusLabel}</div>
+          </button>
+        `;
+      });
+
+      html += `</div></div>`;
+    }
+
+    container.innerHTML = html;
+
+    // Attach click handlers
+    container.querySelectorAll('.slot-btn:not(:disabled)').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const id = btn.dataset.slotId;
+        const label = btn.dataset.slotLabel;
+        const period = btn.dataset.period;
+        const startHour = parseInt(btn.dataset.startHour, 10);
+        const dayKey = btn.dataset.daykey;
+
+        state.selectedSlot = { id, label, period, startHour, dayKey };
+        renderSlotsGrid();
+        updateSummaryPanel();
+        saveDraftSession();
+
+        // On mobile, smooth scroll to summary panel if below view
+        if (window.innerWidth < 960) {
+          const panel = document.getElementById('bookingPanel');
+          if (panel) {
+            panel.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+          }
+        }
+      });
+    });
+  }
+
+  /* -------------------------------------------------------------
+     RENDER: SUMMARY PANEL & PRICING
+  ------------------------------------------------------------- */
+  function updateSummaryPanel() {
+    const emptyState = document.getElementById('summaryEmpty');
+    const filledState = document.getElementById('summaryFilled');
+    const bookBtn = document.getElementById('confirmBookBtn');
+    const stickyAmount = document.getElementById('stickyBarAmount');
+
+    const pricing = calculatePricing();
+
+    // Update bottom mobile sticky price bar
+    if (stickyAmount) {
+      stickyAmount.innerHTML = `${CFG.pricing.currencySymbol}${pricing.rate}<span>/hr</span>`;
+    }
+
+    if (!state.selectedSlot) {
+      if (emptyState) emptyState.style.display = 'block';
+      if (filledState) filledState.style.display = 'none';
+      if (bookBtn) {
+        bookBtn.disabled = true;
+        bookBtn.innerHTML = `Select a Time Slot First`;
       }
+      return;
+    }
+
+    if (emptyState) emptyState.style.display = 'none';
+    if (filledState) filledState.style.display = 'block';
+
+    // Format selected date
+    const d = pricing.date;
+    const dateStr = `${DAYS[d.getDay()]}, ${d.getDate()} ${MONTHS[d.getMonth()]}`;
+
+    const slotTimeEl = document.getElementById('summarySlotTime');
+    const slotDateEl = document.getElementById('summarySlotDate');
+    const rateTagEl = document.getElementById('summaryRateTag');
+
+    if (slotTimeEl) slotTimeEl.textContent = state.selectedSlot.label;
+    if (slotDateEl) slotDateEl.textContent = `${dateStr} · ${state.selectedSlot.period}`;
+    if (rateTagEl) rateTagEl.textContent = pricing.isWeekend ? 'Weekend Rate (₹800/hr)' : 'Weekday Rate (₹500/hr)';
+
+    // Duration display
+    const durVal = document.getElementById('durationVal');
+    if (durVal) durVal.textContent = `${state.selectedDuration} hour${state.selectedDuration > 1 ? 's' : ''}`;
+
+    // Pricing Breakdown rows
+    const rateRow = document.getElementById('summaryRateRow');
+    const totalRow = document.getElementById('summaryTotalRow');
+    const advanceRow = document.getElementById('summaryAdvanceRow');
+    const balanceRow = document.getElementById('summaryBalanceRow');
+
+    if (rateRow) rateRow.textContent = `₹${pricing.rate} × ${pricing.duration}h`;
+    if (totalRow) totalRow.textContent = `₹${pricing.total}`;
+
+    if (state.paymentMode === 'advance') {
+      if (advanceRow) advanceRow.style.display = 'flex';
+      const advEl = document.getElementById('summaryAdvanceVal');
+      if (advEl) advEl.textContent = `₹${pricing.advance}`;
+
+      if (balanceRow) balanceRow.style.display = 'flex';
+      const balEl = document.getElementById('summaryBalanceVal');
+      if (balEl) balEl.textContent = `₹${pricing.balanceAtVenue}`;
+    } else {
+      if (advanceRow) advanceRow.style.display = 'none';
+      if (balanceRow) balanceRow.style.display = 'none';
+    }
+
+    if (bookBtn) {
+      bookBtn.disabled = false;
+      if (state.paymentMode === 'advance') {
+        bookBtn.innerHTML = `Pay Advance ₹${pricing.payNow} & Book Slot →`;
+      } else {
+        bookBtn.innerHTML = `Confirm Booking — ₹${pricing.total} →`;
+      }
+    }
+  }
+
+  /* -------------------------------------------------------------
+     BOOKING SUBMISSION & WHATSAPP DISPATCH
+  ------------------------------------------------------------- */
+  function handleBookingSubmission() {
+    if (!state.selectedSlot) return;
+
+    const nameInput = document.getElementById('bookName');
+    const phoneInput = document.getElementById('bookPhone');
+    const nameError = document.getElementById('bookNameError');
+    const phoneError = document.getElementById('bookPhoneError');
+
+    const name = nameInput ? nameInput.value.trim() : '';
+    const phone = phoneInput ? phoneInput.value.trim() : '';
+
+    let hasError = false;
+
+    if (!name || name.length < 2) {
+      if (nameError) nameError.textContent = 'Please enter your full name.';
+      if (nameInput) nameInput.classList.add('error');
+      hasError = true;
+    } else {
+      if (nameError) nameError.textContent = '';
+      if (nameInput) nameInput.classList.remove('error');
+    }
+
+    // Indian 10-digit phone validation
+    const phoneRegex = /^[6-9]\d{9}$/;
+    if (!phone || !phoneRegex.test(phone)) {
+      if (phoneError) phoneError.textContent = 'Enter a valid 10-digit Indian phone number.';
+      if (phoneInput) phoneInput.classList.add('error');
+      hasError = true;
+    } else {
+      if (phoneError) phoneError.textContent = '';
+      if (phoneInput) phoneInput.classList.remove('error');
+    }
+
+    if (hasError) return;
+
+    const pricing = calculatePricing();
+    const d = pricing.date;
+    const dateFormatted = `${DAYS[d.getDay()]}, ${d.getDate()} ${MONTHS[d.getMonth()]}`;
+    const bookingRef = `CA-${Date.now().toString().slice(-6)}`;
+
+    const bookingData = {
+      ref: bookingRef,
+      name,
+      phone,
+      slotLabel: state.selectedSlot.label,
+      dateLabel: dateFormatted,
+      format: state.selectedFormat,
+      duration: state.selectedDuration,
+      total: pricing.total,
+      payNow: pricing.payNow,
+      balance: pricing.balanceAtVenue,
+      paymentMode: state.paymentMode,
+      timestamp: new Date().toISOString()
+    };
+
+    // Save in user bookings
+    saveUserBooking(bookingData);
+
+    // Save into day's booked slots
+    const stored = getStoredBookings();
+    if (!stored[state.selectedSlot.dayKey]) stored[state.selectedSlot.dayKey] = [];
+    stored[state.selectedSlot.dayKey].push(state.selectedSlot.id);
+    saveStoredBookings(stored);
+
+    // Build prefilled WhatsApp message
+    const waText = encodeURIComponent(
+      `🏏 *Booking Request — ${CFG.name}*\n` +
+      `---------------------------------\n` +
+      `*Ref:* #${bookingRef}\n` +
+      `*Name:* ${name}\n` +
+      `*Phone:* ${phone}\n` +
+      `*Date:* ${dateFormatted}\n` +
+      `*Slot:* ${state.selectedSlot.label}\n` +
+      `*Format:* ${state.selectedFormat}\n` +
+      `*Duration:* ${state.selectedDuration} Hour(s)\n` +
+      `*Total Price:* ₹${pricing.total}\n` +
+      `*Advance (${state.paymentMode === 'full' ? 'Full Paid' : '25%'}):* ₹${pricing.payNow}\n` +
+      `*Balance at Venue:* ₹${pricing.balanceAtVenue}\n` +
+      `---------------------------------\n` +
+      `Please confirm my slot reservation!`
+    );
+
+    const waUrl = `https://wa.me/${CFG.contact.whatsappNumber}?text=${waText}`;
+
+    // Show confirmation modal
+    showConfirmationModal(bookingData, waUrl);
+
+    // Clear draft session & re-render
+    state.selectedSlot = null;
+    sessionStorage.removeItem('ca_draft_booking');
+    renderSlotsGrid();
+    updateSummaryPanel();
+    showToast('Slot Booked!', 'Your reservation has been recorded.');
+  }
+
+  function showConfirmationModal(b, waUrl) {
+    const modal = document.getElementById('confirmationModal');
+    if (!modal) return;
+
+    const refEl = document.getElementById('confRef');
+    const slotEl = document.getElementById('confSlot');
+    const dateEl = document.getElementById('confDate');
+    const nameEl = document.getElementById('confName');
+    const totalEl = document.getElementById('confTotal');
+    const advanceEl = document.getElementById('confAdvance');
+    const balanceEl = document.getElementById('confBalance');
+    const waLink = document.getElementById('confWhatsAppLink');
+
+    if (refEl) refEl.textContent = `#${b.ref}`;
+    if (slotEl) slotEl.textContent = b.slotLabel;
+    if (dateEl) dateEl.textContent = b.dateLabel;
+    if (nameEl) nameEl.textContent = `${b.name} (${b.phone})`;
+    if (totalEl) totalEl.textContent = `₹${b.total}`;
+    if (advanceEl) advanceEl.textContent = `₹${b.payNow} (${b.paymentMode === 'full' ? 'Full' : 'Advance'})`;
+    if (balanceEl) balanceEl.textContent = `₹${b.balance}`;
+
+    if (waLink) {
+      waLink.href = waUrl;
+      waLink.target = '_blank';
+      waLink.rel = 'noopener noreferrer';
+    }
+
+    modal.classList.add('open');
+  }
+
+  /* -------------------------------------------------------------
+     AUTHENTICATION SYSTEM (Login, Sign-Up, Guest Mode)
+  ------------------------------------------------------------- */
+  function initAuth() {
+    state.currentUser = getCurrentUser();
+    updateUserUI();
+
+    const authModal = document.getElementById('authModal');
+    const openBtn = document.getElementById('userAuthBtn');
+    const closeBtn = document.getElementById('authCloseBtn');
+    const tabLogin = document.getElementById('tabLogin');
+    const tabSignup = document.getElementById('tabSignup');
+    const formLogin = document.getElementById('formLogin');
+    const formSignup = document.getElementById('formSignup');
+
+    if (openBtn) {
+      openBtn.addEventListener('click', () => {
+        if (state.currentUser) {
+          // Open My Bookings if logged in
+          openMyBookings();
+        } else {
+          // Open Login Modal
+          if (authModal) authModal.classList.add('open');
+        }
+      });
+    }
+
+    if (closeBtn && authModal) {
+      closeBtn.addEventListener('click', () => authModal.classList.remove('open'));
+    }
+
+    if (tabLogin && tabSignup && formLogin && formSignup) {
+      tabLogin.addEventListener('click', () => {
+        tabLogin.classList.add('active');
+        tabSignup.classList.remove('active');
+        formLogin.style.display = 'flex';
+        formSignup.style.display = 'none';
+      });
+
+      tabSignup.addEventListener('click', () => {
+        tabSignup.classList.add('active');
+        tabLogin.classList.remove('active');
+        formSignup.style.display = 'flex';
+        formLogin.style.display = 'none';
+      });
+
+      // Submit Login
+      formLogin.addEventListener('submit', (e) => {
+        e.preventDefault();
+        const phone = document.getElementById('loginPhone').value.trim();
+        const name = document.getElementById('loginName')?.value.trim() || 'Player';
+
+        if (phone.length === 10) {
+          setCurrentUser({ name, phone });
+          if (authModal) authModal.classList.remove('open');
+          showToast(`Welcome back, ${name}!`);
+        }
+      });
+
+      // Submit Sign-Up
+      formSignup.addEventListener('submit', (e) => {
+        e.preventDefault();
+        const name = document.getElementById('signupName').value.trim();
+        const phone = document.getElementById('signupPhone').value.trim();
+        const email = document.getElementById('signupEmail')?.value.trim() || '';
+
+        if (name && phone.length === 10) {
+          setCurrentUser({ name, phone, email });
+          if (authModal) authModal.classList.remove('open');
+          showToast(`Account created for ${name}!`);
+        }
+      });
+    }
+  }
+
+  function updateUserUI() {
+    const userBtn = document.getElementById('userAuthBtn');
+    const nameInput = document.getElementById('bookName');
+    const phoneInput = document.getElementById('bookPhone');
+
+    if (!userBtn) return;
+
+    if (state.currentUser) {
+      userBtn.innerHTML = `
+        <span class="user-avatar-initials">${state.currentUser.name.charAt(0).toUpperCase()}</span>
+        <span>${state.currentUser.name.split(' ')[0]} (My Bookings)</span>
+      `;
+      if (nameInput && !nameInput.value) nameInput.value = state.currentUser.name;
+      if (phoneInput && !phoneInput.value) phoneInput.value = state.currentUser.phone;
+    } else {
+      userBtn.innerHTML = `
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+        <span>Login / Sign Up</span>
+      `;
+    }
+  }
+
+  function openMyBookings() {
+    const modal = document.getElementById('myBookingsModal');
+    const listEl = document.getElementById('myBookingsList');
+    if (!modal || !listEl) return;
+
+    const bookings = getUserBookings();
+    if (!bookings.length) {
+      listEl.innerHTML = `
+        <div style="text-align:center;padding:2rem;color:var(--text-muted);">
+          <p>No slots booked yet.</p>
+          <button class="btn btn-primary btn-sm" style="margin-top:1rem;" onclick="document.getElementById('myBookingsModal').classList.remove('open');document.getElementById('booking').scrollIntoView({behavior:'smooth'});">Book a Slot Now</button>
+        </div>
+      `;
+    } else {
+      listEl.innerHTML = bookings.map(b => `
+        <div class="booked-slot-item">
+          <div>
+            <div style="font-family:var(--font-display);font-size:1.15rem;font-weight:700;color:var(--text);">${b.slotLabel}</div>
+            <div style="font-size:0.85rem;color:var(--text-muted);">${b.dateLabel} · ${b.format}</div>
+            <div style="font-size:0.75rem;color:var(--text-dim);margin-top:2px;">Ref: #${b.ref}</div>
+          </div>
+          <div style="text-align:right;">
+            <div style="font-family:var(--font-display);font-size:1.25rem;font-weight:800;color:var(--accent);">₹${b.total}</div>
+            <div style="font-size:0.72rem;font-weight:700;color:var(--state-avail);">Advance Paid: ₹${b.payNow}</div>
+            <div style="font-size:0.72rem;color:var(--text-dim);">Due: ₹${b.balance}</div>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    modal.classList.add('open');
+  }
+
+  /* -------------------------------------------------------------
+     LIGHTBOX WITH KEYBOARD & MOBILE SWIPE SUPPORT
+  ------------------------------------------------------------- */
+  function initLightbox() {
+    const modal = document.getElementById('lightboxModal');
+    const imgEl = document.getElementById('lightboxImg');
+    const captionEl = document.getElementById('lightboxCaption');
+    const closeBtn = document.getElementById('lightboxClose');
+    const prevBtn = document.getElementById('lightboxPrev');
+    const nextBtn = document.getElementById('lightboxNext');
+
+    if (!modal || !imgEl) return;
+
+    function showImage(idx) {
+      state.lightboxIndex = (idx + GALLERY_ITEMS.length) % GALLERY_ITEMS.length;
+      const item = GALLERY_ITEMS[state.lightboxIndex];
+      imgEl.src = item.src;
+      imgEl.alt = item.title;
+      if (captionEl) captionEl.textContent = item.title;
+      modal.classList.add('open');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeLightbox() {
+      modal.classList.remove('open');
+      document.body.style.overflow = '';
+    }
+
+    // Attach click to gallery items
+    document.querySelectorAll('[data-gallery-index]').forEach(el => {
+      el.addEventListener('click', () => {
+        const idx = parseInt(el.dataset.galleryIndex, 10);
+        showImage(idx);
+      });
+    });
+
+    if (closeBtn) closeBtn.addEventListener('click', closeLightbox);
+    if (prevBtn) prevBtn.addEventListener('click', () => showImage(state.lightboxIndex - 1));
+    if (nextBtn) nextBtn.addEventListener('click', () => showImage(state.lightboxIndex + 1));
+
+    // Keyboard support: ESC, ArrowLeft, ArrowRight
+    document.addEventListener('keydown', (e) => {
+      if (!modal.classList.contains('open')) return;
+      if (e.key === 'Escape') closeLightbox();
+      if (e.key === 'ArrowLeft') showImage(state.lightboxIndex - 1);
+      if (e.key === 'ArrowRight') showImage(state.lightboxIndex + 1);
+    });
+
+    // Mobile touch swipe support
+    let touchStartX = 0;
+    let touchEndX = 0;
+
+    modal.addEventListener('touchstart', (e) => {
+      touchStartX = e.changedTouches[0].screenX;
+    }, { passive: true });
+
+    modal.addEventListener('touchend', (e) => {
+      touchEndX = e.changedTouches[0].screenX;
+      handleSwipe();
+    }, { passive: true });
+
+    function handleSwipe() {
+      const diff = touchEndX - touchStartX;
+      if (Math.abs(diff) > 50) {
+        if (diff > 0) showImage(state.lightboxIndex - 1); // Swipe right -> prev
+        else showImage(state.lightboxIndex + 1);          // Swipe left -> next
+      }
+    }
+  }
+
+  /* -------------------------------------------------------------
+     TOAST NOTIFICATIONS
+  ------------------------------------------------------------- */
+  function showToast(title, desc = '') {
+    const toast = document.getElementById('toastMsg');
+    if (!toast) return;
+
+    const tEl = document.getElementById('toastTitle');
+    const dEl = document.getElementById('toastDesc');
+
+    if (tEl) tEl.textContent = title;
+    if (dEl) dEl.textContent = desc;
+
+    toast.classList.add('show');
+    setTimeout(() => {
+      toast.classList.remove('show');
+    }, 4000);
+  }
+
+  /* -------------------------------------------------------------
+     MOBILE MENU & NAVIGATION TOGGLE
+  ------------------------------------------------------------- */
+  function initNavigation() {
+    const toggleBtn = document.getElementById('navToggleBtn');
+    const drawer = document.getElementById('mobileNavDrawer');
+    const drawerClose = document.getElementById('mobileDrawerClose');
+
+    if (toggleBtn && drawer) {
+      toggleBtn.addEventListener('click', () => {
+        drawer.classList.add('open');
+        document.body.style.overflow = 'hidden';
+      });
+    }
+
+    if (drawerClose && drawer) {
+      drawerClose.addEventListener('click', () => {
+        drawer.classList.remove('open');
+        document.body.style.overflow = '';
+      });
+    }
+
+    // Close on link click
+    document.querySelectorAll('.mobile-nav-link').forEach(link => {
+      link.addEventListener('click', () => {
+        if (drawer) {
+          drawer.classList.remove('open');
+          document.body.style.overflow = '';
+        }
+      });
     });
   }
 
-  if (mySlots.length === 0) {
-    section.style.display = 'block';
-    container.innerHTML = `
-      <div style="grid-column: 1 / -1; padding: 3rem; text-align: center; background: white; border: 1px dashed var(--green-200); border-radius: var(--radius-lg);">
-        <div style="width:48px; height:48px; border-radius:50%; background:var(--green-50); color:var(--green-600); display:flex; align-items:center; justify-content:center; margin:0 auto 1rem;">
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
-        </div>
-        <h4 style="font-family:var(--font-primary); font-size:1.1rem; color:var(--gray-800); margin-bottom:0.4rem;">No Bookings Yet</h4>
-        <p style="color:var(--gray-500); font-size:0.9rem;">Your confirmed slots will appear here.</p>
-      </div>
-    `;
-    return;
-  }
+  /* -------------------------------------------------------------
+     INIT APP ON DOM LOAD
+  ------------------------------------------------------------- */
+  document.addEventListener('DOMContentLoaded', () => {
+    // Check for draft session restore
+    const draft = loadDraftSession();
+    if (draft) {
+      state.dayOffset = draft.dayOffset || 0;
+      state.selectedDuration = draft.duration || 1;
+      state.selectedFormat = draft.format || 'Box Cricket (6–8 a side)';
+      state.paymentMode = draft.paymentMode || 'advance';
+    }
 
-  section.style.display = 'block';
-  
-  container.innerHTML = mySlots.map(slot => `
-    <div class="slot-card user-booked" style="border-color:var(--green-300);background:var(--green-50);">
-      <div class="slot-status-badge" style="background:var(--green-100);color:var(--green-800);border:1px solid var(--green-300);">
-        <span class="status-dot" style="background:var(--green-600);"></span>Confirmed
-      </div>
-      <div class="slot-time" style="font-family:var(--font-primary);font-size:1.1rem;font-weight:800;color:var(--gray-800);margin-top:0.5rem;margin-bottom:0.2rem;">${slot.label} – ${slot.end}</div>
-      <div class="slot-date" style="font-size:0.85rem;color:var(--gray-500);margin-bottom:0.75rem;">${slot.dateLabel} · ${slot.period}</div>
-      <div class="slot-price" style="font-family:var(--font-primary);font-size:1.1rem;font-weight:800;color:var(--green-700);margin-bottom:1rem;">₹${BASE_PRICE}<span style="font-size:0.75rem;font-weight:500;color:var(--gray-400);">/hr</span></div>
-      <div class="slot-footer">
-        <div style="display:flex;align-items:center;justify-content:center;gap:0.5rem;padding:0.75rem 1rem;background:var(--green-100);border-radius:var(--radius-full);font-size:0.85rem;font-weight:700;color:var(--green-800);">
-          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
-          Booked by You
-        </div>
-      </div>
-    </div>
-  `).join('');
-}
+    // Format pills selector
+    document.querySelectorAll('.format-pill').forEach(pill => {
+      pill.addEventListener('click', () => {
+        document.querySelectorAll('.format-pill').forEach(p => p.classList.remove('active'));
+        pill.classList.add('active');
+        state.selectedFormat = pill.dataset.format;
+        saveDraftSession();
+      });
+    });
 
-// ============================================================
-// INIT
-// ============================================================
-document.addEventListener('DOMContentLoaded', () => {
-  initNavbar();
-  initMobileMenu();
-  initScrollAnimations();
-  initHero();
-  initHomeSlots();
-  initBookingPage();
-  initGalleryLightbox();
-  renderMyBookings();
-});
+    // Duration Stepper
+    const durMinus = document.getElementById('durMinus');
+    const durPlus = document.getElementById('durPlus');
+    if (durMinus && durPlus) {
+      durMinus.addEventListener('click', () => {
+        if (state.selectedDuration > 1) {
+          state.selectedDuration--;
+          updateSummaryPanel();
+          saveDraftSession();
+        }
+      });
+      durPlus.addEventListener('click', () => {
+        if (state.selectedDuration < 4) {
+          state.selectedDuration++;
+          updateSummaryPanel();
+          saveDraftSession();
+        }
+      });
+    }
+
+    // Advance Payment Mode Toggles
+    const payAdvanceBtn = document.getElementById('payModeAdvance');
+    const payFullBtn = document.getElementById('payModeFull');
+    if (payAdvanceBtn && payFullBtn) {
+      payAdvanceBtn.addEventListener('click', () => {
+        payAdvanceBtn.classList.add('active');
+        payFullBtn.classList.remove('active');
+        state.paymentMode = 'advance';
+        updateSummaryPanel();
+        saveDraftSession();
+      });
+      payFullBtn.addEventListener('click', () => {
+        payFullBtn.classList.add('active');
+        payAdvanceBtn.classList.remove('active');
+        state.paymentMode = 'full';
+        updateSummaryPanel();
+        saveDraftSession();
+      });
+    }
+
+    // Booking Submission Button
+    const confirmBtn = document.getElementById('confirmBookBtn');
+    if (confirmBtn) {
+      confirmBtn.addEventListener('click', handleBookingSubmission);
+    }
+
+    // Modal Close buttons
+    document.querySelectorAll('[data-close-modal]').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const modalId = btn.dataset.closeModal;
+        const modal = document.getElementById(modalId);
+        if (modal) modal.classList.remove('open');
+      });
+    });
+
+    // Logout trigger if exists
+    const logoutBtn = document.getElementById('userLogoutBtn');
+    if (logoutBtn) {
+      logoutBtn.addEventListener('click', () => {
+        setCurrentUser(null);
+        const myBookingsModal = document.getElementById('myBookingsModal');
+        if (myBookingsModal) myBookingsModal.classList.remove('open');
+        showToast('Logged out successfully');
+      });
+    }
+
+    // Initialize all components
+    renderDateTabs();
+    renderSlotsGrid();
+    updateSummaryPanel();
+    initAuth();
+    initLightbox();
+    initNavigation();
+  });
+
+})();
