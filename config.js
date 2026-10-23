@@ -22,9 +22,9 @@ const TURF_CONFIG = {
 
   // Contact & WhatsApp
   contact: {
-    phone: "+91 98230 45678",
-    phoneRaw: "9823045678",
-    whatsappNumber: "919823045678", // Country code + 10 digits, no + or spaces
+    phone: "+91 96047 15698",
+    phoneRaw: "9604715698",
+    whatsappNumber: "919604715698", // Country code + 10 digits, no + or spaces
     email: "play@casportsarena.in",
     instagram: "casportsarena"
   },

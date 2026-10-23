@@ -1,15 +1,15 @@
 /**
  * CA Sports Arena - Core Application Logic
- * Mobile-first, responsive slot engine, advance payment, auth, and WhatsApp dispatch.
+ * Green & White Aesthetic, Dynamic Slots, Mock Advance Payment Flow, WhatsApp Integration.
  */
 'use strict';
 
 (function () {
-  // Safe config fallback
+  // Safe config fallback with updated phone 9604715698
   const CFG = window.TURF_CONFIG || {
     name: "CA Sports Arena",
     shortName: "CA Turf",
-    contact: { whatsappNumber: "919823045678", phone: "+91 98230 45678" },
+    contact: { whatsappNumber: "919604715698", phone: "+91 96047 15698" },
     pricing: { weekdayPerHour: 500, weekendPerHour: 800, advancePercentage: 25, advanceMinAmount: 200 }
   };
 
@@ -42,7 +42,7 @@
     { id: 'h23', startHour: 23, label: '11:00 PM', end: '12:00 AM', period: 'Night Match' }
   ];
 
-  // Pre-seeded booked slots for demonstration
+  // Pre-seeded booked slots for realistic demonstration
   const DEFAULT_SEED_BOOKINGS = {
     0: ['h08', 'h18', 'h20'],
     1: ['h07', 'h19'],
@@ -57,10 +57,11 @@
     selectedFormat: 'Box Cricket (6–8 a side)',
     paymentMode: 'advance', // 'advance' (25% / ₹200 min) or 'full'
     currentUser: null,
-    lightboxIndex: 0
+    lightboxIndex: 0,
+    pendingBooking: null
   };
 
-  // Gallery images list for lightbox
+  // Gallery items for lightbox
   const GALLERY_ITEMS = [
     { src: 'images/night_action.webp', fallback: 'images/night_action.png', title: 'Night Action Under 500 LUX Floodlights' },
     { src: 'images/hero_aerial.webp', fallback: 'images/hero_aerial.png', title: 'Full Arena Aerial View' },
@@ -121,7 +122,6 @@
     updateUserUI();
   }
 
-  // SessionStorage draft persistence
   function saveDraftSession() {
     const draft = {
       dayOffset: state.dayOffset,
@@ -170,7 +170,7 @@
     const total = hourlyRate * state.selectedDuration;
     const isWknd = isWeekend(date);
 
-    // Calculate advance
+    // Calculate advance (25% or min ₹200)
     let advance = Math.round(total * (CFG.pricing.advancePercentage / 100));
     if (advance < CFG.pricing.advanceMinAmount) {
       advance = Math.min(total, CFG.pricing.advanceMinAmount);
@@ -205,7 +205,6 @@
     const dayBookedList = storedBookings[dayKey] || DEFAULT_SEED_BOOKINGS[offset] || [];
 
     return HOURLY_SLOTS.map(slot => {
-      // Temporal check: past hour for today?
       const isPast = isToday && (slot.startHour <= currentHour);
       const isBooked = isPast || dayBookedList.includes(slot.id);
 
@@ -247,12 +246,12 @@
       btn.innerHTML = `
         <span class="date-tab-day">${dayName}</span>
         <span class="date-tab-num">${dateNum}</span>
-        <span class="date-tab-tag ${wknd ? 'weekend' : ''}">${wknd ? '₹800' : '₹500'}</span>
+        <span class="date-tab-tag ${wknd ? 'weekend' : ''}">${wknd ? '₹800/hr' : '₹500/hr'}</span>
       `;
 
       btn.addEventListener('click', () => {
         state.dayOffset = i;
-        state.selectedSlot = null; // reset slot on day change
+        state.selectedSlot = null;
         renderDateTabs();
         renderSlotsGrid();
         updateSummaryPanel();
@@ -297,7 +296,7 @@
         <div class="daypart-group">
           <div class="daypart-header">
             ${periodIcons[period] || ''}
-            <span>${period} (${period === 'Night Match' ? 'Floodlit' : list.length + ' Slots'})</span>
+            <span>${period} (${period === 'Night Match' ? 'Floodlit Session' : list.length + ' Slots'})</span>
           </div>
           <div class="slots-grid">
       `;
@@ -305,7 +304,7 @@
       list.forEach(slot => {
         const isSelected = state.selectedSlot && state.selectedSlot.id === slot.id;
         const disabledAttr = slot.isBooked ? 'disabled' : '';
-        const statusLabel = slot.isPast ? 'Expired' : (slot.isBooked ? 'Booked' : 'Available');
+        const statusLabel = slot.isPast ? 'Past Slot' : (slot.isBooked ? 'Booked' : 'Available');
         const statusClass = slot.isBooked ? 'taken' : 'avail';
 
         html += `
@@ -329,7 +328,7 @@
 
     container.innerHTML = html;
 
-    // Attach click handlers
+    // Attach click listeners to available slots
     container.querySelectorAll('.slot-btn:not(:disabled)').forEach(btn => {
       btn.addEventListener('click', () => {
         const id = btn.dataset.slotId;
@@ -343,7 +342,6 @@
         updateSummaryPanel();
         saveDraftSession();
 
-        // On mobile, smooth scroll to summary panel if below view
         if (window.innerWidth < 960) {
           const panel = document.getElementById('bookingPanel');
           if (panel) {
@@ -365,9 +363,8 @@
 
     const pricing = calculatePricing();
 
-    // Update bottom mobile sticky price bar
     if (stickyAmount) {
-      stickyAmount.innerHTML = `${CFG.pricing.currencySymbol}${pricing.rate}<span>/hr</span>`;
+      stickyAmount.innerHTML = `₹${pricing.rate}<span>/hr</span>`;
     }
 
     if (!state.selectedSlot) {
@@ -383,7 +380,6 @@
     if (emptyState) emptyState.style.display = 'none';
     if (filledState) filledState.style.display = 'block';
 
-    // Format selected date
     const d = pricing.date;
     const dateStr = `${DAYS[d.getDay()]}, ${d.getDate()} ${MONTHS[d.getMonth()]}`;
 
@@ -395,11 +391,9 @@
     if (slotDateEl) slotDateEl.textContent = `${dateStr} · ${state.selectedSlot.period}`;
     if (rateTagEl) rateTagEl.textContent = pricing.isWeekend ? 'Weekend Rate (₹800/hr)' : 'Weekday Rate (₹500/hr)';
 
-    // Duration display
     const durVal = document.getElementById('durationVal');
     if (durVal) durVal.textContent = `${state.selectedDuration} hour${state.selectedDuration > 1 ? 's' : ''}`;
 
-    // Pricing Breakdown rows
     const rateRow = document.getElementById('summaryRateRow');
     const totalRow = document.getElementById('summaryTotalRow');
     const advanceRow = document.getElementById('summaryAdvanceRow');
@@ -424,15 +418,15 @@
     if (bookBtn) {
       bookBtn.disabled = false;
       if (state.paymentMode === 'advance') {
-        bookBtn.innerHTML = `Pay Advance ₹${pricing.payNow} & Book Slot →`;
+        bookBtn.innerHTML = `Proceed to Pay Advance (₹${pricing.payNow}) →`;
       } else {
-        bookBtn.innerHTML = `Confirm Booking — ₹${pricing.total} →`;
+        bookBtn.innerHTML = `Proceed to Pay Full Fee (₹${pricing.total}) →`;
       }
     }
   }
 
   /* -------------------------------------------------------------
-     BOOKING SUBMISSION & WHATSAPP DISPATCH
+     STEP 1: PREPARE BOOKING & OPEN MOCK PAYMENT MODAL
   ------------------------------------------------------------- */
   function handleBookingSubmission() {
     if (!state.selectedSlot) return;
@@ -448,7 +442,7 @@
     let hasError = false;
 
     if (!name || name.length < 2) {
-      if (nameError) nameError.textContent = 'Please enter your full name.';
+      if (nameError) nameError.textContent = 'Please enter player or team name.';
       if (nameInput) nameInput.classList.add('error');
       hasError = true;
     } else {
@@ -456,10 +450,9 @@
       if (nameInput) nameInput.classList.remove('error');
     }
 
-    // Indian 10-digit phone validation
     const phoneRegex = /^[6-9]\d{9}$/;
     if (!phone || !phoneRegex.test(phone)) {
-      if (phoneError) phoneError.textContent = 'Enter a valid 10-digit Indian phone number.';
+      if (phoneError) phoneError.textContent = 'Please enter a valid 10-digit Indian phone number.';
       if (phoneInput) phoneInput.classList.add('error');
       hasError = true;
     } else {
@@ -472,9 +465,9 @@
     const pricing = calculatePricing();
     const d = pricing.date;
     const dateFormatted = `${DAYS[d.getDay()]}, ${d.getDate()} ${MONTHS[d.getMonth()]}`;
-    const bookingRef = `CA-${Date.now().toString().slice(-6)}`;
+    const bookingRef = `CA-${Date.now().toString().slice(-5)}`;
 
-    const bookingData = {
+    state.pendingBooking = {
       ref: bookingRef,
       name,
       phone,
@@ -486,47 +479,81 @@
       payNow: pricing.payNow,
       balance: pricing.balanceAtVenue,
       paymentMode: state.paymentMode,
+      dayKey: state.selectedSlot.dayKey,
+      slotId: state.selectedSlot.id,
       timestamp: new Date().toISOString()
     };
 
+    // Open Interactive Mock Payment Modal
+    openMockPaymentModal(state.pendingBooking);
+  }
+
+  /* -------------------------------------------------------------
+     MOCK PAYMENT MODAL CONTROLS
+  ------------------------------------------------------------- */
+  function openMockPaymentModal(b) {
+    const modal = document.getElementById('mockPaymentModal');
+    if (!modal) return;
+
+    const amtEl = document.getElementById('mockPayAmount');
+    const refEl = document.getElementById('mockPayRef');
+    const descEl = document.getElementById('mockPayDesc');
+
+    if (amtEl) amtEl.textContent = `₹${b.payNow}`;
+    if (refEl) refEl.textContent = `#${b.ref}`;
+    if (descEl) descEl.textContent = `${b.dateLabel} · ${b.slotLabel} (${b.format})`;
+
+    modal.classList.add('open');
+    document.body.style.overflow = 'hidden';
+  }
+
+  function completeMockPayment() {
+    if (!state.pendingBooking) return;
+    const b = state.pendingBooking;
+
     // Save in user bookings
-    saveUserBooking(bookingData);
+    saveUserBooking(b);
 
     // Save into day's booked slots
     const stored = getStoredBookings();
-    if (!stored[state.selectedSlot.dayKey]) stored[state.selectedSlot.dayKey] = [];
-    stored[state.selectedSlot.dayKey].push(state.selectedSlot.id);
+    if (!stored[b.dayKey]) stored[b.dayKey] = [];
+    stored[b.dayKey].push(b.slotId);
     saveStoredBookings(stored);
 
-    // Build prefilled WhatsApp message
+    // Build prefilled WhatsApp message targeting 9604715698
     const waText = encodeURIComponent(
-      `🏏 *Booking Request — ${CFG.name}*\n` +
+      `🏏 *Match Booking Request — ${CFG.name}*\n` +
       `---------------------------------\n` +
-      `*Ref:* #${bookingRef}\n` +
-      `*Name:* ${name}\n` +
-      `*Phone:* ${phone}\n` +
-      `*Date:* ${dateFormatted}\n` +
-      `*Slot:* ${state.selectedSlot.label}\n` +
-      `*Format:* ${state.selectedFormat}\n` +
-      `*Duration:* ${state.selectedDuration} Hour(s)\n` +
-      `*Total Price:* ₹${pricing.total}\n` +
-      `*Advance (${state.paymentMode === 'full' ? 'Full Paid' : '25%'}):* ₹${pricing.payNow}\n` +
-      `*Balance at Venue:* ₹${pricing.balanceAtVenue}\n` +
+      `*Booking Ref:* #${b.ref}\n` +
+      `*Player Name:* ${b.name}\n` +
+      `*Contact:* ${b.phone}\n` +
+      `*Date:* ${b.dateLabel}\n` +
+      `*Slot Time:* ${b.slotLabel}\n` +
+      `*Sport / Format:* ${b.format}\n` +
+      `*Duration:* ${b.duration} Hour(s)\n` +
+      `*Total Price:* ₹${b.total}\n` +
+      `*Advance Paid:* ₹${b.payNow} (${b.paymentMode === 'full' ? 'Full Paid' : '25% Advance'})\n` +
+      `*Balance at Venue:* ₹${b.balance}\n` +
       `---------------------------------\n` +
-      `Please confirm my slot reservation!`
+      `Hi, I have completed the online advance reservation. Please send entry pass confirmation!`
     );
 
     const waUrl = `https://wa.me/${CFG.contact.whatsappNumber}?text=${waText}`;
 
-    // Show confirmation modal
-    showConfirmationModal(bookingData, waUrl);
+    // Close Mock Payment Modal
+    const payModal = document.getElementById('mockPaymentModal');
+    if (payModal) payModal.classList.remove('open');
 
-    // Clear draft session & re-render
+    // Open Confirmation Slip
+    showConfirmationModal(b, waUrl);
+
+    // Reset slot selection and re-render
     state.selectedSlot = null;
+    state.pendingBooking = null;
     sessionStorage.removeItem('ca_draft_booking');
     renderSlotsGrid();
     updateSummaryPanel();
-    showToast('Slot Booked!', 'Your reservation has been recorded.');
+    showToast('Payment Verified!', 'Your turf slot is locked and confirmed.');
   }
 
   function showConfirmationModal(b, waUrl) {
@@ -547,7 +574,7 @@
     if (dateEl) dateEl.textContent = b.dateLabel;
     if (nameEl) nameEl.textContent = `${b.name} (${b.phone})`;
     if (totalEl) totalEl.textContent = `₹${b.total}`;
-    if (advanceEl) advanceEl.textContent = `₹${b.payNow} (${b.paymentMode === 'full' ? 'Full' : 'Advance'})`;
+    if (advanceEl) advanceEl.textContent = `₹${b.payNow} (Paid)`;
     if (balanceEl) balanceEl.textContent = `₹${b.balance}`;
 
     if (waLink) {
@@ -557,10 +584,11 @@
     }
 
     modal.classList.add('open');
+    document.body.style.overflow = 'hidden';
   }
 
   /* -------------------------------------------------------------
-     AUTHENTICATION SYSTEM (Login, Sign-Up, Guest Mode)
+     AUTHENTICATION SYSTEM (Login, Sign-Up)
   ------------------------------------------------------------- */
   function initAuth() {
     state.currentUser = getCurrentUser();
@@ -577,10 +605,8 @@
     if (openBtn) {
       openBtn.addEventListener('click', () => {
         if (state.currentUser) {
-          // Open My Bookings if logged in
           openMyBookings();
         } else {
-          // Open Login Modal
           if (authModal) authModal.classList.add('open');
         }
       });
@@ -605,7 +631,6 @@
         formLogin.style.display = 'none';
       });
 
-      // Submit Login
       formLogin.addEventListener('submit', (e) => {
         e.preventDefault();
         const phone = document.getElementById('loginPhone').value.trim();
@@ -618,7 +643,6 @@
         }
       });
 
-      // Submit Sign-Up
       formSignup.addEventListener('submit', (e) => {
         e.preventDefault();
         const name = document.getElementById('signupName').value.trim();
@@ -664,33 +688,34 @@
     const bookings = getUserBookings();
     if (!bookings.length) {
       listEl.innerHTML = `
-        <div style="text-align:center;padding:2rem;color:var(--text-muted);">
+        <div style="text-align:center;padding:2rem;color:var(--text-secondary);">
           <p>No slots booked yet.</p>
           <button class="btn btn-primary btn-sm" style="margin-top:1rem;" onclick="document.getElementById('myBookingsModal').classList.remove('open');document.getElementById('booking').scrollIntoView({behavior:'smooth'});">Book a Slot Now</button>
         </div>
       `;
     } else {
       listEl.innerHTML = bookings.map(b => `
-        <div class="booked-slot-item">
+        <div class="booked-slot-item" style="background:#f8faf9;border:1px solid var(--border-light);border-radius:var(--radius-md);padding:1rem;margin-bottom:0.75rem;display:flex;align-items:center;justify-content:space-between;">
           <div>
-            <div style="font-family:var(--font-display);font-size:1.15rem;font-weight:700;color:var(--text);">${b.slotLabel}</div>
-            <div style="font-size:0.85rem;color:var(--text-muted);">${b.dateLabel} · ${b.format}</div>
-            <div style="font-size:0.75rem;color:var(--text-dim);margin-top:2px;">Ref: #${b.ref}</div>
+            <div style="font-family:var(--font-display);font-size:1.2rem;font-weight:700;color:var(--text-primary);">${b.slotLabel}</div>
+            <div style="font-size:0.85rem;color:var(--text-secondary);">${b.dateLabel} · ${b.format}</div>
+            <div style="font-size:0.75rem;color:var(--text-muted);margin-top:2px;">Ref: #${b.ref}</div>
           </div>
           <div style="text-align:right;">
-            <div style="font-family:var(--font-display);font-size:1.25rem;font-weight:800;color:var(--accent);">₹${b.total}</div>
-            <div style="font-size:0.72rem;font-weight:700;color:var(--state-avail);">Advance Paid: ₹${b.payNow}</div>
-            <div style="font-size:0.72rem;color:var(--text-dim);">Due: ₹${b.balance}</div>
+            <div style="font-family:var(--font-display);font-size:1.35rem;font-weight:800;color:var(--green-primary);">₹${b.total}</div>
+            <div style="font-size:0.75rem;font-weight:700;color:#047857;">Advance: ₹${b.payNow}</div>
+            <div style="font-size:0.75rem;color:var(--text-muted);">Due at venue: ₹${b.balance}</div>
           </div>
         </div>
       `).join('');
     }
 
     modal.classList.add('open');
+    document.body.style.overflow = 'hidden';
   }
 
   /* -------------------------------------------------------------
-     LIGHTBOX WITH KEYBOARD & MOBILE SWIPE SUPPORT
+     LIGHTBOX WITH RELIABLE CLOSE & BACKDROP CLICK
   ------------------------------------------------------------- */
   function initLightbox() {
     const modal = document.getElementById('lightboxModal');
@@ -717,6 +742,9 @@
       document.body.style.overflow = '';
     }
 
+    // Expose globally so inline onclick or external calls can never fail
+    window.closeLightbox = closeLightbox;
+
     // Attach click to gallery items
     document.querySelectorAll('[data-gallery-index]').forEach(el => {
       el.addEventListener('click', () => {
@@ -725,16 +753,36 @@
       });
     });
 
-    if (closeBtn) closeBtn.addEventListener('click', closeLightbox);
-    if (prevBtn) prevBtn.addEventListener('click', () => showImage(state.lightboxIndex - 1));
-    if (nextBtn) nextBtn.addEventListener('click', () => showImage(state.lightboxIndex + 1));
+    // Close button
+    if (closeBtn) closeBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      closeLightbox();
+    });
+
+    // BACKDROP CLICK TO CLOSE: clicking anywhere on the dark background closes lightbox
+    modal.addEventListener('click', (e) => {
+      if (e.target === modal || e.target.id === 'lightboxModal') {
+        closeLightbox();
+      }
+    });
+
+    if (prevBtn) prevBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      showImage(state.lightboxIndex - 1);
+    });
+
+    if (nextBtn) nextBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      showImage(state.lightboxIndex + 1);
+    });
 
     // Keyboard support: ESC, ArrowLeft, ArrowRight
     document.addEventListener('keydown', (e) => {
-      if (!modal.classList.contains('open')) return;
-      if (e.key === 'Escape') closeLightbox();
-      if (e.key === 'ArrowLeft') showImage(state.lightboxIndex - 1);
-      if (e.key === 'ArrowRight') showImage(state.lightboxIndex + 1);
+      if (modal.classList.contains('open')) {
+        if (e.key === 'Escape') closeLightbox();
+        if (e.key === 'ArrowLeft') showImage(state.lightboxIndex - 1);
+        if (e.key === 'ArrowRight') showImage(state.lightboxIndex + 1);
+      }
     });
 
     // Mobile touch swipe support
@@ -747,16 +795,49 @@
 
     modal.addEventListener('touchend', (e) => {
       touchEndX = e.changedTouches[0].screenX;
-      handleSwipe();
-    }, { passive: true });
-
-    function handleSwipe() {
       const diff = touchEndX - touchStartX;
       if (Math.abs(diff) > 50) {
-        if (diff > 0) showImage(state.lightboxIndex - 1); // Swipe right -> prev
-        else showImage(state.lightboxIndex + 1);          // Swipe left -> next
+        if (diff > 0) showImage(state.lightboxIndex - 1);
+        else showImage(state.lightboxIndex + 1);
       }
-    }
+    }, { passive: true });
+  }
+
+  /* -------------------------------------------------------------
+     UNIVERSAL MODAL DISMISSAL (Click Backdrop or ESC)
+  ------------------------------------------------------------- */
+  function initModalDismissals() {
+    const allModals = document.querySelectorAll('.app-modal, .lightbox-modal');
+
+    allModals.forEach(modal => {
+      // Backdrop click closes modal
+      modal.addEventListener('click', (e) => {
+        if (e.target === modal) {
+          modal.classList.remove('open');
+          document.body.style.overflow = '';
+        }
+      });
+    });
+
+    // Close on ESC key for all modals
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') {
+        allModals.forEach(m => m.classList.remove('open'));
+        document.body.style.overflow = '';
+      }
+    });
+
+    // Close buttons with [data-close-modal]
+    document.querySelectorAll('[data-close-modal]').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const modalId = btn.dataset.closeModal;
+        const target = document.getElementById(modalId);
+        if (target) {
+          target.classList.remove('open');
+          document.body.style.overflow = '';
+        }
+      });
+    });
   }
 
   /* -------------------------------------------------------------
@@ -779,7 +860,7 @@
   }
 
   /* -------------------------------------------------------------
-     MOBILE MENU & NAVIGATION TOGGLE
+     NAVIGATION DRAWER
   ------------------------------------------------------------- */
   function initNavigation() {
     const toggleBtn = document.getElementById('navToggleBtn');
@@ -800,7 +881,6 @@
       });
     }
 
-    // Close on link click
     document.querySelectorAll('.mobile-nav-link').forEach(link => {
       link.addEventListener('click', () => {
         if (drawer) {
@@ -812,10 +892,10 @@
   }
 
   /* -------------------------------------------------------------
-     INIT APP ON DOM LOAD
+     DOM READY BOOTSTRAP
   ------------------------------------------------------------- */
   document.addEventListener('DOMContentLoaded', () => {
-    // Check for draft session restore
+    // Restore session draft if exists
     const draft = loadDraftSession();
     if (draft) {
       state.dayOffset = draft.dayOffset || 0;
@@ -834,7 +914,7 @@
       });
     });
 
-    // Duration Stepper
+    // Duration Stepper (+ / -)
     const durMinus = document.getElementById('durMinus');
     const durPlus = document.getElementById('durPlus');
     if (durMinus && durPlus) {
@@ -874,22 +954,19 @@
       });
     }
 
-    // Booking Submission Button
+    // Booking Submission Button -> Opens Mock Payment
     const confirmBtn = document.getElementById('confirmBookBtn');
     if (confirmBtn) {
       confirmBtn.addEventListener('click', handleBookingSubmission);
     }
 
-    // Modal Close buttons
-    document.querySelectorAll('[data-close-modal]').forEach(btn => {
-      btn.addEventListener('click', () => {
-        const modalId = btn.dataset.closeModal;
-        const modal = document.getElementById(modalId);
-        if (modal) modal.classList.remove('open');
-      });
-    });
+    // Mock Payment Completion Button (for client demo)
+    const mockPaySuccessBtn = document.getElementById('mockPaySuccessBtn');
+    if (mockPaySuccessBtn) {
+      mockPaySuccessBtn.addEventListener('click', completeMockPayment);
+    }
 
-    // Logout trigger if exists
+    // Logout trigger
     const logoutBtn = document.getElementById('userLogoutBtn');
     if (logoutBtn) {
       logoutBtn.addEventListener('click', () => {
@@ -906,6 +983,7 @@
     updateSummaryPanel();
     initAuth();
     initLightbox();
+    initModalDismissals();
     initNavigation();
   });
 
