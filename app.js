@@ -1,11 +1,11 @@
 /**
  * CA Sports Arena - Core Application Logic
- * Green & White Aesthetic, Dynamic Slots, Mock Advance Payment Flow, WhatsApp Integration.
+ * Standalone Landing Page + Dedicated Player Portal (booking.html)
+ * Dynamic Slots, Mock Advance Payments, WhatsApp Integration (9604715698)
  */
 'use strict';
 
 (function () {
-  // Safe config fallback with updated phone 9604715698
   const CFG = window.TURF_CONFIG || {
     name: "CA Sports Arena",
     shortName: "CA Turf",
@@ -42,7 +42,6 @@
     { id: 'h23', startHour: 23, label: '11:00 PM', end: '12:00 AM', period: 'Night Match' }
   ];
 
-  // Pre-seeded booked slots for realistic demonstration
   const DEFAULT_SEED_BOOKINGS = {
     0: ['h08', 'h18', 'h20'],
     1: ['h07', 'h19'],
@@ -55,13 +54,12 @@
     selectedSlot: null,
     selectedDuration: 1, // hours
     selectedFormat: 'Box Cricket (6–8 a side)',
-    paymentMode: 'advance', // 'advance' (25% / ₹200 min) or 'full'
+    paymentMode: 'advance',
     currentUser: null,
     lightboxIndex: 0,
     pendingBooking: null
   };
 
-  // Gallery items for lightbox
   const GALLERY_ITEMS = [
     { src: 'images/night_action.webp', fallback: 'images/night_action.png', title: 'Night Action Under 500 LUX Floodlights' },
     { src: 'images/hero_aerial.webp', fallback: 'images/hero_aerial.png', title: 'Full Arena Aerial View' },
@@ -90,7 +88,27 @@
 
   function getUserBookings() {
     try {
-      return JSON.parse(localStorage.getItem('ca_my_bookings') || '[]');
+      const list = JSON.parse(localStorage.getItem('ca_my_bookings') || '[]');
+      // Seed default sample bookings if empty for presentation demo
+      if (!list.length) {
+        return [
+          {
+            ref: 'CA-94821',
+            name: 'Aditya Magar',
+            phone: '9604715698',
+            slotLabel: '08:00 PM – 09:00 PM',
+            dateLabel: 'Upcoming Match',
+            format: 'Box Cricket (6–8 a side)',
+            duration: 1,
+            total: 800,
+            payNow: 200,
+            balance: 600,
+            paymentMode: 'advance',
+            timestamp: new Date().toISOString()
+          }
+        ];
+      }
+      return list;
     } catch (e) {
       return [];
     }
@@ -119,31 +137,6 @@
     } else {
       localStorage.removeItem('ca_user');
     }
-    updateUserUI();
-  }
-
-  function saveDraftSession() {
-    const draft = {
-      dayOffset: state.dayOffset,
-      slotId: state.selectedSlot ? state.selectedSlot.id : null,
-      slotLabel: state.selectedSlot ? state.selectedSlot.label : null,
-      duration: state.selectedDuration,
-      format: state.selectedFormat,
-      paymentMode: state.paymentMode
-    };
-    try {
-      sessionStorage.setItem('ca_draft_booking', JSON.stringify(draft));
-    } catch (e) {}
-  }
-
-  function loadDraftSession() {
-    try {
-      const data = sessionStorage.getItem('ca_draft_booking');
-      if (!data) return null;
-      return JSON.parse(data);
-    } catch (e) {
-      return null;
-    }
   }
 
   /* -------------------------------------------------------------
@@ -157,7 +150,7 @@
 
   function isWeekend(date) {
     const day = date.getDay();
-    return day === 0 || day === 6; // Sunday or Saturday
+    return day === 0 || day === 6;
   }
 
   function getHourlyRate(date) {
@@ -170,7 +163,6 @@
     const total = hourlyRate * state.selectedDuration;
     const isWknd = isWeekend(date);
 
-    // Calculate advance (25% or min ₹200)
     let advance = Math.round(total * (CFG.pricing.advancePercentage / 100));
     if (advance < CFG.pricing.advanceMinAmount) {
       advance = Math.min(total, CFG.pricing.advanceMinAmount);
@@ -192,7 +184,7 @@
   }
 
   /* -------------------------------------------------------------
-     SLOT GENERATION & TEMPORAL FILTERING
+     SLOT GENERATION WITH TEMPORAL FILTER
   ------------------------------------------------------------- */
   function getSlotsForDay(offset) {
     const targetDate = getDateForOffset(offset);
@@ -219,7 +211,7 @@
   }
 
   /* -------------------------------------------------------------
-     RENDER: DATE TABS
+     RENDER: DATE TABS (In Dedicated Portal)
   ------------------------------------------------------------- */
   function renderDateTabs() {
     const container = document.getElementById('dateTabs');
@@ -255,7 +247,6 @@
         renderDateTabs();
         renderSlotsGrid();
         updateSummaryPanel();
-        saveDraftSession();
       });
 
       container.appendChild(btn);
@@ -263,7 +254,7 @@
   }
 
   /* -------------------------------------------------------------
-     RENDER: SLOTS GRID
+     RENDER: SLOTS GRID (In Dedicated Portal)
   ------------------------------------------------------------- */
   function renderSlotsGrid() {
     const container = document.getElementById('slotsContainer');
@@ -328,7 +319,6 @@
 
     container.innerHTML = html;
 
-    // Attach click listeners to available slots
     container.querySelectorAll('.slot-btn:not(:disabled)').forEach(btn => {
       btn.addEventListener('click', () => {
         const id = btn.dataset.slotId;
@@ -340,7 +330,6 @@
         state.selectedSlot = { id, label, period, startHour, dayKey };
         renderSlotsGrid();
         updateSummaryPanel();
-        saveDraftSession();
 
         if (window.innerWidth < 960) {
           const panel = document.getElementById('bookingPanel');
@@ -353,19 +342,14 @@
   }
 
   /* -------------------------------------------------------------
-     RENDER: SUMMARY PANEL & PRICING
+     RENDER: SUMMARY PANEL
   ------------------------------------------------------------- */
   function updateSummaryPanel() {
     const emptyState = document.getElementById('summaryEmpty');
     const filledState = document.getElementById('summaryFilled');
     const bookBtn = document.getElementById('confirmBookBtn');
-    const stickyAmount = document.getElementById('stickyBarAmount');
 
     const pricing = calculatePricing();
-
-    if (stickyAmount) {
-      stickyAmount.innerHTML = `₹${pricing.rate}<span>/hr</span>`;
-    }
 
     if (!state.selectedSlot) {
       if (emptyState) emptyState.style.display = 'block';
@@ -426,7 +410,7 @@
   }
 
   /* -------------------------------------------------------------
-     STEP 1: PREPARE BOOKING & OPEN MOCK PAYMENT MODAL
+     BOOKING SUBMISSION -> MOCK PAYMENT FLOW
   ------------------------------------------------------------- */
   function handleBookingSubmission() {
     if (!state.selectedSlot) return;
@@ -436,8 +420,8 @@
     const nameError = document.getElementById('bookNameError');
     const phoneError = document.getElementById('bookPhoneError');
 
-    const name = nameInput ? nameInput.value.trim() : '';
-    const phone = phoneInput ? phoneInput.value.trim() : '';
+    const name = nameInput ? nameInput.value.trim() : (state.currentUser?.name || '');
+    const phone = phoneInput ? phoneInput.value.trim() : (state.currentUser?.phone || '');
 
     let hasError = false;
 
@@ -484,13 +468,9 @@
       timestamp: new Date().toISOString()
     };
 
-    // Open Interactive Mock Payment Modal
     openMockPaymentModal(state.pendingBooking);
   }
 
-  /* -------------------------------------------------------------
-     MOCK PAYMENT MODAL CONTROLS
-  ------------------------------------------------------------- */
   function openMockPaymentModal(b) {
     const modal = document.getElementById('mockPaymentModal');
     if (!modal) return;
@@ -511,16 +491,13 @@
     if (!state.pendingBooking) return;
     const b = state.pendingBooking;
 
-    // Save in user bookings
     saveUserBooking(b);
 
-    // Save into day's booked slots
     const stored = getStoredBookings();
     if (!stored[b.dayKey]) stored[b.dayKey] = [];
     stored[b.dayKey].push(b.slotId);
     saveStoredBookings(stored);
 
-    // Build prefilled WhatsApp message targeting 9604715698
     const waText = encodeURIComponent(
       `🏏 *Match Booking Request — ${CFG.name}*\n` +
       `---------------------------------\n` +
@@ -535,25 +512,22 @@
       `*Advance Paid:* ₹${b.payNow} (${b.paymentMode === 'full' ? 'Full Paid' : '25% Advance'})\n` +
       `*Balance at Venue:* ₹${b.balance}\n` +
       `---------------------------------\n` +
-      `Hi, I have completed the online advance reservation. Please send entry pass confirmation!`
+      `Hi, I have completed the online advance reservation on CA Sports Arena. Please send official match pass!`
     );
 
     const waUrl = `https://wa.me/${CFG.contact.whatsappNumber}?text=${waText}`;
 
-    // Close Mock Payment Modal
     const payModal = document.getElementById('mockPaymentModal');
     if (payModal) payModal.classList.remove('open');
 
-    // Open Confirmation Slip
     showConfirmationModal(b, waUrl);
 
-    // Reset slot selection and re-render
     state.selectedSlot = null;
     state.pendingBooking = null;
-    sessionStorage.removeItem('ca_draft_booking');
     renderSlotsGrid();
     updateSummaryPanel();
-    showToast('Payment Verified!', 'Your turf slot is locked and confirmed.');
+    renderBookingHistory();
+    showToast('Payment Verified!', 'Your slot is locked and confirmed.');
   }
 
   function showConfirmationModal(b, waUrl) {
@@ -588,134 +562,220 @@
   }
 
   /* -------------------------------------------------------------
-     AUTHENTICATION SYSTEM (Login, Sign-Up)
+     RENDER: BOOKING HISTORY TAB
   ------------------------------------------------------------- */
-  function initAuth() {
-    state.currentUser = getCurrentUser();
-    updateUserUI();
-
-    const authModal = document.getElementById('authModal');
-    const openBtn = document.getElementById('userAuthBtn');
-    const closeBtn = document.getElementById('authCloseBtn');
-    const tabLogin = document.getElementById('tabLogin');
-    const tabSignup = document.getElementById('tabSignup');
-    const formLogin = document.getElementById('formLogin');
-    const formSignup = document.getElementById('formSignup');
-
-    if (openBtn) {
-      openBtn.addEventListener('click', () => {
-        if (state.currentUser) {
-          openMyBookings();
-        } else {
-          if (authModal) authModal.classList.add('open');
-        }
-      });
-    }
-
-    if (closeBtn && authModal) {
-      closeBtn.addEventListener('click', () => authModal.classList.remove('open'));
-    }
-
-    if (tabLogin && tabSignup && formLogin && formSignup) {
-      tabLogin.addEventListener('click', () => {
-        tabLogin.classList.add('active');
-        tabSignup.classList.remove('active');
-        formLogin.style.display = 'flex';
-        formSignup.style.display = 'none';
-      });
-
-      tabSignup.addEventListener('click', () => {
-        tabSignup.classList.add('active');
-        tabLogin.classList.remove('active');
-        formSignup.style.display = 'flex';
-        formLogin.style.display = 'none';
-      });
-
-      formLogin.addEventListener('submit', (e) => {
-        e.preventDefault();
-        const phone = document.getElementById('loginPhone').value.trim();
-        const name = document.getElementById('loginName')?.value.trim() || 'Player';
-
-        if (phone.length === 10) {
-          setCurrentUser({ name, phone });
-          if (authModal) authModal.classList.remove('open');
-          showToast(`Welcome back, ${name}!`);
-        }
-      });
-
-      formSignup.addEventListener('submit', (e) => {
-        e.preventDefault();
-        const name = document.getElementById('signupName').value.trim();
-        const phone = document.getElementById('signupPhone').value.trim();
-        const email = document.getElementById('signupEmail')?.value.trim() || '';
-
-        if (name && phone.length === 10) {
-          setCurrentUser({ name, phone, email });
-          if (authModal) authModal.classList.remove('open');
-          showToast(`Account created for ${name}!`);
-        }
-      });
-    }
-  }
-
-  function updateUserUI() {
-    const userBtn = document.getElementById('userAuthBtn');
-    const nameInput = document.getElementById('bookName');
-    const phoneInput = document.getElementById('bookPhone');
-
-    if (!userBtn) return;
-
-    if (state.currentUser) {
-      userBtn.innerHTML = `
-        <span class="user-avatar-initials">${state.currentUser.name.charAt(0).toUpperCase()}</span>
-        <span>${state.currentUser.name.split(' ')[0]} (My Bookings)</span>
-      `;
-      if (nameInput && !nameInput.value) nameInput.value = state.currentUser.name;
-      if (phoneInput && !phoneInput.value) phoneInput.value = state.currentUser.phone;
-    } else {
-      userBtn.innerHTML = `
-        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
-        <span>Login / Sign Up</span>
-      `;
-    }
-  }
-
-  function openMyBookings() {
-    const modal = document.getElementById('myBookingsModal');
-    const listEl = document.getElementById('myBookingsList');
-    if (!modal || !listEl) return;
+  function renderBookingHistory() {
+    const container = document.getElementById('fullBookingsHistoryList');
+    const badgeEl = document.getElementById('tabHistoryBadge');
+    const countEl = document.getElementById('statBookingCount');
 
     const bookings = getUserBookings();
+    if (badgeEl) badgeEl.textContent = bookings.length;
+    if (countEl) countEl.textContent = bookings.length;
+
+    if (!container) return;
+
     if (!bookings.length) {
-      listEl.innerHTML = `
-        <div style="text-align:center;padding:2rem;color:var(--text-secondary);">
-          <p>No slots booked yet.</p>
-          <button class="btn btn-primary btn-sm" style="margin-top:1rem;" onclick="document.getElementById('myBookingsModal').classList.remove('open');document.getElementById('booking').scrollIntoView({behavior:'smooth'});">Book a Slot Now</button>
+      container.innerHTML = `
+        <div style="background:#ffffff;border:1.5px dashed var(--border-light);border-radius:var(--radius-lg);padding:var(--space-12) var(--space-4);text-align:center;">
+          <div style="width:52px;height:52px;border-radius:50%;background:var(--green-mint);color:var(--green-primary);display:flex;align-items:center;justify-content:center;margin:0 auto var(--space-3);">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+          </div>
+          <h3 style="font-family:var(--font-display);font-size:1.35rem;font-weight:800;color:var(--text-primary);text-transform:uppercase;">No Bookings Found</h3>
+          <p style="font-size:0.9rem;color:var(--text-secondary);max-width:400px;margin:var(--space-1) auto var(--space-4);">You haven't reserved any match slots yet. Pick your slot now to play under floodlights.</p>
+          <button type="button" class="btn btn-primary btn-sm" onclick="document.getElementById('tabBtnReserve').click();">Reserve a Slot Now</button>
         </div>
       `;
-    } else {
-      listEl.innerHTML = bookings.map(b => `
-        <div class="booked-slot-item" style="background:#f8faf9;border:1px solid var(--border-light);border-radius:var(--radius-md);padding:1rem;margin-bottom:0.75rem;display:flex;align-items:center;justify-content:space-between;">
-          <div>
-            <div style="font-family:var(--font-display);font-size:1.2rem;font-weight:700;color:var(--text-primary);">${b.slotLabel}</div>
-            <div style="font-size:0.85rem;color:var(--text-secondary);">${b.dateLabel} · ${b.format}</div>
-            <div style="font-size:0.75rem;color:var(--text-muted);margin-top:2px;">Ref: #${b.ref}</div>
-          </div>
-          <div style="text-align:right;">
-            <div style="font-family:var(--font-display);font-size:1.35rem;font-weight:800;color:var(--green-primary);">₹${b.total}</div>
-            <div style="font-size:0.75rem;font-weight:700;color:#047857;">Advance: ₹${b.payNow}</div>
-            <div style="font-size:0.75rem;color:var(--text-muted);">Due at venue: ₹${b.balance}</div>
-          </div>
-        </div>
-      `).join('');
+      return;
     }
 
-    modal.classList.add('open');
-    document.body.style.overflow = 'hidden';
+    container.innerHTML = bookings.map(b => {
+      const waMsg = encodeURIComponent(
+        `Hi, regarding my match booking #${b.ref} for ${b.slotLabel} on ${b.dateLabel} at CA Sports Arena. Please share ground coordinator contact.`
+      );
+      const waLink = `https://wa.me/${CFG.contact.whatsappNumber}?text=${waMsg}`;
+
+      return `
+        <div class="history-card-item">
+          <div>
+            <span class="history-badge-status confirmed">Confirmed &middot; Advance Verified</span>
+            <div class="history-slot-title">${b.slotLabel}</div>
+            <div class="history-slot-meta">${b.dateLabel} &middot; ${b.format} &middot; <strong style="color:var(--green-primary);">Ref: #${b.ref}</strong></div>
+            <div style="font-size:0.8rem;color:var(--text-muted);margin-top:4px;">Booked by ${b.name} (${b.phone})</div>
+          </div>
+
+          <div class="history-financials">
+            <div class="history-price-total">₹${b.total}</div>
+            <span class="history-adv-pill">✓ Advance Paid: ₹${b.payNow}</span>
+            <span class="history-venue-due">Payable at venue: ₹${b.balance}</span>
+            <a href="${waLink}" target="_blank" rel="noopener noreferrer" class="btn btn-whatsapp btn-sm" style="margin-top:var(--space-2);">
+              WhatsApp Entry Pass
+            </a>
+          </div>
+        </div>
+      `;
+    }).join('');
   }
 
   /* -------------------------------------------------------------
-     LIGHTBOX WITH RELIABLE CLOSE & BACKDROP CLICK
+     DEDICATED PORTAL (booking.html) AUTH & TABS CONTROLLER
+  ------------------------------------------------------------- */
+  function initDedicatedPortal() {
+    const portalGate = document.getElementById('portalGateView');
+    const portalDashboard = document.getElementById('portalDashboardView');
+    const headerStatus = document.getElementById('headerUserStatus');
+
+    if (!portalGate || !portalDashboard) return;
+
+    state.currentUser = getCurrentUser();
+
+    function renderPortalAuth() {
+      if (state.currentUser) {
+        portalGate.style.display = 'none';
+        portalDashboard.style.display = 'block';
+        if (headerStatus) headerStatus.style.display = 'block';
+
+        // Profile details
+        const initial = state.currentUser.name.charAt(0).toUpperCase();
+        const avatarEl = document.getElementById('profileAvatar');
+        const nameEl = document.getElementById('profileName');
+        const phoneEl = document.getElementById('profilePhone');
+        const dName = document.getElementById('profileDetailsName');
+        const dPhone = document.getElementById('profileDetailsPhone');
+        const bookName = document.getElementById('bookName');
+        const bookPhone = document.getElementById('bookPhone');
+
+        if (avatarEl) avatarEl.textContent = initial;
+        if (nameEl) nameEl.textContent = state.currentUser.name;
+        if (phoneEl) phoneEl.textContent = `+91 ${state.currentUser.phone}`;
+        if (dName) dName.textContent = state.currentUser.name;
+        if (dPhone) dPhone.textContent = `+91 ${state.currentUser.phone}`;
+        if (bookName && !bookName.value) bookName.value = state.currentUser.name;
+        if (bookPhone && !bookPhone.value) bookPhone.value = state.currentUser.phone;
+
+        renderDateTabs();
+        renderSlotsGrid();
+        updateSummaryPanel();
+        renderBookingHistory();
+      } else {
+        portalGate.style.display = 'flex';
+        portalDashboard.style.display = 'none';
+        if (headerStatus) headerStatus.style.display = 'none';
+      }
+    }
+
+    // Gate Login Form
+    const gateForm = document.getElementById('gateLoginForm');
+    if (gateForm) {
+      gateForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+        const phone = document.getElementById('gatePhone').value.trim();
+        const name = document.getElementById('gateName').value.trim();
+        const phoneErr = document.getElementById('gatePhoneErr');
+
+        if (!/^[6-9]\d{9}$/.test(phone)) {
+          if (phoneErr) phoneErr.textContent = 'Please enter a valid 10-digit Indian phone number.';
+          return;
+        }
+
+        setCurrentUser({ name: name || 'Player', phone });
+        renderPortalAuth();
+        showToast(`Welcome, ${name}!`);
+      });
+    }
+
+    // One-Tap Client Presentation Demo Button
+    const btnDemoLogin = document.getElementById('btnInstantDemoLogin');
+    if (btnDemoLogin) {
+      btnDemoLogin.addEventListener('click', () => {
+        setCurrentUser({ name: 'Aditya Magar', phone: '9604715698' });
+        renderPortalAuth();
+        showToast('Logged in as Aditya Magar (Demo)');
+      });
+    }
+
+    // Log out handlers
+    const logoutBtn = document.getElementById('portalLogoutBtn');
+    const headerLogoutBtn = document.getElementById('portalHeaderLogoutBtn');
+    [logoutBtn, headerLogoutBtn].forEach(btn => {
+      if (btn) {
+        btn.addEventListener('click', () => {
+          setCurrentUser(null);
+          renderPortalAuth();
+          showToast('Logged out of player portal');
+        });
+      }
+    });
+
+    // Portal Segmented Tabs
+    const tabReserve = document.getElementById('tabBtnReserve');
+    const tabHistory = document.getElementById('tabBtnHistory');
+    const tabProfile = document.getElementById('tabBtnProfile');
+
+    const paneReserve = document.getElementById('paneReserve');
+    const paneHistory = document.getElementById('paneHistory');
+    const paneProfile = document.getElementById('paneProfile');
+
+    if (tabReserve && tabHistory && tabProfile) {
+      tabReserve.addEventListener('click', () => {
+        tabReserve.classList.add('active');
+        tabHistory.classList.remove('active');
+        tabProfile.classList.remove('active');
+        paneReserve.style.display = 'block';
+        paneHistory.style.display = 'none';
+        paneProfile.style.display = 'none';
+      });
+
+      tabHistory.addEventListener('click', () => {
+        tabHistory.classList.add('active');
+        tabReserve.classList.remove('active');
+        tabProfile.classList.remove('active');
+        paneReserve.style.display = 'none';
+        paneHistory.style.display = 'block';
+        paneProfile.style.display = 'none';
+        renderBookingHistory();
+      });
+
+      tabProfile.addEventListener('click', () => {
+        tabProfile.classList.add('active');
+        tabReserve.classList.remove('active');
+        tabHistory.classList.remove('active');
+        paneReserve.style.display = 'none';
+        paneHistory.style.display = 'none';
+        paneProfile.style.display = 'block';
+      });
+    }
+
+    renderPortalAuth();
+  }
+
+  /* -------------------------------------------------------------
+     STANDALONE LANDING PAGE (index.html) CONTROLLER
+  ------------------------------------------------------------- */
+  function initLandingPage() {
+    const userBtn = document.getElementById('userAuthBtn');
+    state.currentUser = getCurrentUser();
+
+    if (userBtn) {
+      if (state.currentUser) {
+        userBtn.innerHTML = `
+          <span class="user-avatar-initials">${state.currentUser.name.charAt(0).toUpperCase()}</span>
+          <span>${state.currentUser.name.split(' ')[0]} (My Bookings)</span>
+        `;
+      } else {
+        userBtn.innerHTML = `
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+          <span>Player Login</span>
+        `;
+      }
+      userBtn.addEventListener('click', () => {
+        window.location.href = 'booking.html';
+      });
+    }
+  }
+
+  /* -------------------------------------------------------------
+     LIGHTBOX WITH RELIABLE CLOSE & BACKDROP DISMISS
   ------------------------------------------------------------- */
   function initLightbox() {
     const modal = document.getElementById('lightboxModal');
@@ -742,10 +802,8 @@
       document.body.style.overflow = '';
     }
 
-    // Expose globally so inline onclick or external calls can never fail
     window.closeLightbox = closeLightbox;
 
-    // Attach click to gallery items
     document.querySelectorAll('[data-gallery-index]').forEach(el => {
       el.addEventListener('click', () => {
         const idx = parseInt(el.dataset.galleryIndex, 10);
@@ -753,13 +811,11 @@
       });
     });
 
-    // Close button
     if (closeBtn) closeBtn.addEventListener('click', (e) => {
       e.stopPropagation();
       closeLightbox();
     });
 
-    // BACKDROP CLICK TO CLOSE: clicking anywhere on the dark background closes lightbox
     modal.addEventListener('click', (e) => {
       if (e.target === modal || e.target.id === 'lightboxModal') {
         closeLightbox();
@@ -776,7 +832,6 @@
       showImage(state.lightboxIndex + 1);
     });
 
-    // Keyboard support: ESC, ArrowLeft, ArrowRight
     document.addEventListener('keydown', (e) => {
       if (modal.classList.contains('open')) {
         if (e.key === 'Escape') closeLightbox();
@@ -785,7 +840,6 @@
       }
     });
 
-    // Mobile touch swipe support
     let touchStartX = 0;
     let touchEndX = 0;
 
@@ -804,13 +858,12 @@
   }
 
   /* -------------------------------------------------------------
-     UNIVERSAL MODAL DISMISSAL (Click Backdrop or ESC)
+     UNIVERSAL MODAL DISMISSAL
   ------------------------------------------------------------- */
   function initModalDismissals() {
     const allModals = document.querySelectorAll('.app-modal, .lightbox-modal');
 
     allModals.forEach(modal => {
-      // Backdrop click closes modal
       modal.addEventListener('click', (e) => {
         if (e.target === modal) {
           modal.classList.remove('open');
@@ -819,7 +872,6 @@
       });
     });
 
-    // Close on ESC key for all modals
     document.addEventListener('keydown', (e) => {
       if (e.key === 'Escape') {
         allModals.forEach(m => m.classList.remove('open'));
@@ -827,7 +879,6 @@
       }
     });
 
-    // Close buttons with [data-close-modal]
     document.querySelectorAll('[data-close-modal]').forEach(btn => {
       btn.addEventListener('click', () => {
         const modalId = btn.dataset.closeModal;
@@ -836,13 +887,14 @@
           target.classList.remove('open');
           document.body.style.overflow = '';
         }
+        if (modalId === 'confirmationModal') {
+          const histTab = document.getElementById('tabBtnHistory');
+          if (histTab) histTab.click();
+        }
       });
     });
   }
 
-  /* -------------------------------------------------------------
-     TOAST NOTIFICATIONS
-  ------------------------------------------------------------- */
   function showToast(title, desc = '') {
     const toast = document.getElementById('toastMsg');
     if (!toast) return;
@@ -859,9 +911,6 @@
     }, 4000);
   }
 
-  /* -------------------------------------------------------------
-     NAVIGATION DRAWER
-  ------------------------------------------------------------- */
   function initNavigation() {
     const toggleBtn = document.getElementById('navToggleBtn');
     const drawer = document.getElementById('mobileNavDrawer');
@@ -892,29 +941,19 @@
   }
 
   /* -------------------------------------------------------------
-     DOM READY BOOTSTRAP
+     INIT
   ------------------------------------------------------------- */
   document.addEventListener('DOMContentLoaded', () => {
-    // Restore session draft if exists
-    const draft = loadDraftSession();
-    if (draft) {
-      state.dayOffset = draft.dayOffset || 0;
-      state.selectedDuration = draft.duration || 1;
-      state.selectedFormat = draft.format || 'Box Cricket (6–8 a side)';
-      state.paymentMode = draft.paymentMode || 'advance';
-    }
-
-    // Format pills selector
+    // Shared format pills
     document.querySelectorAll('.format-pill').forEach(pill => {
       pill.addEventListener('click', () => {
         document.querySelectorAll('.format-pill').forEach(p => p.classList.remove('active'));
         pill.classList.add('active');
         state.selectedFormat = pill.dataset.format;
-        saveDraftSession();
       });
     });
 
-    // Duration Stepper (+ / -)
+    // Duration Stepper
     const durMinus = document.getElementById('durMinus');
     const durPlus = document.getElementById('durPlus');
     if (durMinus && durPlus) {
@@ -922,19 +961,17 @@
         if (state.selectedDuration > 1) {
           state.selectedDuration--;
           updateSummaryPanel();
-          saveDraftSession();
         }
       });
       durPlus.addEventListener('click', () => {
         if (state.selectedDuration < 4) {
           state.selectedDuration++;
           updateSummaryPanel();
-          saveDraftSession();
         }
       });
     }
 
-    // Advance Payment Mode Toggles
+    // Payment Mode
     const payAdvanceBtn = document.getElementById('payModeAdvance');
     const payFullBtn = document.getElementById('payModeFull');
     if (payAdvanceBtn && payFullBtn) {
@@ -943,45 +980,30 @@
         payFullBtn.classList.remove('active');
         state.paymentMode = 'advance';
         updateSummaryPanel();
-        saveDraftSession();
       });
       payFullBtn.addEventListener('click', () => {
         payFullBtn.classList.add('active');
         payAdvanceBtn.classList.remove('active');
         state.paymentMode = 'full';
         updateSummaryPanel();
-        saveDraftSession();
       });
     }
 
-    // Booking Submission Button -> Opens Mock Payment
+    // Booking submit button
     const confirmBtn = document.getElementById('confirmBookBtn');
     if (confirmBtn) {
       confirmBtn.addEventListener('click', handleBookingSubmission);
     }
 
-    // Mock Payment Completion Button (for client demo)
+    // Mock payment success button
     const mockPaySuccessBtn = document.getElementById('mockPaySuccessBtn');
     if (mockPaySuccessBtn) {
       mockPaySuccessBtn.addEventListener('click', completeMockPayment);
     }
 
-    // Logout trigger
-    const logoutBtn = document.getElementById('userLogoutBtn');
-    if (logoutBtn) {
-      logoutBtn.addEventListener('click', () => {
-        setCurrentUser(null);
-        const myBookingsModal = document.getElementById('myBookingsModal');
-        if (myBookingsModal) myBookingsModal.classList.remove('open');
-        showToast('Logged out successfully');
-      });
-    }
-
-    // Initialize all components
-    renderDateTabs();
-    renderSlotsGrid();
-    updateSummaryPanel();
-    initAuth();
+    // Initialize portal vs landing page
+    initDedicatedPortal();
+    initLandingPage();
     initLightbox();
     initModalDismissals();
     initNavigation();

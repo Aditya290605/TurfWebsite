@@ -65,8 +65,8 @@
 
       <!-- Desktop Navigation -->
       <nav class="nav-desktop" aria-label="Main Navigation">
-        <a href="#booking" class="nav-link active">Book a Slot</a>
         <a href="#quickFacts" class="nav-link">Facility</a>
+        <a href="#howToBook" class="nav-link">How to Book</a>
         <a href="#dashboardOverview" class="nav-link">Turf Intelligence</a>
         <a href="#gallery" class="nav-link">Gallery</a>
         <a href="#pricing" class="nav-link">Pricing</a>
@@ -76,12 +76,12 @@
       <!-- Header Actions -->
       <div class="header-actions">
         <!-- User Account / Bookings Trigger -->
-        <button type="button" class="user-btn" id="userAuthBtn" aria-label="Account and bookings">
+        <a href="booking.html" class="user-btn" id="userAuthBtn" aria-label="Account and bookings">
           <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
-          <span>Login / Sign Up</span>
-        </button>
+          <span>Player Portal</span>
+        </a>
 
-        <a href="#booking" class="btn btn-primary btn-sm">Book Slot</a>
+        <a href="booking.html" class="btn btn-primary btn-sm">Book Slot</a>
 
         <!-- Mobile Menu Toggle -->
         <button type="button" class="nav-toggle-btn" id="navToggleBtn" aria-label="Open navigation menu">
@@ -101,13 +101,14 @@
       <button type="button" class="lightbox-close-btn" id="mobileDrawerClose" style="position:static;width:38px;height:38px;" aria-label="Close menu">✕</button>
     </div>
     <div class="mobile-nav-links">
-      <a href="#booking" class="mobile-nav-link">Book a Slot</a>
+      <a href="booking.html" class="mobile-nav-link" style="color:var(--accent-gold);font-weight:700;">★ Book a Slot (Portal)</a>
       <a href="#quickFacts" class="mobile-nav-link">Turf Specs</a>
+      <a href="#howToBook" class="mobile-nav-link">How It Works</a>
       <a href="#dashboardOverview" class="mobile-nav-link">Live Turf Status</a>
       <a href="#gallery" class="mobile-nav-link">Arena Gallery</a>
       <a href="#pricing" class="mobile-nav-link">Hourly Rates</a>
       <a href="#location" class="mobile-nav-link">Location &amp; Directions</a>
-      <a href="login.html" class="mobile-nav-link" style="color:var(--accent-gold);">Player Sign In</a>
+      <a href="booking.html" class="mobile-nav-link">Player Account &amp; History</a>
     </div>
     <div style="margin-top:auto;padding-top:2rem;">
       <a href="https://wa.me/919604715698" target="_blank" rel="noopener noreferrer" class="btn btn-whatsapp" style="width:100%;">
@@ -135,8 +136,8 @@
 
       <div class="hero-actions">
         <!-- Warm Gold Yellow Button from Reference 1 -->
-        <a href="#booking" class="btn btn-gold">
-          Book a Slot Now
+        <a href="booking.html" class="btn btn-gold">
+          Book a Slot Now &rarr;
         </a>
         <a href="https://wa.me/919604715698" target="_blank" rel="noopener noreferrer" class="btn btn-outline-hero">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12.031 6.172c-3.181 0-5.767 2.586-5.768 5.766-.001 1.298.38 2.27 1.019 3.287l-.582 2.128 2.182-.573c.978.58 1.911.928 3.145.929 3.178 0 5.767-2.587 5.768-5.766.001-3.187-2.575-5.771-5.764-5.771zm3.392 8.244c-.144.405-.837.774-1.17.824-.312.045-.698.086-2.223-.554-1.954-.82-3.21-2.824-3.308-2.955-.097-.133-.787-1.047-.787-1.996 0-.948.498-1.413.675-1.605.176-.192.385-.24.513-.24.129 0 .257.001.369.006.118.005.277-.045.434.331.161.385.55 1.343.6 1.444.05.101.083.219.017.352-.066.133-.1.217-.199.333-.099.117-.208.261-.297.351-.1.1-.205.21-.088.411.117.201.52 1.088 1.115 1.618.767.683 1.414.894 1.616.994.201.1.32.083.438-.05.118-.134.505-.589.64-.79.135-.202.271-.168.455-.101.185.067 1.17.552 1.371.653.201.101.336.151.385.235.049.084.049.488-.095.893z"/></svg>
@@ -218,156 +219,71 @@
     </div>
   </section>
 
-  <!-- ===== DEDICATED BOOKING SECTION (Primary Feature) ===== -->
-  <section class="section booking-section" id="booking">
+  <!-- ===== STANDALONE HOW TO BOOK & MATCH DAY EXPERIENCE ===== -->
+  <section class="section" id="howToBook" style="background:#ffffff;">
     <div class="container">
       <div class="section-header">
-        <span class="section-tag">Direct Slot Booking</span>
-        <h2 class="section-title">Select Date &amp; Reserve Slot</h2>
-        <p class="section-subtitle">Real-time availability with live weekday (₹500/hr) and weekend (₹800/hr) pricing. Lock your slot online with 25% advance.</p>
+        <span class="section-tag">Match Day Experience</span>
+        <h2 class="section-title">How To Reserve Your Court</h2>
+        <p class="section-subtitle">Simple, 3-step booking flow designed for players. Sign in to your dedicated player portal, choose your time, and lock the slot with 25% advance.</p>
       </div>
 
-      <div class="booking-layout">
-        <!-- Left: Date Picker + Format Pills + Time Slots -->
-        <div>
-          <!-- Date Tabs -->
-          <div class="date-selector-wrap">
-            <div class="date-selector-label">
-              <span class="date-label-text">1. Choose Date (Next 7 Days)</span>
-              <span style="font-size:var(--text-xs);color:var(--green-primary);font-weight:700;">Mon–Fri: ₹500 &middot; Sat–Sun: ₹800</span>
-            </div>
-            <div class="date-tabs-scroller" id="dateTabs" role="tablist" aria-label="Booking Dates">
-              <!-- Rendered dynamically by app.js -->
-            </div>
+      <div class="steps-grid">
+        <!-- Step 1 -->
+        <div class="step-card">
+          <div class="step-number">01</div>
+          <div class="step-icon-badge">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
           </div>
-
-          <!-- Format Selector Pills -->
-          <div class="date-selector-wrap">
-            <div class="date-selector-label">
-              <span class="date-label-text">2. Match Format</span>
-            </div>
-            <div class="format-pills">
-              <button type="button" class="format-pill active" data-format="Box Cricket (6–8 a side)">Box Cricket (6–8 a side)</button>
-              <button type="button" class="format-pill" data-format="5-a-side Football">5-a-side Football</button>
-              <button type="button" class="format-pill" data-format="Net Practice / Coaching">Net Practice</button>
-            </div>
-          </div>
-
-          <!-- Dynamic Slots Container Grouped by Daypart -->
-          <div class="date-selector-wrap">
-            <div class="date-selector-label">
-              <span class="date-label-text">3. Available Time Slots</span>
-              <span style="font-size:var(--text-xs);color:var(--text-muted);">Past hours for today are disabled</span>
-            </div>
-            <div id="slotsContainer">
-              <!-- Rendered dynamically by app.js -->
-            </div>
-          </div>
+          <h3 class="step-title">Login to Player Portal</h3>
+          <p class="step-desc">
+            Sign in with your mobile number to view live court availability, your player profile, and past match reservations in one dashboard.
+          </p>
+          <span class="step-tag">One-Tap Demo Available</span>
         </div>
 
-        <!-- Right: Deep Forest Green Sticky Order Summary Panel -->
-        <aside class="booking-summary-panel" id="bookingPanel">
-          <h3 class="summary-title">Booking Summary</h3>
-          <p class="summary-subtitle">Review selection &amp; confirm advance payment</p>
-
-          <!-- Empty State -->
-          <div class="summary-empty-state" id="summaryEmpty">
-            <div class="summary-empty-icon">
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-            </div>
-            <h4>No Slot Selected</h4>
-            <p style="font-size:var(--text-sm);color:var(--text-on-green-sub);margin:0 auto;">Pick a time slot from the schedule on the left to review price and pay advance.</p>
+        <!-- Step 2 -->
+        <div class="step-card">
+          <div class="step-number">02</div>
+          <div class="step-icon-badge">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
           </div>
+          <h3 class="step-title">Choose Date &amp; Format</h3>
+          <p class="step-desc">
+            Select from our 7-day calendar. Flat transparent pricing: ₹500/hr weekdays &amp; ₹800/hr weekends. Box cricket, 5-a-side football, or coaching.
+          </p>
+          <span class="step-tag">Dynamic Hourly Slots</span>
+        </div>
 
-          <!-- Filled State -->
-          <div id="summaryFilled" style="display:none;">
-            <!-- Active Slot Box -->
-            <div class="summary-active-details">
-              <div class="summary-badge-strip">
-                <span style="font-size:0.7rem;font-weight:700;color:var(--accent-gold);text-transform:uppercase;">Selected Slot</span>
-                <span class="summary-rate-tag" id="summaryRateTag">Weekday Rate</span>
-              </div>
-              <div class="summary-slot-time" id="summarySlotTime">—</div>
-              <div class="summary-slot-date" id="summarySlotDate">—</div>
-            </div>
-
-            <!-- Duration Selector -->
-            <div class="summary-form-group">
-              <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:var(--space-2);">
-                <label class="summary-form-label" style="margin:0;">Match Duration</label>
-                <div style="display:flex;align-items:center;gap:var(--space-2);">
-                  <button type="button" class="btn btn-outline-hero btn-sm" id="durMinus" style="min-width:36px;padding:0;" aria-label="Decrease duration">−</button>
-                  <span id="durationVal" style="font-family:var(--font-display);font-size:1.15rem;font-weight:700;min-width:64px;text-align:center;color:#ffffff;">1 hour</span>
-                  <button type="button" class="btn btn-outline-hero btn-sm" id="durPlus" style="min-width:36px;padding:0;" aria-label="Increase duration">+</button>
-                </div>
-              </div>
-            </div>
-
-            <!-- Payment Choice Toggle -->
-            <div class="summary-form-group">
-              <label class="summary-form-label">Payment Choice</label>
-              <div class="payment-type-toggle">
-                <button type="button" class="pay-toggle-btn active" id="payModeAdvance">
-                  <div class="pay-toggle-title">Pay 25% Advance</div>
-                  <div class="pay-toggle-sub">Lock slot online, rest at venue</div>
-                </button>
-                <button type="button" class="pay-toggle-btn" id="payModeFull">
-                  <div class="pay-toggle-title">Pay 100% Full</div>
-                  <div class="pay-toggle-sub">Settle total fee now</div>
-                </button>
-              </div>
-            </div>
-
-            <!-- Customer Details Form -->
-            <div class="summary-form-group">
-              <label class="summary-form-label" for="bookName">Player / Team Name</label>
-              <input type="text" id="bookName" class="input-field-on-green" placeholder="e.g. Rahul Sharma" autocomplete="name" required />
-              <span class="field-error-msg" id="bookNameError"></span>
-            </div>
-
-            <div class="summary-form-group">
-              <label class="summary-form-label" for="bookPhone">WhatsApp / Mobile Number</label>
-              <input type="tel" id="bookPhone" class="input-field-on-green" placeholder="10-digit mobile (e.g. 9604715698)" maxlength="10" autocomplete="tel" required />
-              <span class="field-error-msg" id="bookPhoneError"></span>
-            </div>
-
-            <!-- Live Calculation Breakdown -->
-            <div class="pricing-breakdown-box">
-              <div class="price-row-green">
-                <span>Slot Rate</span>
-                <span id="summaryRateRow">₹500 × 1h</span>
-              </div>
-              <div class="price-row-green">
-                <span>Platform Fee</span>
-                <span style="color:#34d399;font-weight:700;">₹0 (Zero Fee)</span>
-              </div>
-              <div class="price-row-green total-row">
-                <span>Total Amount</span>
-                <span class="val" id="summaryTotalRow">₹500</span>
-              </div>
-
-              <!-- Advance Details -->
-              <div class="advance-due-green" id="summaryAdvanceRow">
-                <span>Due Now (Advance):</span>
-                <span id="summaryAdvanceVal" style="font-size:1.1rem;font-weight:800;">₹200</span>
-              </div>
-              <div class="price-row-green" id="summaryBalanceRow" style="font-size:0.8rem;margin-top:6px;">
-                <span>Payable at Venue</span>
-                <span id="summaryBalanceVal" style="font-weight:700;color:#ffffff;">₹300</span>
-              </div>
-            </div>
+        <!-- Step 3 -->
+        <div class="step-card">
+          <div class="step-number">03</div>
+          <div class="step-icon-badge">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
           </div>
+          <h3 class="step-title">Pay 25% Advance &amp; Play</h3>
+          <p class="step-desc">
+            Confirm via UPI advance deposit. Your booking ticket and entry pass are instantly dispatched to your WhatsApp on 9604715698.
+          </p>
+          <span class="step-tag">Instant WhatsApp Pass</span>
+        </div>
+      </div>
 
-          <!-- Submit / Pay Button -->
-          <div style="margin-top:var(--space-4);">
-            <button type="button" class="btn btn-gold" id="confirmBookBtn" style="width:100%;font-size:1.1rem;padding:var(--space-3);" disabled>
-              Select a Time Slot First
-            </button>
-            <p style="font-size:0.75rem;color:var(--text-on-green-sub);text-align:center;margin-top:var(--space-2);line-height:1.4;">
-              Instant booking confirmation via WhatsApp (9604715698). Free cancellation up to 4h before your match.
-            </p>
-          </div>
-        </aside>
+      <!-- High-Converting CTA Banner directly to booking portal -->
+      <div class="portal-cta-banner">
+        <div class="portal-cta-content">
+          <span class="portal-cta-badge">Ready for Match Day?</span>
+          <h3 class="portal-cta-title">Enter Dedicated Player Portal</h3>
+          <p class="portal-cta-sub">
+            Real-time slots &bull; Instant UPI advance &bull; Track match history &bull; Free cancellation up to 4h before match.
+          </p>
+        </div>
+        <div class="portal-cta-action">
+          <a href="booking.html" class="btn btn-gold btn-lg">
+            Go to Slot Booking &amp; Player Portal &rarr;
+          </a>
+          <span class="portal-cta-hint">Aditya Magar &middot; 9604715698</span>
+        </div>
       </div>
     </div>
   </section>
@@ -592,7 +508,7 @@
               <span>Changing rooms and shower facilities</span>
             </li>
           </ul>
-          <a href="#booking" class="btn btn-outline" style="width:100%;">Book Weekday Slot (₹500)</a>
+          <a href="booking.html" class="btn btn-outline" style="width:100%;">Book Weekday Slot (₹500)</a>
         </div>
 
         <!-- Weekend Card (Featured) -->
@@ -619,7 +535,7 @@
               <span>Reserved parking directly beside ground</span>
             </li>
           </ul>
-          <a href="#booking" class="btn btn-primary" style="width:100%;">Reserve Weekend Slot (₹800)</a>
+          <a href="booking.html" class="btn btn-primary" style="width:100%;">Reserve Weekend Slot (₹800)</a>
         </div>
       </div>
     </div>
@@ -684,12 +600,13 @@
         <div>
           <h4 class="footer-col-title">Quick Navigation</h4>
           <ul class="footer-nav-list">
-            <li><a href="#booking" class="footer-nav-link">Book a Slot</a></li>
+            <li><a href="booking.html" class="footer-nav-link" style="color:var(--accent-gold);font-weight:700;">★ Book a Slot (Portal)</a></li>
             <li><a href="#quickFacts" class="footer-nav-link">Ground Features</a></li>
+            <li><a href="#howToBook" class="footer-nav-link">How to Book</a></li>
             <li><a href="#dashboardOverview" class="footer-nav-link">Live Turf Status</a></li>
             <li><a href="#gallery" class="footer-nav-link">Arena Gallery</a></li>
             <li><a href="#pricing" class="footer-nav-link">Hourly Rates</a></li>
-            <li><a href="login.html" class="footer-nav-link">Player Sign In</a></li>
+            <li><a href="booking.html" class="footer-nav-link">Player Account &amp; History</a></li>
           </ul>
         </div>
 
@@ -729,7 +646,7 @@
       <span class="label">Starting From</span>
       <span class="amount" id="stickyBarAmount">₹500<span>/hr</span></span>
     </div>
-    <a href="#booking" class="btn btn-primary btn-sm">Book a Slot</a>
+    <a href="booking.html" class="btn btn-primary btn-sm">Book a Slot &rarr;</a>
   </aside>
 
   <!-- ===== LIGHTBOX MODAL WITH RELIABLE CLOSE & BACKDROP DISMISS ===== -->
@@ -742,192 +659,6 @@
       <div class="lightbox-caption" id="lightboxCaption"></div>
     </div>
     <button type="button" class="lightbox-nav-btn lightbox-next-btn" id="lightboxNext" aria-label="Next image">›</button>
-  </div>
-
-  <!-- ===== STEP 1 OF MOCK FLOW: SIMULATED UPI ADVANCE PAYMENT MODAL ===== -->
-  <div class="app-modal" id="mockPaymentModal" role="dialog" aria-modal="true" aria-label="UPI Advance Payment">
-    <div class="modal-dialog-card" onclick="event.stopPropagation()">
-      <button type="button" class="modal-close-trigger" data-close-modal="mockPaymentModal" aria-label="Close payment modal">✕</button>
-
-      <div style="text-align:center;margin-bottom:var(--space-4);">
-        <span class="section-tag">Instant Payment Simulation</span>
-        <h3 style="font-family:var(--font-display);font-size:1.75rem;font-weight:800;color:var(--green-primary);text-transform:uppercase;margin:var(--space-2) 0 4px;">
-          Pay Advance &middot; <span id="mockPayAmount" style="color:var(--green-primary);">₹200</span>
-        </h3>
-        <p style="font-size:var(--text-sm);color:var(--text-secondary);margin:0 auto;" id="mockPayDesc">Slot booking deposit</p>
-      </div>
-
-      <!-- QR Code Simulation -->
-      <div class="mock-upi-card">
-        <div style="font-size:var(--text-xs);font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.06em;">
-          Scan with Any UPI App
-        </div>
-        
-        <!-- SVG Generated Crisp QR Graphic -->
-        <div class="qr-placeholder">
-          <svg width="120" height="120" viewBox="0 0 100 100" fill="none">
-            <!-- QR Pattern Simulation -->
-            <rect x="0" y="0" width="30" height="30" fill="#063923" rx="4"/>
-            <rect x="6" y="6" width="18" height="18" fill="#ffffff" rx="2"/>
-            <rect x="10" y="10" width="10" height="10" fill="#063923"/>
-
-            <rect x="70" y="0" width="30" height="30" fill="#063923" rx="4"/>
-            <rect x="76" y="6" width="18" height="18" fill="#ffffff" rx="2"/>
-            <rect x="80" y="10" width="10" height="10" fill="#063923"/>
-
-            <rect x="0" y="70" width="30" height="30" fill="#063923" rx="4"/>
-            <rect x="6" y="76" width="18" height="18" fill="#ffffff" rx="2"/>
-            <rect x="10" y="80" width="10" height="10" fill="#063923"/>
-
-            <rect x="40" y="10" width="18" height="8" fill="#063923"/>
-            <rect x="42" y="24" width="12" height="14" fill="#063923"/>
-            <rect x="15" y="40" width="20" height="10" fill="#063923"/>
-            <rect x="45" y="45" width="14" height="14" fill="#063923"/>
-            <rect x="70" y="40" width="16" height="8" fill="#063923"/>
-            <rect x="40" y="70" width="14" height="20" fill="#063923"/>
-            <rect x="65" y="65" width="25" height="12" fill="#063923"/>
-            <rect x="65" y="84" width="12" height="10" fill="#063923"/>
-          </svg>
-        </div>
-
-        <div style="font-family:var(--font-display);font-size:0.95rem;font-weight:700;color:var(--text-primary);">
-          UPI ID: <span style="color:var(--green-primary);">casportsarena@upi</span>
-        </div>
-
-        <div class="upi-apps-row">
-          <span class="upi-app-pill">GPay</span>
-          <span class="upi-app-pill">PhonePe</span>
-          <span class="upi-app-pill">Paytm</span>
-          <span class="upi-app-pill">BHIM</span>
-        </div>
-      </div>
-
-      <!-- Action Button to complete mock flow -->
-      <button type="button" class="btn btn-primary" id="mockPaySuccessBtn" style="width:100%;font-size:1.1rem;padding:var(--space-3);margin-bottom:var(--space-2);">
-        Complete Advance Payment Demo &rarr;
-      </button>
-
-      <p style="font-size:0.75rem;color:var(--text-muted);text-align:center;margin:0;">
-        Demo Flow: Click above to simulate instant transaction verification and generate match pass ticket.
-      </p>
-    </div>
-  </div>
-
-  <!-- ===== STEP 2: CONFIRMED MATCH TICKET & WHATSAPP TICKET PASS ===== -->
-  <div class="app-modal" id="confirmationModal" role="dialog" aria-modal="true" aria-label="Booking Confirmation Receipt">
-    <div class="modal-dialog-card" onclick="event.stopPropagation()">
-      <button type="button" class="modal-close-trigger" data-close-modal="confirmationModal" aria-label="Close confirmation">✕</button>
-      
-      <div style="text-align:center;margin-bottom:var(--space-4);">
-        <div style="width:56px;height:56px;border-radius:50%;background:#d1fae5;color:#047857;display:flex;align-items:center;justify-content:center;margin:0 auto var(--space-2);font-size:1.6rem;font-weight:900;">
-          ✓
-        </div>
-        <h3 style="font-family:var(--font-display);font-size:1.75rem;font-weight:800;color:var(--green-primary);text-transform:uppercase;margin-bottom:2px;">
-          Match Slot Reserved!
-        </h3>
-        <p style="font-size:var(--text-sm);color:var(--text-secondary);margin:0 auto;">Your slot has been locked with advance verification.</p>
-      </div>
-
-      <div style="background:#f8faf9;border:1.5px solid var(--border-light);border-radius:var(--radius-md);padding:var(--space-4);margin-bottom:var(--space-4);font-size:var(--text-sm);">
-        <div style="display:flex;justify-content:space-between;align-items:center;padding:4px 0;">
-          <span style="color:var(--text-muted);">Booking Reference</span>
-          <span style="font-family:var(--font-display);font-size:1.15rem;font-weight:800;color:var(--green-primary);" id="confRef">#CA-89211</span>
-        </div>
-        <div style="display:flex;justify-content:space-between;align-items:center;padding:4px 0;">
-          <span style="color:var(--text-muted);">Slot Time</span>
-          <span style="font-weight:700;color:var(--text-primary);" id="confSlot">—</span>
-        </div>
-        <div style="display:flex;justify-content:space-between;align-items:center;padding:4px 0;">
-          <span style="color:var(--text-muted);">Match Date</span>
-          <span id="confDate" style="color:var(--text-primary);font-weight:600;">—</span>
-        </div>
-        <div style="display:flex;justify-content:space-between;align-items:center;padding:4px 0;">
-          <span style="color:var(--text-muted);">Player / Team</span>
-          <span id="confName" style="color:var(--text-primary);font-weight:600;">—</span>
-        </div>
-        <div style="display:flex;justify-content:space-between;align-items:center;padding:8px 0 4px;border-top:1px solid var(--border-light);margin-top:6px;">
-          <span style="color:var(--text-muted);">Total Match Fee</span>
-          <span style="font-family:var(--font-display);font-size:1.2rem;font-weight:800;color:var(--text-primary);" id="confTotal">—</span>
-        </div>
-        <div style="display:flex;justify-content:space-between;align-items:center;padding:4px 0;">
-          <span style="color:#047857;font-weight:700;">Advance Paid Online</span>
-          <span style="color:#047857;font-weight:800;" id="confAdvance">—</span>
-        </div>
-        <div style="display:flex;justify-content:space-between;align-items:center;padding:4px 0;">
-          <span style="color:var(--text-muted);">Balance Due at Venue</span>
-          <span id="confBalance" style="font-weight:700;color:var(--text-primary);">—</span>
-        </div>
-      </div>
-
-      <div style="display:flex;flex-direction:column;gap:var(--space-2);">
-        <!-- Direct WhatsApp Action Button -->
-        <a id="confWhatsAppLink" href="#" class="btn btn-whatsapp" style="width:100%;">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12.031 6.172c-3.181 0-5.767 2.586-5.768 5.766-.001 1.298.38 2.27 1.019 3.287l-.582 2.128 2.182-.573c.978.58 1.911.928 3.145.929 3.178 0 5.767-2.587 5.768-5.766.001-3.187-2.575-5.771-5.764-5.771zm3.392 8.244c-.144.405-.837.774-1.17.824-.312.045-.698.086-2.223-.554-1.954-.82-3.21-2.824-3.308-2.955-.097-.133-.787-1.047-.787-1.996 0-.948.498-1.413.675-1.605.176-.192.385-.24.513-.24.129 0 .257.001.369.006.118.005.277-.045.434.331.161.385.55 1.343.6 1.444.05.101.083.219.017.352-.066.133-.1.217-.199.333-.099.117-.208.261-.297.351-.1.1-.205.21-.088.411.117.201.52 1.088 1.115 1.618.767.683 1.414.894 1.616.994.201.1.32.083.438-.05.118-.134.505-.589.64-.79.135-.202.271-.168.455-.101.185.067 1.17.552 1.371.653.201.101.336.151.385.235.049.084.049.488-.095.893z"/></svg>
-          Send Confirmation to WhatsApp (9604715698)
-        </a>
-        <button type="button" class="btn btn-outline" data-close-modal="confirmationModal">Done</button>
-      </div>
-    </div>
-  </div>
-
-  <!-- ===== AUTH MODAL (Login / Sign Up) ===== -->
-  <div class="app-modal" id="authModal" role="dialog" aria-modal="true" aria-label="User Account">
-    <div class="modal-dialog-card" onclick="event.stopPropagation()">
-      <button type="button" class="modal-close-trigger" id="authCloseBtn" aria-label="Close modal">✕</button>
-      
-      <div style="display:flex;border-bottom:1.5px solid var(--border-light);margin-bottom:var(--space-6);">
-        <button type="button" class="auth-tab-btn active" id="tabLogin" style="flex:1;padding:var(--space-2) 0;font-family:var(--font-display);font-size:1.15rem;font-weight:700;color:var(--green-primary);border-bottom:2px solid var(--green-primary);">Sign In</button>
-        <button type="button" class="auth-tab-btn" id="tabSignup" style="flex:1;padding:var(--space-2) 0;font-family:var(--font-display);font-size:1.15rem;font-weight:700;color:var(--text-muted);">Register</button>
-      </div>
-
-      <!-- Login Form -->
-      <form id="formLogin" style="display:flex;flex-direction:column;gap:var(--space-4);">
-        <div>
-          <label style="display:block;font-size:var(--text-xs);font-weight:700;color:var(--text-secondary);text-transform:uppercase;margin-bottom:var(--space-1);">Registered Mobile Number</label>
-          <input type="tel" id="loginPhone" class="input-field-on-green" style="background:#f8faf9;color:var(--text-primary);" placeholder="10-digit mobile number" maxlength="10" required />
-        </div>
-        <div>
-          <label style="display:block;font-size:var(--text-xs);font-weight:700;color:var(--text-secondary);text-transform:uppercase;margin-bottom:var(--space-1);">Player Name</label>
-          <input type="text" id="loginName" class="input-field-on-green" style="background:#f8faf9;color:var(--text-primary);" placeholder="e.g. Rahul" />
-        </div>
-        <button type="submit" class="btn btn-primary" style="width:100%;margin-top:var(--space-2);">Sign In &amp; Auto-fill Bookings</button>
-      </form>
-
-      <!-- Sign Up Form -->
-      <form id="formSignup" style="display:none;flex-direction:column;gap:var(--space-4);">
-        <div>
-          <label style="display:block;font-size:var(--text-xs);font-weight:700;color:var(--text-secondary);text-transform:uppercase;margin-bottom:var(--space-1);">Full Name</label>
-          <input type="text" id="signupName" class="input-field-on-green" style="background:#f8faf9;color:var(--text-primary);" placeholder="Your Full Name" required />
-        </div>
-        <div>
-          <label style="display:block;font-size:var(--text-xs);font-weight:700;color:var(--text-secondary);text-transform:uppercase;margin-bottom:var(--space-1);">Mobile Number</label>
-          <input type="tel" id="signupPhone" class="input-field-on-green" style="background:#f8faf9;color:var(--text-primary);" placeholder="10-digit mobile" maxlength="10" required />
-        </div>
-        <div>
-          <label style="display:block;font-size:var(--text-xs);font-weight:700;color:var(--text-secondary);text-transform:uppercase;margin-bottom:var(--space-1);">Email (Optional)</label>
-          <input type="email" id="signupEmail" class="input-field-on-green" style="background:#f8faf9;color:var(--text-primary);" placeholder="player@example.com" />
-        </div>
-        <button type="submit" class="btn btn-primary" style="width:100%;margin-top:var(--space-2);">Create Account</button>
-      </form>
-    </div>
-  </div>
-
-  <!-- ===== MY BOOKINGS MODAL ===== -->
-  <div class="app-modal" id="myBookingsModal" role="dialog" aria-modal="true" aria-label="My Bookings">
-    <div class="modal-dialog-card" onclick="event.stopPropagation()">
-      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:var(--space-4);border-bottom:1px solid var(--border-light);padding-bottom:var(--space-3);">
-        <h3 style="font-family:var(--font-display);font-size:1.5rem;font-weight:800;text-transform:uppercase;color:var(--green-primary);margin:0;">My Booked Matches</h3>
-        <button type="button" class="modal-close-trigger" style="position:static;" data-close-modal="myBookingsModal" aria-label="Close my bookings">✕</button>
-      </div>
-
-      <div id="myBookingsList">
-        <!-- Rendered via JS -->
-      </div>
-
-      <div style="margin-top:var(--space-6);text-align:right;">
-        <button type="button" class="btn btn-outline btn-sm" id="userLogoutBtn">Log Out</button>
-      </div>
-    </div>
   </div>
 
   <!-- ===== TOAST NOTIFICATION ===== -->
