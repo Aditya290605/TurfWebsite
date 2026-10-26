@@ -3,11 +3,515 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta http-equiv="refresh" content="0; url=index.html#booking" />
-  <title>Book a Slot | CA Sports Arena</title>
-  <script>window.location.replace("index.html#booking");</script>
+  <link rel="icon" type="image/png" href="favicon.png" />
+  
+  <title>Player Portal &amp; Slot Booking | CA Sports Arena</title>
+  <meta name="description" content="Dedicated player booking dashboard for CA Sports Arena, Baner, Pune. Real-time availability, match history, and instant WhatsApp confirmations on 9604715698." />
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800&family=Barlow:wght@400;500;600;700&display=swap" rel="stylesheet" />
+
+  <link rel="stylesheet" href="styles.css" />
 </head>
-<body style="background:#070d09;color:#f0f7f2;font-family:sans-serif;padding:2rem;text-align:center;">
-  <p>Loading CA Sports Arena Booking... <a href="index.html#booking" style="color:#c8ff00;">Click here if not redirected</a>.</p>
+<body class="portal-page-wrap">
+
+  <!-- ===== PORTAL TOP NAVIGATION ===== -->
+  <header class="header">
+    <div class="container header-inner">
+      <a href="index.html" class="brand-link" aria-label="Back to CA Sports Arena Home">
+        <div class="brand-badge">CA</div>
+        <div class="brand-name">CA Sports <span>Arena</span></div>
+      </a>
+
+      <div style="display:flex;align-items:center;gap:var(--space-4);">
+        <a href="index.html" class="btn btn-outline btn-sm">
+          &larr; Back to Ground Info
+        </a>
+        <div id="headerUserStatus" style="display:none;">
+          <button type="button" class="btn btn-primary btn-sm" id="portalHeaderLogoutBtn">
+            Log Out
+          </button>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- ===== GATEKEEPER VIEW: SHOWN IF NOT LOGGED IN ===== -->
+  <main id="portalGateView" class="gate-wrap" style="display:none;">
+    <div class="gate-card">
+      <div style="text-align:center;margin-bottom:var(--space-6);">
+        <div style="width:52px;height:52px;border-radius:50%;background:var(--green-mint);color:var(--green-primary);display:flex;align-items:center;justify-content:center;margin:0 auto var(--space-3);">
+          <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+        </div>
+        <span class="section-tag">Player Authentication</span>
+        <h1 style="font-family:var(--font-display);font-size:1.85rem;font-weight:800;color:var(--green-primary);text-transform:uppercase;margin:var(--space-2) 0 4px;">
+          Player Login Required
+        </h1>
+        <p style="font-size:var(--text-sm);color:var(--text-secondary);margin:0 auto;">
+          Sign in to view real-time slots, lock matches with 25% advance, and check your booking history.
+        </p>
+      </div>
+
+      <!-- Quick One-Tap Client Demo Trigger -->
+      <div style="background:var(--green-mint-light);border:1.5px dashed var(--green-light);border-radius:var(--radius-md);padding:var(--space-3) var(--space-4);margin-bottom:var(--space-6);text-align:center;">
+        <div style="font-size:0.75rem;font-weight:700;color:var(--green-primary);text-transform:uppercase;margin-bottom:6px;">
+          For Quick Client Presentation
+        </div>
+        <button type="button" class="btn btn-primary btn-sm" id="btnInstantDemoLogin" style="width:100%;background:var(--green-primary);">
+          🚀 One-Tap Demo Login (Aditya Magar &middot; 9604715698)
+        </button>
+      </div>
+
+      <!-- Real Login / Sign In Form -->
+      <form id="gateLoginForm" style="display:flex;flex-direction:column;gap:var(--space-4);">
+        <div>
+          <label style="display:block;font-size:var(--text-xs);font-weight:700;color:var(--text-secondary);text-transform:uppercase;margin-bottom:4px;" for="gatePhone">
+            Registered Mobile Number
+          </label>
+          <input type="tel" id="gatePhone" class="input-field-on-green" style="background:#f8faf9;border-color:var(--border-light);color:var(--text-primary);" placeholder="10-digit phone (e.g. 9604715698)" maxlength="10" required />
+          <span class="field-error-msg" id="gatePhoneErr" style="color:#ef4444;"></span>
+        </div>
+
+        <div>
+          <label style="display:block;font-size:var(--text-xs);font-weight:700;color:var(--text-secondary);text-transform:uppercase;margin-bottom:4px;" for="gateName">
+            Player / Team Name
+          </label>
+          <input type="text" id="gateName" class="input-field-on-green" style="background:#f8faf9;border-color:var(--border-light);color:var(--text-primary);" placeholder="e.g. Rahul Sharma" required />
+          <span class="field-error-msg" id="gateNameErr" style="color:#ef4444;"></span>
+        </div>
+
+        <button type="submit" class="btn btn-gold" style="width:100%;font-size:1.1rem;margin-top:var(--space-2);">
+          Sign In &amp; Open Booking Schedule &rarr;
+        </button>
+
+        <div style="text-align:center;margin-top:var(--space-2);">
+          <a href="index.html" style="font-size:var(--text-xs);color:var(--text-muted);">&larr; Return to Landing Page</a>
+        </div>
+      </form>
+    </div>
+  </main>
+
+  <!-- ===== AUTHENTICATED PLAYER PORTAL & DASHBOARD ===== -->
+  <main id="portalDashboardView" style="display:none;">
+
+    <!-- Player Profile Top Bar -->
+    <section class="portal-profile-bar">
+      <div class="container portal-profile-inner">
+        <div class="player-identity-cluster">
+          <div class="player-avatar-large" id="profileAvatar">A</div>
+          <div>
+            <div style="display:flex;align-items:center;gap:var(--space-2);">
+              <h2 class="player-meta-title" id="profileName">Aditya Magar</h2>
+              <span class="player-badge-vip">Verified Player</span>
+            </div>
+            <div class="player-meta-sub">
+              <span id="profilePhone">+91 96047 15698</span>
+              <span>&middot;</span>
+              <span>Baner Arena Member</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="portal-quick-stats">
+          <div class="portal-stat-unit">
+            <span class="portal-stat-num" id="statBookingCount">0</span>
+            <span class="portal-stat-lbl">Active Bookings</span>
+          </div>
+          <div class="portal-stat-unit">
+            <span class="portal-stat-num" style="color:#047857;">₹500 / ₹800</span>
+            <span class="portal-stat-lbl">Flat Rates</span>
+          </div>
+          <div>
+            <button type="button" class="btn btn-outline btn-sm" id="portalLogoutBtn">
+              Log Out
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Main Container with Navigation Tabs -->
+    <div class="container" style="padding-top:var(--space-8);padding-bottom:var(--space-16);">
+
+      <!-- Segmented Navigation Tabs -->
+      <nav class="portal-tabs-nav" aria-label="Portal Navigation Tabs">
+        <button type="button" class="portal-tab-btn active" id="tabBtnReserve">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+          <span>Reserve a Slot</span>
+        </button>
+
+        <button type="button" class="portal-tab-btn" id="tabBtnHistory">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M12 8v4l3 3"/><circle cx="12" cy="12" r="9"/></svg>
+          <span>My Bookings &amp; Match History (<span id="tabHistoryBadge">0</span>)</span>
+        </button>
+
+        <button type="button" class="portal-tab-btn" id="tabBtnProfile">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+          <span>Player Profile &amp; Rules</span>
+        </button>
+      </nav>
+
+      <!-- TAB PANE 1: DEDICATED SLOT BOOKING ENGINE -->
+      <section id="paneReserve" style="display:block;">
+        <div class="booking-layout">
+          <!-- Left: 7-Day Date Picker + Match Format + Slots -->
+          <div>
+            <!-- Date Tabs -->
+            <div class="date-selector-wrap">
+              <div class="date-selector-label">
+                <span class="date-label-text">1. Select Match Date</span>
+                <span style="font-size:var(--text-xs);color:var(--green-primary);font-weight:700;">Mon–Fri: ₹500/hr &middot; Sat–Sun: ₹800/hr</span>
+              </div>
+              <div class="date-tabs-scroller" id="dateTabs" role="tablist" aria-label="Booking Dates">
+                <!-- Rendered dynamically by app.js -->
+              </div>
+            </div>
+
+            <!-- Format Selector -->
+            <div class="date-selector-wrap">
+              <div class="date-selector-label">
+                <span class="date-label-text">2. Sport Format</span>
+              </div>
+              <div class="format-pills">
+                <button type="button" class="format-pill active" data-format="Box Cricket (6–8 a side)">Box Cricket (6–8 a side)</button>
+                <button type="button" class="format-pill" data-format="5-a-side Football">5-a-side Football</button>
+                <button type="button" class="format-pill" data-format="Net Practice / Coaching">Net Practice</button>
+              </div>
+            </div>
+
+            <!-- Available Slots Grouped by Daypart -->
+            <div class="date-selector-wrap">
+              <div class="date-selector-label">
+                <span class="date-label-text">3. Pick Hourly Time Slot</span>
+                <span style="font-size:var(--text-xs);color:var(--text-muted);">Past hours are automatically disabled</span>
+              </div>
+              <div id="slotsContainer">
+                <!-- Rendered dynamically by app.js -->
+              </div>
+            </div>
+          </div>
+
+          <!-- Right: Deep Forest Green Order Summary Panel -->
+          <aside class="booking-summary-panel" id="bookingPanel">
+            <h3 class="summary-title">Booking Summary</h3>
+            <p class="summary-subtitle">Review selection &amp; confirm advance payment</p>
+
+            <!-- Empty State -->
+            <div class="summary-empty-state" id="summaryEmpty">
+              <div class="summary-empty-icon">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+              </div>
+              <h4>No Slot Selected</h4>
+              <p style="font-size:var(--text-sm);color:var(--text-on-green-sub);margin:0 auto;">Pick a time slot from the schedule on the left to review price and pay advance.</p>
+            </div>
+
+            <!-- Filled State -->
+            <div id="summaryFilled" style="display:none;">
+              <!-- Active Slot Card -->
+              <div class="summary-active-details">
+                <div class="summary-badge-strip">
+                  <span style="font-size:0.7rem;font-weight:700;color:var(--accent-gold);text-transform:uppercase;">Selected Slot</span>
+                  <span class="summary-rate-tag" id="summaryRateTag">Weekday Rate</span>
+                </div>
+                <div class="summary-slot-time" id="summarySlotTime">—</div>
+                <div class="summary-slot-date" id="summarySlotDate">—</div>
+              </div>
+
+              <!-- Duration Selector -->
+              <div class="summary-form-group">
+                <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:var(--space-2);">
+                  <label class="summary-form-label" style="margin:0;">Match Duration</label>
+                  <div style="display:flex;align-items:center;gap:var(--space-2);">
+                    <button type="button" class="btn btn-outline-hero btn-sm" id="durMinus" style="min-width:36px;padding:0;" aria-label="Decrease duration">−</button>
+                    <span id="durationVal" style="font-family:var(--font-display);font-size:1.15rem;font-weight:700;min-width:64px;text-align:center;color:#ffffff;">1 hour</span>
+                    <button type="button" class="btn btn-outline-hero btn-sm" id="durPlus" style="min-width:36px;padding:0;" aria-label="Increase duration">+</button>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Payment Choice Toggle -->
+              <div class="summary-form-group">
+                <label class="summary-form-label">Payment Choice</label>
+                <div class="payment-type-toggle">
+                  <button type="button" class="pay-toggle-btn active" id="payModeAdvance">
+                    <div class="pay-toggle-title">Pay 25% Advance</div>
+                    <div class="pay-toggle-sub">Lock slot online, rest at venue</div>
+                  </button>
+                  <button type="button" class="pay-toggle-btn" id="payModeFull">
+                    <div class="pay-toggle-title">Pay 100% Full</div>
+                    <div class="pay-toggle-sub">Settle total fee now</div>
+                  </button>
+                </div>
+              </div>
+
+              <!-- Customer Details (Pre-filled from Profile!) -->
+              <div class="summary-form-group">
+                <label class="summary-form-label" for="bookName">Player / Team Name</label>
+                <input type="text" id="bookName" class="input-field-on-green" placeholder="e.g. Rahul Sharma" autocomplete="name" required />
+                <span class="field-error-msg" id="bookNameError"></span>
+              </div>
+
+              <div class="summary-form-group">
+                <label class="summary-form-label" for="bookPhone">WhatsApp / Mobile Number</label>
+                <input type="tel" id="bookPhone" class="input-field-on-green" placeholder="10-digit mobile (e.g. 9604715698)" maxlength="10" autocomplete="tel" required />
+                <span class="field-error-msg" id="bookPhoneError"></span>
+              </div>
+
+              <!-- Live Calculation Breakdown -->
+              <div class="pricing-breakdown-box">
+                <div class="price-row-green">
+                  <span>Slot Rate</span>
+                  <span id="summaryRateRow">₹500 × 1h</span>
+                </div>
+                <div class="price-row-green">
+                  <span>Platform Fee</span>
+                  <span style="color:#34d399;font-weight:700;">₹0 (Zero Fee)</span>
+                </div>
+                <div class="price-row-green total-row">
+                  <span>Total Match Fee</span>
+                  <span class="val" id="summaryTotalRow">₹500</span>
+                </div>
+
+                <!-- Advance Details -->
+                <div class="advance-due-green" id="summaryAdvanceRow">
+                  <span>Due Now (Advance):</span>
+                  <span id="summaryAdvanceVal" style="font-size:1.15rem;font-weight:800;">₹200</span>
+                </div>
+                <div class="price-row-green" id="summaryBalanceRow" style="font-size:0.8rem;margin-top:6px;">
+                  <span>Payable at Venue</span>
+                  <span id="summaryBalanceVal" style="font-weight:700;color:#ffffff;">₹300</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Action Button -->
+            <div style="margin-top:var(--space-4);">
+              <button type="button" class="btn btn-gold" id="confirmBookBtn" style="width:100%;font-size:1.1rem;padding:var(--space-3);" disabled>
+                Select a Time Slot First
+              </button>
+              <p style="font-size:0.75rem;color:var(--text-on-green-sub);text-align:center;margin-top:var(--space-2);line-height:1.4;">
+                Instant WhatsApp confirmation on 9604715698. Free cancellation up to 4h before match.
+              </p>
+            </div>
+          </aside>
+        </div>
+      </section>
+
+      <!-- TAB PANE 2: BOOKING HISTORY -->
+      <section id="paneHistory" style="display:none;">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:var(--space-6);">
+          <div>
+            <h2 class="section-title" style="margin-bottom:2px;">My Bookings &amp; Match History</h2>
+            <p class="section-subtitle">View your confirmed match reservations, advance deposit receipts, and WhatsApp entry passes.</p>
+          </div>
+          <button type="button" class="btn btn-primary btn-sm" onclick="document.getElementById('tabBtnReserve').click();">
+            + Book Another Slot
+          </button>
+        </div>
+
+        <div id="fullBookingsHistoryList" class="history-cards-list">
+          <!-- Rendered dynamically by app.js -->
+        </div>
+      </section>
+
+      <!-- TAB PANE 3: PLAYER PROFILE & RULES -->
+      <section id="paneProfile" style="display:none;">
+        <div style="display:grid;grid-template-columns:1fr;gap:var(--space-6);max-width:960px;">
+          <!-- Profile Card -->
+          <div style="background:#ffffff;border:1.5px solid var(--border-light);border-radius:var(--radius-lg);padding:var(--space-6);box-shadow:var(--shadow-sm);">
+            <h3 style="font-family:var(--font-display);font-size:1.4rem;font-weight:800;color:var(--green-primary);text-transform:uppercase;margin-bottom:var(--space-4);">
+              Player Account Details
+            </h3>
+
+            <div style="display:grid;grid-template-columns:repeat(auto-fit, minmax(220px, 1fr));gap:var(--space-4);margin-bottom:var(--space-6);">
+              <div>
+                <span style="font-size:var(--text-xs);color:var(--text-muted);text-transform:uppercase;font-weight:700;">Player Name</span>
+                <div style="font-size:1.15rem;font-weight:700;color:var(--text-primary);margin-top:2px;" id="profileDetailsName">Aditya Magar</div>
+              </div>
+              <div>
+                <span style="font-size:var(--text-xs);color:var(--text-muted);text-transform:uppercase;font-weight:700;">WhatsApp Mobile</span>
+                <div style="font-size:1.15rem;font-weight:700;color:var(--text-primary);margin-top:2px;" id="profileDetailsPhone">+91 96047 15698</div>
+              </div>
+              <div>
+                <span style="font-size:var(--text-xs);color:var(--text-muted);text-transform:uppercase;font-weight:700;">Preferred Arena</span>
+                <div style="font-size:1.15rem;font-weight:700;color:var(--text-primary);margin-top:2px;">CA Sports Arena &middot; Baner</div>
+              </div>
+            </div>
+
+            <div style="border-top:1px solid var(--border-light);padding-top:var(--space-4);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:var(--space-3);">
+              <span style="font-size:0.85rem;color:var(--text-secondary);">Need to update contact details or transfer slot?</span>
+              <a href="https://wa.me/919604715698" target="_blank" rel="noopener noreferrer" class="btn btn-whatsapp btn-sm">
+                Chat with Coordinator (9604715698)
+              </a>
+            </div>
+          </div>
+
+          <!-- Venue Rules -->
+          <div style="background:#ffffff;border:1.5px solid var(--border-light);border-radius:var(--radius-lg);padding:var(--space-6);box-shadow:var(--shadow-sm);">
+            <h3 style="font-family:var(--font-display);font-size:1.4rem;font-weight:800;color:var(--green-primary);text-transform:uppercase;margin-bottom:var(--space-4);">
+              Turf Rules &amp; Equipment Policy
+            </h3>
+            <ul style="list-style:none;display:flex;flex-direction:column;gap:var(--space-3);font-size:0.95rem;color:var(--text-secondary);">
+              <li style="display:flex;gap:var(--space-2);">
+                <span style="color:var(--green-primary);font-weight:800;">✓</span>
+                <span><strong>Footwear:</strong> Rubber studs or flat sneakers only. Metal spikes are strictly banned on synthetic grass.</span>
+              </li>
+              <li style="display:flex;gap:var(--space-2);">
+                <span style="color:var(--green-primary);font-weight:800;">✓</span>
+                <span><strong>Arrival:</strong> Please report 10 minutes prior to slot time for warmup and kit setup.</span>
+              </li>
+              <li style="display:flex;gap:var(--space-2);">
+                <span style="color:var(--green-primary);font-weight:800;">✓</span>
+                <span><strong>Included Gear:</strong> Standard tennis cricket match balls, stumps, and match bibs are provided at no extra charge.</span>
+              </li>
+              <li style="display:flex;gap:var(--space-2);">
+                <span style="color:var(--green-primary);font-weight:800;">✓</span>
+                <span><strong>Refunds:</strong> 100% advance deposit refund or reschedule if cancelled 4+ hours before start time.</span>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+    </div>
+  </main>
+
+  <!-- ===== STEP 1: MOCK UPI PAYMENT MODAL ===== -->
+  <div class="app-modal" id="mockPaymentModal" role="dialog" aria-modal="true" aria-label="UPI Advance Payment">
+    <div class="modal-dialog-card" onclick="event.stopPropagation()">
+      <button type="button" class="modal-close-trigger" data-close-modal="mockPaymentModal" aria-label="Close payment modal">✕</button>
+
+      <div style="text-align:center;margin-bottom:var(--space-4);">
+        <span class="section-tag">Instant Payment Simulation</span>
+        <h3 style="font-family:var(--font-display);font-size:1.75rem;font-weight:800;color:var(--green-primary);text-transform:uppercase;margin:var(--space-2) 0 4px;">
+          Pay Advance &middot; <span id="mockPayAmount" style="color:var(--green-primary);">₹200</span>
+        </h3>
+        <p style="font-size:var(--text-sm);color:var(--text-secondary);margin:0 auto;" id="mockPayDesc">Slot booking deposit</p>
+      </div>
+
+      <!-- QR Code Simulation -->
+      <div class="mock-upi-card">
+        <div style="font-size:var(--text-xs);font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.06em;">
+          Scan with Any UPI App
+        </div>
+        
+        <div class="qr-placeholder">
+          <svg width="120" height="120" viewBox="0 0 100 100" fill="none">
+            <rect x="0" y="0" width="30" height="30" fill="#063923" rx="4"/>
+            <rect x="6" y="6" width="18" height="18" fill="#ffffff" rx="2"/>
+            <rect x="10" y="10" width="10" height="10" fill="#063923"/>
+
+            <rect x="70" y="0" width="30" height="30" fill="#063923" rx="4"/>
+            <rect x="76" y="6" width="18" height="18" fill="#ffffff" rx="2"/>
+            <rect x="80" y="10" width="10" height="10" fill="#063923"/>
+
+            <rect x="0" y="70" width="30" height="30" fill="#063923" rx="4"/>
+            <rect x="6" y="76" width="18" height="18" fill="#ffffff" rx="2"/>
+            <rect x="10" y="80" width="10" height="10" fill="#063923"/>
+
+            <rect x="40" y="10" width="18" height="8" fill="#063923"/>
+            <rect x="42" y="24" width="12" height="14" fill="#063923"/>
+            <rect x="15" y="40" width="20" height="10" fill="#063923"/>
+            <rect x="45" y="45" width="14" height="14" fill="#063923"/>
+            <rect x="70" y="40" width="16" height="8" fill="#063923"/>
+            <rect x="40" y="70" width="14" height="20" fill="#063923"/>
+            <rect x="65" y="65" width="25" height="12" fill="#063923"/>
+            <rect x="65" y="84" width="12" height="10" fill="#063923"/>
+          </svg>
+        </div>
+
+        <div style="font-family:var(--font-display);font-size:0.95rem;font-weight:700;color:var(--text-primary);">
+          UPI ID: <span style="color:var(--green-primary);">casportsarena@upi</span>
+        </div>
+
+        <div class="upi-apps-row">
+          <span class="upi-app-pill">GPay</span>
+          <span class="upi-app-pill">PhonePe</span>
+          <span class="upi-app-pill">Paytm</span>
+          <span class="upi-app-pill">BHIM</span>
+        </div>
+      </div>
+
+      <button type="button" class="btn btn-primary" id="mockPaySuccessBtn" style="width:100%;font-size:1.1rem;padding:var(--space-3);margin-bottom:var(--space-2);">
+        Complete Advance Payment Demo &rarr;
+      </button>
+
+      <p style="font-size:0.75rem;color:var(--text-muted);text-align:center;margin:0;">
+        Demo Flow: Click above to simulate instant transaction verification and generate match pass ticket.
+      </p>
+    </div>
+  </div>
+
+  <!-- ===== STEP 2: CONFIRMED MATCH TICKET & WHATSAPP PASS ===== -->
+  <div class="app-modal" id="confirmationModal" role="dialog" aria-modal="true" aria-label="Booking Confirmation Receipt">
+    <div class="modal-dialog-card" onclick="event.stopPropagation()">
+      <button type="button" class="modal-close-trigger" data-close-modal="confirmationModal" aria-label="Close confirmation">✕</button>
+      
+      <div style="text-align:center;margin-bottom:var(--space-4);">
+        <div style="width:56px;height:56px;border-radius:50%;background:#d1fae5;color:#047857;display:flex;align-items:center;justify-content:center;margin:0 auto var(--space-2);font-size:1.6rem;font-weight:900;">
+          ✓
+        </div>
+        <h3 style="font-family:var(--font-display);font-size:1.75rem;font-weight:800;color:var(--green-primary);text-transform:uppercase;margin-bottom:2px;">
+          Match Slot Reserved!
+        </h3>
+        <p style="font-size:var(--text-sm);color:var(--text-secondary);margin:0 auto;">Your slot has been locked with advance verification.</p>
+      </div>
+
+      <div style="background:#f8faf9;border:1.5px solid var(--border-light);border-radius:var(--radius-md);padding:var(--space-4);margin-bottom:var(--space-4);font-size:var(--text-sm);">
+        <div style="display:flex;justify-content:space-between;align-items:center;padding:4px 0;">
+          <span style="color:var(--text-muted);">Booking Reference</span>
+          <span style="font-family:var(--font-display);font-size:1.15rem;font-weight:800;color:var(--green-primary);" id="confRef">#CA-89211</span>
+        </div>
+        <div style="display:flex;justify-content:space-between;align-items:center;padding:4px 0;">
+          <span style="color:var(--text-muted);">Slot Time</span>
+          <span style="font-weight:700;color:var(--text-primary);" id="confSlot">—</span>
+        </div>
+        <div style="display:flex;justify-content:space-between;align-items:center;padding:4px 0;">
+          <span style="color:var(--text-muted);">Match Date</span>
+          <span id="confDate" style="color:var(--text-primary);font-weight:600;">—</span>
+        </div>
+        <div style="display:flex;justify-content:space-between;align-items:center;padding:4px 0;">
+          <span style="color:var(--text-muted);">Player / Team</span>
+          <span id="confName" style="color:var(--text-primary);font-weight:600;">—</span>
+        </div>
+        <div style="display:flex;justify-content:space-between;align-items:center;padding:8px 0 4px;border-top:1px solid var(--border-light);margin-top:6px;">
+          <span style="color:var(--text-muted);">Total Match Fee</span>
+          <span style="font-family:var(--font-display);font-size:1.2rem;font-weight:800;color:var(--text-primary);" id="confTotal">—</span>
+        </div>
+        <div style="display:flex;justify-content:space-between;align-items:center;padding:4px 0;">
+          <span style="color:#047857;font-weight:700;">Advance Paid Online</span>
+          <span style="color:#047857;font-weight:800;" id="confAdvance">—</span>
+        </div>
+        <div style="display:flex;justify-content:space-between;align-items:center;padding:4px 0;">
+          <span style="color:var(--text-muted);">Balance Due at Venue</span>
+          <span id="confBalance" style="font-weight:700;color:var(--text-primary);">—</span>
+        </div>
+      </div>
+
+      <div style="display:flex;flex-direction:column;gap:var(--space-2);">
+        <a id="confWhatsAppLink" href="#" class="btn btn-whatsapp" style="width:100%;">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12.031 6.172c-3.181 0-5.767 2.586-5.768 5.766-.001 1.298.38 2.27 1.019 3.287l-.582 2.128 2.182-.573c.978.58 1.911.928 3.145.929 3.178 0 5.767-2.587 5.768-5.766.001-3.187-2.575-5.771-5.764-5.771zm3.392 8.244c-.144.405-.837.774-1.17.824-.312.045-.698.086-2.223-.554-1.954-.82-3.21-2.824-3.308-2.955-.097-.133-.787-1.047-.787-1.996 0-.948.498-1.413.675-1.605.176-.192.385-.24.513-.24.129 0 .257.001.369.006.118.005.277-.045.434.331.161.385.55 1.343.6 1.444.05.101.083.219.017.352-.066.133-.1.217-.199.333-.099.117-.208.261-.297.351-.1.1-.205.21-.088.411.117.201.52 1.088 1.115 1.618.767.683 1.414.894 1.616.994.201.1.32.083.438-.05.118-.134.505-.589.64-.79.135-.202.271-.168.455-.101.185.067 1.17.552 1.371.653.201.101.336.151.385.235.049.084.049.488-.095.893z"/></svg>
+          Send Confirmation to WhatsApp (9604715698)
+        </a>
+        <button type="button" class="btn btn-outline" data-close-modal="confirmationModal">
+          View in My Bookings
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== TOAST MESSAGE ===== -->
+  <div class="toast-msg" id="toastMsg" role="status" aria-live="polite">
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--accent-gold)" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+    <div>
+      <div style="font-weight:700;font-size:0.95rem;color:#ffffff;" id="toastTitle">Success</div>
+      <div style="font-size:0.75rem;color:var(--text-on-green-sub);" id="toastDesc">Action confirmed</div>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="config.js"></script>
+  <script src="app.js"></script>
 </body>
 </html>
